@@ -1102,9 +1102,90 @@ const scat={
   post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Gdzie na tej mapie widzicie Widzew za miesiąc? 👇'}\n#RTSstat #Widzew`}
 };
 
-const TYPES={rival,match:matchT,player,cmp,pcmp,tcmp,scat,fact};
+/* --- dom i wyjazd --- */
+const ha={
+  name:'Dom i wyjazd',
+  init(){const p={team:WID,tag:'Dom i wyjazd'};this.auto(p,true);return p},
+  stat(t){
+    const m=TM[t]||[];
+    const part=h=>{const x=m.filter(y=>y.home===h);const o={m:x,W:0,R:0,P:0,GF:0,GA:0,pts:0};
+      x.forEach(y=>{o[y.res]++;o.GF+=y.gf;o.GA+=y.ga;o.pts+=y.res==='W'?3:y.res==='R'?1:0});
+      o.ppm=x.length?o.pts/x.length:0;return o};
+    return {h:part(true),a:part(false)};
+  },
+  auto(p,force){
+    const s=this.stat(p.team),A=sn(p.team),rec=o=>`${o.W}-${o.R}-${o.P}`;
+    const title=s.a.ppm>s.h.ppm?'Dom na opak':(s.h.ppm>s.a.ppm?'Lepiej u siebie':'Wszędzie tak samo');
+    let d1='',d2='';const full=T[p.team].full;
+    const u=D.upcoming.find(x=>x[2]===full||x[3]===full);
+    if(u){const w=warsaw(u[1]);d1=`${sn(byFull[u[2]]||u[2])} – ${sn(byFull[u[3]]||u[3])}`;d2=`${w.wd} ${w.dm} · ${w.hm}`}
+    const auto={title,sub:`${A}: u siebie ${rec(s.h)}, na wyjeździe ${rec(s.a)} (wygrane-remisy-porażki). Bramki ${s.h.GF}:${s.h.GA} u siebie i ${s.a.GF}:${s.a.GA} na wyjeździe.`,date1:d1,date2:d2,foot:defFoot()};
+    for(const k in auto){if(force||!p.ed||!p.ed[k])p[k]=auto[k]}
+  },
+  fields:p=>[{k:'team',l:'Drużyna',t:'sel',num:1,o:teamOpts()},{k:'title',l:'Tytuł',t:'text'},{k:'sub',l:'Podtytuł',t:'area'},
+    {k:'date1',l:'Pasek: mecz',t:'text'},{k:'date2',l:'Pasek: termin',t:'text'},{k:'foot',l:'Stopka',t:'text'}],
+  sugg(p){
+    const out=[];
+    [WID,nextOpp].filter(Boolean).forEach(t=>{
+      const s=this.stat(t),rec=o=>`${o.W}-${o.R}-${o.P}`;
+      out.push({h:`${sn(t)}: dom ${rec(s.h)}, wyjazd ${rec(s.a)}`,s:'bilans u siebie i na wyjeździe (W-R-P)',
+        q:t===WID?'Dlaczego u siebie jest trudniej niż na wyjeździe? 👇':'Czy to będzie miało wpływ na ten mecz? 👇',set:{team:t}});
+    });
+    return out;
+  },
+  svg(p,bg){return this.draw(p,bg,isV())},
+  draw(p,bg,V){
+    const s=this.stat(p.team);
+    const H=V?headerV(p):header(p);let o=H.svg;
+    const X0=V?80:104,CW=V?920:1712,bottomY=V?1226:972,cols=V?5:99,gap=V?10:12;
+    const legendH=V?36:44,hdH=V?88:98,rowGap=V?12:14;
+    const y0=H.bottom+(V?26:24);
+    const nmax=Math.max(s.h.m.length,s.a.m.length,1);
+    const rows=V?Math.max(1,Math.ceil(nmax/cols)):1;
+    const avail=bottomY-y0-legendH-rowGap-2*(hdH+6);
+    const th=V?Math.max(64,Math.min(100,(avail-2*(rows-1)*gap)/(2*rows))):Math.max(96,Math.min(162,avail/2));
+    const blockH=hdH+6+rows*th+(rows-1)*gap,total=2*blockH+rowGap+legendH;
+    let y=Math.max(y0,bottomY-total);
+    [['U SIEBIE',s.h],['NA WYJEŹDZIE',s.a]].forEach(([lab,r])=>{
+      const rec=`${r.W} W · ${r.R} R · ${r.P} P`;
+      o+=`<g filter="url(#sh)">`+tx(X0,y+(V?56:64),lab,{size:V?46:56,fam:'BC',w:800,ls:2})+
+        tx(X0,y+(V?88:100),`${rec}   ·   bramki ${r.GF}:${r.GA}`,{size:V?24:30,fam:'BC',w:800,ls:3,up:true,fill:C.pale})+`</g>`;
+      const n=r.m.length||1,w=V?(CW-gap*(cols-1))/cols:(CW-gap*(n-1))/n;
+      r.m.forEach((m,i)=>{
+        const x=V?X0+(i%cols)*(w+gap):X0+i*(w+gap),ty=y+hdH+6+(V?Math.floor(i/cols)*(th+gap):0);
+        let fill,stroke='none',ink='#fff',sw=0;
+        if(m.res==='W'){fill='#F7F4F0';ink=C.dark}
+        else if(m.res==='R'){fill=C.tileDark;stroke='#ffffff';sw=3}
+        else{fill=C.tileDark;stroke='#9a9aa0';sw=3;ink='#bdbdc2'}
+        o+=`<rect x="${x+sw/2}" y="${ty+sw/2}" width="${w-sw}" height="${th-sw}" rx="10" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        o+=band(x+sw/2+8,ty+th-14,w-sw-16,7,m.opp,m.res==='W');
+        if(V){
+          const lb=`K${m.k} ${sn(m.opp)}`.toUpperCase();let os=25;while(os>13&&mw(lb,os,'BC',800)>w-10)os-=1;
+          o+=tx(x+w/2,ty+th*.3,lb,{size:os,fam:'BC',w:800,fill:ink,anchor:'middle'});
+          o+=tx(x+w/2,ty+th-20,`${m.gf}:${m.ga}`,{size:Math.min(56,th*.5),fam:'BC',w:800,fill:ink,anchor:'middle'});
+        }else{
+          o+=tx(x+w/2,ty+th*.2,'K'+m.k,{size:24,fam:'BA',w:600,fill:ink,anchor:'middle',ls:1,op:.9});
+          let on=sn(m.opp).toUpperCase(),os=26;while(os>14&&mw(on,os,'BC',800)>w-14)os-=2;
+          o+=tx(x+w/2,ty+th*.2+os+2,on,{size:os,fam:'BC',w:800,fill:ink,anchor:'middle'});
+          o+=tx(x+w/2,ty+th-24,`${m.gf}:${m.ga}`,{size:Math.min(64,th*.38),fam:'BC',w:800,fill:ink,anchor:'middle'});
+        }
+      });
+      y+=blockH+rowGap;
+    });
+    const ly=bottomY-(V?6:10);let lx=X0;const fs=V?22:24;
+    const sq=(f,st)=>{const r=`<rect x="${lx}" y="${ly-18}" width="22" height="22" rx="4" fill="${f}" ${st?`stroke="${st}" stroke-width="3"`:''}/>`;lx+=32;return r};
+    o+=`<g filter="url(#sh)">`+sq('#F7F4F0')+tx(lx,ly,'wygrana',{size:fs,fam:'BA',w:600,fill:'#f1dede'});lx+=mw('wygrana',fs,'BA',600)+28;
+    o+=sq('rgba(10,6,8,.72)','#ffffff')+tx(lx,ly,'remis',{size:fs,fam:'BA',w:600,fill:'#f1dede'});lx+=mw('remis',fs,'BA',600)+28;
+    o+=sq('rgba(10,6,8,.72)','#9a9aa0')+tx(lx,ly,'porażka',{size:fs,fam:'BA',w:600,fill:'#f1dede'});lx+=mw('porażka',fs,'BA',600)+28;
+    o+=tx(lx,ly,'wynik z perspektywy drużyny · pasek = barwy rywala',{size:fs,fam:'BA',w:600,fill:'#f1dede'})+`</g>`;
+    return shell(o+(V?footerV(p):footer(p)),bg);
+  },
+  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSstat #Widzew`}
+};
+
+const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact};
 const EXT=PL.length>0&&PL[0].length>=28;
-const TKEYS=['rival','match','player','cmp',...(EXT?['pcmp','tcmp','scat']:[]),'fact'];
+const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','scat']:[]),'fact'];
 
 /* ---------- stan ---------- */
 let isAdmin=!!ctx.isAdmin,downloads=true;
