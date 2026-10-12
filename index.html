@@ -1210,10 +1210,10 @@ function renderWork(){
   const v=$('#view');
   v.innerHTML=`<div class="work"><div class="ctl" id="ctl"></div><div class="pvcol"><div class="fmt" id="fmt"></div><div class="frame" id="frame"><img id="pv" alt="Podgląd karty"></div>
   <div class="actions"><button class="btn pri" id="dl">Pobierz PNG</button><span class="msg" id="dlmsg"></span></div>
-  <div class="card-box"><div class="sec">Tekst posta (do edycji)</div><textarea id="post"></textarea>
+  <div class="pkgrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start"><div class="card-box"><div class="sec">Tekst posta (do edycji)</div><textarea id="post"></textarea>
   <div class="actions"><button class="btn sm" id="cp">Kopiuj tekst</button><button class="btn sm" id="rp">Odśwież z karty</button><span class="msg" id="cpmsg"></span></div></div>
-  <div class="card-box"><div class="sec">Pakiet dla komunikacji (prompt do posta)</div><label class="f">Link do live na YouTube (opcjonalnie)<input type="text" id="pk-link" placeholder="https://youtu.be/..."></label><textarea id="pk-txt" readonly style="min-height:150px"></textarea>
-  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div></div>`;
+  <div class="card-box"><div class="sec">Pakiet dla komunikacji (prompt do posta)</div><label class="f">Link do live na YouTube (opcjonalnie)<input type="text" id="pk-link" placeholder="https://youtu.be/..."></label><textarea id="pk-txt" readonly style="min-height:260px"></textarea>
+  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div></div></div>`;
   buildFmt();buildCtl();$('#dl').onclick=doDownload;
   $('#post').oninput=()=>{S.postEd=true;buildPack()};
   $('#cp').onclick=async()=>{const t=$('#post');try{await navigator.clipboard.writeText(t.value);$('#cpmsg').textContent='Skopiowano';$('#cpmsg').className='msg ok'}catch(e){t.select();$('#cpmsg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#cpmsg').className='msg'}};
@@ -1222,20 +1222,58 @@ function renderWork(){
   $('#pk-cp').onclick=async()=>{buildPack();const t=$('#pk-txt');try{await navigator.clipboard.writeText(t.value);$('#pk-msg').textContent='Skopiowano. Wklej w czat komunikacji razem z kartą PNG.';$('#pk-msg').className='msg ok'}catch(e){t.select();$('#pk-msg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#pk-msg').className='msg'}};
   refresh(true);
 }
+const PACKNOTE={
+rival:'Karta zestawia jedną liczbę drużyny A z liczbą rywala (np. remisy, wygrane, czyste konta) wg wybranego zakresu (wszystkie mecze lub ostatnie 5). Wytłumacz, co ta liczba mówi o formie i jak wypada na tle ligi.',
+match:'Karta pokazuje wynik jednego meczu, strzelców z minutami oraz porównanie statystyk (posiadanie, strzały, celne, rożne, xG itd.). Wytłumacz, co statystyki mówią o przebiegu meczu i czy wynik je odzwierciedla.',
+player:'Karta pokazuje wybrane liczby jednego zawodnika w sezonie (mecze, minuty, gole, asysty, strzały, pojedynki itd.). Wytłumacz, które liczby są najważniejsze i co mówią o roli zawodnika w drużynie.',
+cmp:'Karta porównuje dwie drużyny w wybranych miarach (każdy wiersz = jedna miara). Wytłumacz, w czym przewaga jest największa i co to znaczy przed meczem.',
+homeaway:'Karta pokazuje bilans drużyny u siebie i na wyjeździe (W-R-P, bramki) i kolejne mecze z wynikiem z perspektywy drużyny. Wytłumacz kontrast dom/wyjazd.',
+pcmp:'Karta porównuje dwóch zawodników w wybranych miarach (wartości sezonowe lub na 90 minut). Wytłumacz, kto w czym wygrywa i jak to czytać.',
+tcmp:'Karta porównuje dwie drużyny na radarze (wiele miar, im dalej od środka tym lepiej względem ligi). Wytłumacz, w czym drużyny różnią się najbardziej.',
+scat:'Karta to mapa ligi: każda kropka to klub, oś pozioma i pionowa to dwie wybrane miary. Wytłumacz, gdzie jest Widzew, kto jest po przeciwnych stronach i co to oznacza.',
+fact:'Karta to jedna liczba (fakt) z podpisem i dwoma zdaniami kontekstu. Wytłumacz, skąd ta liczba, jak ją policzono i dlaczego jest istotna.'};
+function packCtx(){
+  try{
+    const ft=D.fx.filter(r=>r[9]==='FT'),tb={};
+    D.teams.forEach(([id,f,sh])=>tb[id]={id,sh,m:0,p:0,gf:0,ga:0});
+    ft.forEach(r=>{const h=tb[r[3]],a=tb[r[4]];if(!h||!a)return;h.m++;a.m++;h.gf+=r[5];h.ga+=r[6];a.gf+=r[6];a.ga+=r[5];
+      if(r[5]>r[6])h.p+=3;else if(r[5]<r[6])a.p+=3;else{h.p++;a.p++}});
+    const tt=Object.values(tb).sort((x,y)=>y.p-x.p||(y.gf-y.ga)-(x.gf-x.ga)||y.gf-x.gf);
+    const L=[];
+    const w=tt.findIndex(x=>x.id===WID);
+    if(w>=0)L.push('Widzew w tabeli (liczonej z danych Studio): '+(w+1)+'. miejsce, '+tt[w].p+' pkt w '+tt[w].m+' meczach, bramki '+tt[w].gf+':'+tt[w].ga+'.');
+    L.push('Czołówka: '+tt.slice(0,3).map((x,i)=>(i+1)+'. '+x.sh+' '+x.p+' pkt').join(', ')+'.');
+    const wm=ft.filter(r=>r[3]===WID||r[4]===WID).sort((a,b)=>a[2]<b[2]?-1:1).slice(-5);
+    L.push('Ostatnie mecze Widzewa: '+wm.map(r=>(T[r[3]]||{}).short+' '+r[5]+':'+r[6]+' '+(T[r[4]]||{}).short).join('; ')+'.');
+    const nx=D.upcoming.filter(u=>/Widzew/.test(u[2]+u[3])).sort((a,b)=>a[1]<b[1]?-1:1)[0];
+    if(nx)L.push('Najbliższy mecz Widzewa: '+nx[2]+' – '+nx[3]+', kolejka '+nx[0]+', '+nx[1].replace('T',' ')+' UTC (czas polski +2 h).');
+    return L;
+  }catch(e){return []}
+}
+function packTexts(){
+  try{const d=new DOMParser().parseFromString(S.svg||'','image/svg+xml');
+    const out=[];d.querySelectorAll('text').forEach(n=>{const t=n.textContent.replace(/\s+/g,' ').trim();if(t&&out[out.length-1]!==t)out.push(t)});return out}catch(e){return []}
+}
 function buildPack(){
   const t=$('#pk-txt');if(!t)return;
   const Ty=TYPES[S.type],p=curP(),m=(typeof D!=='undefined'&&D.meta)||{};
-  const bits=[['Tytuł karty',p.title],['Podtytuł',p.sub],['Pasek: mecz',p.date1],['Pasek: termin',p.date2],['Stopka',p.foot]].filter(x=>x[1]);
   const post=($('#post')||{}).value||'';
   const link=(S.pkLink||'').trim();
-  t.value=['ZADANIE: Napisz wpis na X oraz wersję na Facebooka do załączonej karty RTSstat (konto Rozmowy Tylko Sportowe, Widzew Łódź).','',
+  const tx=packTexts();
+  t.value=['ZADANIE',
+  'Opracuj KOMPLETNY wpis na social media (konto Rozmowy Tylko Sportowe, podcast „od kibiców dla kibiców” o Widzewie Łódź) do załączonej grafiki RTSstat. Wpis ma poprawnie komentować i wyjaśniać to, co widać na grafice: co oznacza każda liczba, jak ją czytać, skąd pochodzi i dlaczego jest ciekawa dla kibica.',
+  'Dostarcz: (1) hak do 280 znaków na X z główną liczbą, w 2 wariantach; (2) wątek na X (3–5 postów) tłumaczący grafikę krok po kroku; (3) dłuższą wersję na Facebooka; (4) tekst alternatywny grafiki; (5) pytanie do kibiców na koniec; (6) hasztagi.','',
   'KARTA: '+Ty.name+' ('+(FMT==='v'?'4:5':'16:9')+')',
-  ...bits.map(x=>x[0]+': '+x[1]),
-  'Dane: sezon '+(m.season||'')+', po '+(m.lastRound||'?')+'. kolejce, źródło API-Football (baza ClubFantasy), stan na '+(m.generatedAt||'')+'.','',
-  'SZKIC TEKSTU ZE STUDIO (do przepisania w głosie RTS, liczby tylko z karty):',post,'',
-  'ZASADY GŁOSU RTS: fakt, potem krótka reakcja deadpan, na końcu pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów i zbędnych myślników. Nie komunikujemy newsów, jesteśmy podcastem od kibiców dla kibiców. Nie wymyślaj liczb ani „rekordów ligi” bez danych. Hasztag serii: #RTSstat.',
-  'Jeśli post odsyła do podcastu: '+(link?'dodaj link do audycji na YouTube: '+link:'dodaj link do audycji na YouTube (podaj link live)')+'.',
-  'Dołącz kartę PNG 4:5 do posta (Studio: Pobierz PNG).'].join('\n');
+  'JAK CZYTAĆ KARTĘ: '+(PACKNOTE[S.type]||''),'',
+  'ZAWARTOŚĆ GRAFIKI (wszystkie napisy z karty, w kolejności):',
+  tx.map(x=>'- '+x).join('\n')||'(brak)','',
+  'DANE: sezon '+(m.season||'')+', stan po '+(m.lastRound||'?')+'. kolejce, źródło API-Football (baza ClubFantasy), generowane '+(m.generatedAt||'')+'. Liczby wyłącznie z grafiki i z kontekstu poniżej.','',
+  'KONTEKST LIGOWY:',
+  packCtx().map(x=>'- '+x).join('\n'),'',
+  'SZKIC TEKSTU ZE STUDIO (punkt wyjścia, do znacznego rozwinięcia):',post,'',
+  'ZASADY GŁOSU RTS: kolejność fakt, krótka reakcja deadpan, pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów, bez zbędnych myślników. Nie jesteśmy kontem newsowym, tylko podcastem. Nie wymyślaj liczb, „rekordów ligi” ani przyczyn spoza danych; jeśli czegoś nie ma w danych, napisz to wprost albo pomiń. Hasztag serii: #RTSstat.',
+  'Jeśli wpis odsyła do podcastu: '+(link?'dodaj link do audycji na YouTube: '+link:'dodaj link do audycji na YouTube (podam link live)')+'.',
+  'Do wpisu dołączona jest karta PNG '+(FMT==='v'?'4:5':'16:9')+'.'].join('\n');
 }
 function buildFmt(){
   const b=$('#fmt');if(!b)return;b.innerHTML='';
