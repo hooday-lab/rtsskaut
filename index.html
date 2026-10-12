@@ -193,7 +193,7 @@ function shell(inner,bg){
 }
 function header(p){
   let s='';const x=104,maxW=1290;
-  s+=`<rect x="${x}" y="88" width="40" height="6" fill="#fff"/>`+tx(x+54,98,'#RTSstat · '+(p.tag||''),{size:30,fam:'BC',w:800,ls:4,up:true});
+  s+=`<rect x="${x}" y="88" width="40" height="6" fill="#fff"/>`+tx(x+54,98,'RTS-Stats · '+(p.tag||''),{size:30,fam:'BC',w:800,ls:4,up:true});
   const title=String(p.title||'').toUpperCase();
   let size=96,lines=[title];
   while(size>60&&mw(title,size,'BC',800)>maxW)size-=4;
@@ -213,11 +213,11 @@ function header(p){
     if(p.date2)s+=tx(cx,top+41,p.date2,{size:28,fam:'BA',w:600,fill:C.pale});
     by=top+60;
   }
-  return {svg:`<g filter="url(#sh)">${s}</g>`,bottom:by};
+  return {svg:`<g filter="url(#sh)" transform="translate(0,7)">${s}</g>`,bottom:by};
 }
 function headerV(p){
   let s='';const x=80,maxW=920;
-  s+=`<rect x="${x}" y="276" width="40" height="6" fill="#fff"/>`+tx(x+54,288,'#RTSstat · '+(p.tag||''),{size:28,fam:'BC',w:800,ls:4,up:true});
+  s+=`<rect x="${x}" y="276" width="40" height="6" fill="#fff"/>`+tx(x+54,288,'RTS-Stats · '+(p.tag||''),{size:28,fam:'BC',w:800,ls:4,up:true});
   const title=String(p.title||'').toUpperCase();
   let size=88,lines=wrap(title,maxW,size,'BC',800);
   while(lines.length>2&&size>56){size-=4;lines=wrap(title,maxW,size,'BC',800)}
@@ -237,7 +237,7 @@ function headerV(p){
     if(p.date2)s+=tx(cx,top+37,p.date2,{size:26,fam:'BA',w:600,fill:C.pale});
     by=top+56;
   }
-  return {svg:`<g filter="url(#sh)">${s}</g>`,bottom:by};
+  return {svg:`<g filter="url(#sh)" transform="translate(0,7)">${s}</g>`,bottom:by};
 }
 function footerV(p){const L=wrap(p.foot||'',920,20,'BA',400).slice(0,2);return `<g filter="url(#sh)">`+L.map((l,i)=>tx(80,1260+i*26,l,{size:20,fam:'BA',w:400,fill:'#e9cfd0'})).join('')+`</g>`}
 function footer(p){return `<g filter="url(#sh)">${tx(104,1002,p.foot||'',{size:22,fam:'BA',w:400,fill:'#e9cfd0'})}</g>`}
@@ -770,7 +770,7 @@ const fact={
   sugg(){return facts()},
   svg(p,bg){if(isV())return this.svgV(p,bg);
     let s='';
-    s+=`<g filter="url(#sh)"><rect x="104" y="88" width="40" height="6" fill="#fff"/>`+tx(158,100,'#RTSstat · '+(p.tag||'Liczba'),{size:30,fam:'BC',w:800,ls:4,up:true});
+    s+=`<g filter="url(#sh)"><rect x="104" y="95" width="40" height="6" fill="#fff"/>`+tx(158,107,'RTS-Stats · '+(p.tag||'Liczba'),{size:30,fam:'BC',w:800,ls:4,up:true});
     const big=String(p.big||''),fs=Math.min(520,Math.max(160,1500/Math.max(big.length,1)*1.15));
     const bw=mw(big,fs,'BC',800);
     s+=tx(104,700,big,{size:fs,fam:'BC',w:800});
@@ -784,7 +784,7 @@ const fact={
   },
   svgV(p,bg){
     let s='';
-    s+=`<g filter="url(#sh)"><rect x="80" y="276" width="40" height="6" fill="#fff"/>`+tx(134,288,'#RTSstat · '+(p.tag||'Liczba'),{size:28,fam:'BC',w:800,ls:4,up:true});
+    s+=`<g filter="url(#sh)"><rect x="80" y="283" width="40" height="6" fill="#fff"/>`+tx(134,295,'RTS-Stats · '+(p.tag||'Liczba'),{size:28,fam:'BC',w:800,ls:4,up:true});
     const big=String(p.big||'');let fs=460;while(fs>140&&mw(big,fs,'BC',800)>920)fs-=10;
     const by=340+fs*.78;
     s+=tx(80,by,big,{size:fs,fam:'BC',w:800});
