@@ -1211,12 +1211,31 @@ function renderWork(){
   v.innerHTML=`<div class="work"><div class="ctl" id="ctl"></div><div class="pvcol"><div class="fmt" id="fmt"></div><div class="frame" id="frame"><img id="pv" alt="Podgląd karty"></div>
   <div class="actions"><button class="btn pri" id="dl">Pobierz PNG</button><span class="msg" id="dlmsg"></span></div>
   <div class="card-box"><div class="sec">Tekst posta (do edycji)</div><textarea id="post"></textarea>
-  <div class="actions"><button class="btn sm" id="cp">Kopiuj tekst</button><button class="btn sm" id="rp">Odśwież z karty</button><span class="msg" id="cpmsg"></span></div></div></div></div>`;
+  <div class="actions"><button class="btn sm" id="cp">Kopiuj tekst</button><button class="btn sm" id="rp">Odśwież z karty</button><span class="msg" id="cpmsg"></span></div></div>
+  <div class="card-box"><div class="sec">Pakiet dla komunikacji (prompt do posta)</div><label class="f">Link do live na YouTube (opcjonalnie)<input type="text" id="pk-link" placeholder="https://youtu.be/..."></label><textarea id="pk-txt" readonly style="min-height:150px"></textarea>
+  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div></div>`;
   buildFmt();buildCtl();$('#dl').onclick=doDownload;
-  $('#post').oninput=()=>{S.postEd=true};
+  $('#post').oninput=()=>{S.postEd=true;buildPack()};
   $('#cp').onclick=async()=>{const t=$('#post');try{await navigator.clipboard.writeText(t.value);$('#cpmsg').textContent='Skopiowano';$('#cpmsg').className='msg ok'}catch(e){t.select();$('#cpmsg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#cpmsg').className='msg'}};
   $('#rp').onclick=()=>{S.postEd=false;refresh(true)};
+  $('#pk-link').value=S.pkLink||'';$('#pk-link').oninput=()=>{S.pkLink=$('#pk-link').value;buildPack()};
+  $('#pk-cp').onclick=async()=>{buildPack();const t=$('#pk-txt');try{await navigator.clipboard.writeText(t.value);$('#pk-msg').textContent='Skopiowano. Wklej w czat komunikacji razem z kartą PNG.';$('#pk-msg').className='msg ok'}catch(e){t.select();$('#pk-msg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#pk-msg').className='msg'}};
   refresh(true);
+}
+function buildPack(){
+  const t=$('#pk-txt');if(!t)return;
+  const Ty=TYPES[S.type],p=curP(),m=(typeof D!=='undefined'&&D.meta)||{};
+  const bits=[['Tytuł karty',p.title],['Podtytuł',p.sub],['Pasek: mecz',p.date1],['Pasek: termin',p.date2],['Stopka',p.foot]].filter(x=>x[1]);
+  const post=($('#post')||{}).value||'';
+  const link=(S.pkLink||'').trim();
+  t.value=['ZADANIE: Napisz wpis na X oraz wersję na Facebooka do załączonej karty RTSstat (konto Rozmowy Tylko Sportowe, Widzew Łódź).','',
+  'KARTA: '+Ty.name+' ('+(FMT==='v'?'4:5':'16:9')+')',
+  ...bits.map(x=>x[0]+': '+x[1]),
+  'Dane: sezon '+(m.season||'')+', po '+(m.lastRound||'?')+'. kolejce, źródło API-Football (baza ClubFantasy), stan na '+(m.generatedAt||'')+'.','',
+  'SZKIC TEKSTU ZE STUDIO (do przepisania w głosie RTS, liczby tylko z karty):',post,'',
+  'ZASADY GŁOSU RTS: fakt, potem krótka reakcja deadpan, na końcu pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów i zbędnych myślników. Nie komunikujemy newsów, jesteśmy podcastem od kibiców dla kibiców. Nie wymyślaj liczb ani „rekordów ligi” bez danych. Hasztag serii: #RTSstat.',
+  'Jeśli post odsyła do podcastu: '+(link?'dodaj link do audycji na YouTube: '+link:'dodaj link do audycji na YouTube (podaj link live)')+'.',
+  'Dołącz kartę PNG 4:5 do posta (Studio: Pobierz PNG).'].join('\n');
 }
 function buildFmt(){
   const b=$('#fmt');if(!b)return;b.innerHTML='';
@@ -1265,7 +1284,7 @@ async function draw(){
   try{svg=Ty.svg(p,bgData)}catch(e){console.error(e);return}
   S.svg=svg;const fr=$('#frame');if(fr)fr.classList.toggle('v',isV());
   const u=await svgToUrl(svg);const old=S.url;S.url=u;const im=$('#pv');if(im)im.src=u;if(old)setTimeout(()=>URL.revokeObjectURL(old),2000);
-  if(!S.postEd){const t=$('#post');if(t)t.value=Ty.post(p)}
+  if(!S.postEd){const t=$('#post');if(t)t.value=Ty.post(p)};buildPack()
 }
 async function toPng(svg){
   const u=await svgToUrl(svg);
