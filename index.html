@@ -23,6 +23,8 @@ h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;text
 .ctl,.card-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .pvcol{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:8px}
 @media (max-width:860px){.pvcol{position:static}}
+.mob-only{display:none}
+.card-box>.sec{display:flex;justify-content:space-between;align-items:center}
 .frame{background:#000;border-radius:8px;overflow:hidden;aspect-ratio:16/9;width:100%;border:1px solid var(--line)}
 .frame img{display:block;width:100%;height:100%}
 .frame.v{aspect-ratio:4/5;max-width:min(100%,480px);margin:0 auto}
@@ -56,6 +58,48 @@ table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid va
 .code{font:700 15px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
 .admin{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
 .mini{width:100%;max-width:360px;aspect-ratio:16/9;border:1px solid var(--line);border-radius:6px;object-fit:cover;background:#000}
+@media (max-width:640px){
+body{padding-inline:12px;padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+.top{padding-block:10px;margin-bottom:0;border-bottom-width:2px;flex-wrap:nowrap}
+.brand{font-size:21px}
+.who{font-size:12px;gap:6px;min-width:0}
+.who span:first-child{display:none}
+.who .btn.sm{min-height:36px}
+.tabs{flex-wrap:nowrap;overflow-x:auto;position:sticky;top:0;z-index:30;background:var(--bg);margin:0 -12px 10px;padding:8px 12px;scrollbar-width:none;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;min-height:44px;white-space:nowrap;padding:8px 14px}
+.work{display:flex;flex-direction:column;gap:12px;width:100%;min-width:0}
+.work>*,.ctl,.pkgrid,.card-box{min-width:0;max-width:100%;width:100%}
+.ctl{overflow:hidden}
+.pvcol{display:contents}
+#fmt{order:1}
+#fmt .btn{flex:1;min-height:44px;font-size:14px;white-space:nowrap;padding-inline:8px}
+#frame{order:2;position:sticky;top:62px;z-index:20;box-shadow:0 6px 14px rgba(0,0,0,.25)}
+#frame.v{width:auto;height:38vh;max-width:100%;align-self:center}
+#frame{width:100%}
+#ctl{order:4}
+.pkgrid{order:5;display:flex!important;flex-direction:column;gap:12px}
+.dlbar{order:3}
+.dlbar:not(.fixedbar){display:flex}
+.dlbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--panel);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));flex-wrap:nowrap;box-shadow:0 -6px 16px rgba(0,0,0,.2)}
+.dlbar .btn{flex:1;min-height:48px;font-size:16px}
+.dlbar .msg{display:none}
+.mob-only{display:inline-block}
+input[type=text],input[type=number],select,textarea{font-size:16px;min-height:46px;padding:10px 12px}
+textarea{min-height:120px}
+.btn{min-height:44px}
+.btn.sm{min-height:44px;padding:8px 14px;font-size:14px}
+.ctl,.card-box{padding:14px;border-radius:12px}
+.chips{flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:6px;scroll-snap-type:x proximity;max-height:none!important;overflow-y:hidden!important;scrollbar-width:thin}
+.chip{flex:0 0 min(240px,72vw);scroll-snap-align:start;min-height:56px}
+.checks label{min-height:40px;font-size:15px}
+.card-box>.sec{min-height:44px;cursor:pointer;margin:-6px 0}
+.card-box>.sec::after{content:"▾";font-size:18px;transition:transform .15s}
+.card-box.col>.sec::after{transform:rotate(-90deg)}
+.card-box.col>*:not(.sec){display:none}
+.card-box.col{gap:0}
+.admin{grid-template-columns:minmax(0,1fr)}
+}
 </style></head><body>
 <div class="wrap">
 <header class="top"><div class="brand">RTS<b>stat</b> Studio</div><div class="who" id="who"></div></header>
@@ -1199,8 +1243,9 @@ function renderTabs(){
   const nav=$('#tabs');nav.innerHTML='';
   TKEYS.filter(k=>isAdmin||SET.cards[k]!==false).forEach(k=>{
     const b=el(`<button class="tab" role="tab" aria-selected="${S.type===k}">${esc(TYPES[k].name)}</button>`);
-    b.onclick=()=>{S.type=k;S.postEd=false;renderTabs();renderWork()};nav.appendChild(b);
+    b.onclick=()=>{S.type=k;S.postEd=false;renderTabs();renderWork();window.scrollTo({top:0})};nav.appendChild(b);
   });
+  setTimeout(()=>{const a=nav.querySelector('[aria-selected="true"]');if(a)nav.scrollLeft=a.offsetLeft-24},0);
   if(isAdmin){const b=el(`<button class="tab" role="tab" aria-selected="${S.type==='admin'}">Admin</button>`);b.onclick=()=>{S.type='admin';renderTabs();renderAdmin()};nav.appendChild(b)}
 }
 function curP(){return S.p[S.type]||(S.p[S.type]=TYPES[S.type].init())}
@@ -1209,7 +1254,7 @@ function renderWork(){
   const Ty=TYPES[S.type],p=curP();
   const v=$('#view');
   v.innerHTML=`<div class="work"><div class="ctl" id="ctl"></div><div class="pvcol"><div class="fmt" id="fmt"></div><div class="frame" id="frame"><img id="pv" alt="Podgląd karty"></div>
-  <div class="actions"><button class="btn pri" id="dl">Pobierz PNG</button><span class="msg" id="dlmsg"></span></div>
+  <div class="actions dlbar"><button class="btn pri" id="dl">Pobierz PNG</button><button class="btn mob-only" id="pkbar">Kopiuj pakiet</button><span class="msg" id="dlmsg"></span></div>
   <div class="pkgrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start"><div class="card-box"><div class="sec">Tekst posta (do edycji)</div><textarea id="post"></textarea>
   <div class="actions"><button class="btn sm" id="cp">Kopiuj tekst</button><button class="btn sm" id="rp">Odśwież z karty</button><span class="msg" id="cpmsg"></span></div></div>
   <div class="card-box"><div class="sec">Pakiet dla komunikacji (prompt do posta)</div><label class="f">Link do live na YouTube (opcjonalnie)<input type="text" id="pk-link" placeholder="https://youtu.be/..."></label><textarea id="pk-txt" readonly style="min-height:260px"></textarea>
@@ -1218,6 +1263,9 @@ function renderWork(){
   $('#post').oninput=()=>{S.postEd=true;buildPack()};
   $('#cp').onclick=async()=>{const t=$('#post');try{await navigator.clipboard.writeText(t.value);$('#cpmsg').textContent='Skopiowano';$('#cpmsg').className='msg ok'}catch(e){t.select();$('#cpmsg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#cpmsg').className='msg'}};
   $('#rp').onclick=()=>{S.postEd=false;refresh(true)};
+  const mq=window.matchMedia('(max-width:640px)');
+  document.querySelectorAll('.pkgrid .card-box').forEach(bx=>{const h=bx.querySelector('.sec');if(mq.matches)bx.classList.add('col');h.onclick=()=>bx.classList.toggle('col')});
+  $('#pkbar').onclick=async()=>{buildPack();const t=$('#pk-txt');try{await navigator.clipboard.writeText(t.value);$('#pkbar').textContent='Skopiowano ✓'}catch(e){document.querySelector('.pkgrid .card-box:last-child').classList.remove('col');t.select()}setTimeout(()=>{const b=$('#pkbar');if(b)b.textContent='Kopiuj pakiet'},2000)};
   $('#pk-link').value=S.pkLink||'';$('#pk-link').oninput=()=>{S.pkLink=$('#pk-link').value;buildPack()};
   $('#pk-cp').onclick=async()=>{buildPack();const t=$('#pk-txt');try{await navigator.clipboard.writeText(t.value);$('#pk-msg').textContent='Skopiowano. Wklej w czat komunikacji razem z kartą PNG.';$('#pk-msg').className='msg ok'}catch(e){t.select();$('#pk-msg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#pk-msg').className='msg'}};
   refresh(true);
