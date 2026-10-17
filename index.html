@@ -426,7 +426,7 @@ function headerV(p){
 }
 function footerV(p){const L=wrap(p.foot||'',920,20,'BA',400).slice(0,2);return `<g filter="url(#sh)">`+L.map((l,i)=>tx(80,1260+i*26,l,{size:20,fam:'BA',w:400,fill:'#e9cfd0'})).join('')+`</g>`}
 function footer(p){return `<g filter="url(#sh)">${tx(104,1002,p.foot||'',{size:22,fam:'BA',w:400,fill:'#e9cfd0'})}</g>`}
-function defFoot(extra){return `#RTSstat · stan po ${lastRound}. kolejce Ekstraklasy ${D.meta.season} · dane: API-Football`+(extra?' · '+extra:'')}
+function defFoot(extra){return `#RTSstats · stan po ${lastRound}. kolejce Ekstraklasy ${D.meta.season} · dane: API-Football`+(extra?' · '+extra:'')}
 
 /* --- rival --- */
 const RM={
@@ -555,7 +555,7 @@ const rival={
     s+=tx(lx,ly,'pasek = barwy rywala',{size:22,fam:'BA',w:600,fill:'#f1dede'})+`</g>`;
     return shell(s+footerV(p),bg);
   },
-  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Która z tych liczb mówi Wam najwięcej o Widzewie? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Która z tych liczb mówi Wam najwięcej o Widzewie? 👇'}\n#RTSstats #Widzew`}
 };
 
 /* --- mecz --- */
@@ -649,7 +649,7 @@ const matchT={
     });
     return shell(s+footerV(p),bg);
   },
-  post(p){const f=fxById[p.fid];return `${p.title}.\n\n${p.sub}\n\n${p.q||'Co z tego meczu zostaje Wam w głowie? 👇'}\n#RTSstat #Widzew`}
+  post(p){const f=fxById[p.fid];return `${p.title}.\n\n${p.sub}\n\n${p.q||'Co z tego meczu zostaje Wam w głowie? 👇'}\n#RTSstats #Widzew`}
 };
 
 /* --- zawodnik --- */
@@ -734,7 +734,7 @@ const player={
     });
     return shell(s+footerV(p),bg);
   },
-  post(p){const r=PI[p.pid];return `${r[1]}.\n\n${p.sub}\n\n${p.q||'Która z tych liczb robi na Was największe wrażenie? 👇'}\n#RTSstat #Widzew`}
+  post(p){const r=PI[p.pid];return `${r[1]}.\n\n${p.sub}\n\n${p.q||'Która z tych liczb robi na Was największe wrażenie? 👇'}\n#RTSstats #Widzew`}
 };
 
 /* --- porównanie --- */
@@ -782,7 +782,7 @@ const cmp={
     });
     return shell(s+footerV(p),bg);
   },
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Czyja to będzie historia? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Czyja to będzie historia? 👇'}\n#RTSstats #Widzew`}
 };
 
 /* --- własna liczba + kopalnia faktów --- */
@@ -980,7 +980,7 @@ const fact={
     s+='</g>';
     return shell(s+footerV(p),bg);
   },
-  post(p){return `${p.big} – ${p.label}.\n\n${[p.l1,p.l2].filter(Boolean).join(' ')}${p.q?'\n\n'+p.q:''}\n\n#RTSstat #Widzew`}
+  post(p){return `${p.big} – ${p.label}.\n\n${[p.l1,p.l2].filter(Boolean).join(' ')}${p.q?'\n\n'+p.q:''}\n\n#RTSstats #Widzew`}
 };
 
 /* ================= Wyscout-style: radar zawodników, radar klubów, mapa ligi ================= */
@@ -1108,7 +1108,7 @@ const pcmp={
   },
   svg(p,bg){return radarCard(p,this.cfg(p),bg)},
   svgV(p,bg){return radarCard(p,this.cfg(p),bg)},
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z nich jest dla Was lepszy? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z nich jest dla Was lepszy? 👇'}\n#RTSstats #Widzew`}
 };
 function pcmpSuggestions(p){
   const g=posG(p.pa),pa=PI[p.pa],la=lastN(pa[1]),pool=POOL(g),out=[];
@@ -1186,7 +1186,7 @@ const tcmp={
   },
   svg(p,bg){return radarCard(p,this.cfg(p),bg)},
   svgV(p,bg){return radarCard(p,this.cfg(p),bg)},
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z tych profili Wam bardziej odpowiada? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z tych profili Wam bardziej odpowiada? 👇'}\n#RTSstats #Widzew`}
 };
 function tcmpSuggestions(p){
   const a=p.a,A=sn(a),out=[],ks=TDEF;
@@ -1284,7 +1284,7 @@ const scat={
   },
   svg(p,bg){return scatSvg(p,bg)},
   svgV(p,bg){return scatSvg(p,bg)},
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Gdzie na tej mapie widzicie Widzew za miesiąc? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Gdzie na tej mapie widzicie Widzew za miesiąc? 👇'}\n#RTSstats #Widzew`}
 };
 
 /* --- dom i wyjazd --- */
@@ -1365,7 +1365,7 @@ const ha={
     o+=tx(lx,ly,'wynik z perspektywy drużyny · pasek = barwy rywala',{size:fs,fam:'BA',w:600,fill:'#f1dede'})+`</g>`;
     return shell(o+(V?footerV(p):footer(p)),bg);
   },
-  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSstats #Widzew`}
 };
 
 const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact};
@@ -1511,7 +1511,7 @@ function buildPack(){
   'KONTEKST LIGOWY:',
   packCtx().map(x=>'- '+x).join('\n'),'',
   'SZKIC TEKSTU ZE STUDIO (punkt wyjścia, do znacznego rozwinięcia):',post,'',
-  'ZASADY GŁOSU RTS: kolejność fakt, krótka reakcja deadpan, pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów, bez zbędnych myślników. Nie jesteśmy kontem newsowym, tylko podcastem. Nie zadawaj pytań o typowanie wyniku. Nie wymyślaj liczb, „rekordów ligi” ani przyczyn spoza danych; jeśli czegoś nie ma w danych, napisz to wprost albo pomiń. Hasztag serii: #RTSstat.',
+  'ZASADY GŁOSU RTS: kolejność fakt, krótka reakcja deadpan, pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów, bez zbędnych myślników. Nie jesteśmy kontem newsowym, tylko podcastem. Nie zadawaj pytań o typowanie wyniku. Nie wymyślaj liczb, „rekordów ligi” ani przyczyn spoza danych; jeśli czegoś nie ma w danych, napisz to wprost albo pomiń. Hasztag serii: #RTSstats.',
   'Jeśli wpis odsyła do podcastu: '+(link?'dodaj link do audycji na YouTube: '+link:'dodaj link do audycji na YouTube (podam link live)')+'.',
   'Do wpisu dołączona jest karta PNG '+(FMT==='v'?'4:5':'16:9')+'.'].join('\n');
 }
@@ -1612,7 +1612,7 @@ async function renderAdmin(){
     try{await fs.doc('members/'+em).set({role:$('#m-role').value,addedBy:ctx.email,addedAt:new Date().toISOString()});$('#m-email').value='';m.textContent='Dodano '+em;m.className='msg ok';loadMembers()}
     catch(e){m.textContent='Błąd zapisu ('+(e.code||e.message)+')';m.className='msg err'}
   };
-  $('#m-copy').onclick=async()=>{const t=`Cześć! Mamy w Rozmowach Tylko Sportowych narzędzie do robienia kart ze statystykami (#RTSstat): ${siteUrl()}\nWejdź, kliknij „Zaloguj przez Google" i wybierz konto, którego adres mi podałeś/aś. Jeśli nie wpuszcza, napisz do mnie.`;
+  $('#m-copy').onclick=async()=>{const t=`Cześć! Mamy w Rozmowach Tylko Sportowych narzędzie do robienia kart ze statystykami (#RTSstats): ${siteUrl()}\nWejdź, kliknij „Zaloguj przez Google" i wybierz konto, którego adres mi podałeś/aś. Jeśli nie wpuszcza, napisz do mnie.`;
     try{await navigator.clipboard.writeText(t);$('#m-copymsg').textContent=' Skopiowano'}catch(e){$('#m-copymsg').textContent=' Nie udało się skopiować – zaznacz ręcznie'}};
   $('#bgf').onchange=async e=>{
     const f=e.target.files[0];if(!f)return;const m=$('#bg-msg');m.className='msg';
