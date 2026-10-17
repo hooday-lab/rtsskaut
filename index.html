@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RTSstat Studio</title>
+<title>RTS Stats Studio</title>
 <script>try{var t=localStorage.getItem('rts-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
-<link rel="icon" type="image/png" href="brand/favicon.png"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png"><link rel="manifest" href="brand/manifest.webmanifest"><meta name="theme-color" content="#D91E25"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RTSstat">
+<link rel="icon" type="image/png" href="brand/favicon.png"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png"><link rel="manifest" href="brand/manifest.webmanifest"><meta name="theme-color" content="#D91E25"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RTS Stats">
 <style>
 :root{--bg:#F5F3F0;--panel:#FFFFFF;--ink:#17181B;--mute:#6A6D75;--line:#DAD6D0;--red:#D91E25;--red-ink:#FFFFFF;--soft:#EDE9E4;--ok:#1E7A46}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;color-scheme:dark}}
@@ -227,10 +227,10 @@ body.inapp #topbar0{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body>
 <div class="wrap">
-<header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS<b>stat</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
+<header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS <b>Stats</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
 <div id="boot" class="bootlogo"><img src="brand/logo-gold-light.png" alt=""><span class="msg">Ładuję Studio…</span></div>
 <section id="gate" class="gate" hidden>
-  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTSstat Studio</h2><p>Miejsce, w którym Rozmowy Tylko Sportowe robią statystyki i plansze do programu.</p></div>
+  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Stats Studio</h2><p>Miejsce, w którym Rozmowy Tylko Sportowe robią statystyki i plansze do programu.</p></div>
   <p class="msg" style="text-align:center">Zaloguj się kontem Google. Wejdą tylko adresy z listy ekipy.</p>
   <div class="actions"><button class="btn pri" id="g-go">Zaloguj przez Google</button></div>
   <div class="msg" id="g-msg"></div>
@@ -253,7 +253,7 @@ body.inapp #topbar0{display:none}
 <section id="studio" hidden>
  <div class="app">
   <aside class="side" id="side" aria-label="Nawigacja">
-   <div class="sb-brand"><img src="brand/logo-white.png" alt="" width="46" height="46"><div><span class="sb-n">RTS<b>stat</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div><button class="sb-x" id="sb-x" aria-label="Zamknij menu">&times;</button></div>
+   <div class="sb-brand"><img src="brand/logo-white.png" alt="" width="46" height="46"><div><span class="sb-n">RTS <b>Stats</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div><button class="sb-x" id="sb-x" aria-label="Zamknij menu">&times;</button></div>
    <nav class="nav" id="nav" aria-label="Typy kart"></nav>
    <div class="sb-foot">
     <div class="sb-who" id="sbwho"></div>
@@ -378,7 +378,7 @@ function shell(inner,bg){
 }
 function header(p){
   let s='';const x=104,maxW=1290;
-  s+=`<rect x="${x}" y="88" width="40" height="6" fill="#fff"/>`+tx(x+54,98,'RTS-Stats · '+(p.tag||''),{size:30,fam:'BC',w:800,ls:4,up:true});
+  s+=`<rect x="${x}" y="88" width="40" height="6" fill="#fff"/>`+tx(x+54,98,'RTS Stats · '+(p.tag||''),{size:30,fam:'BC',w:800,ls:4,up:true});
   const title=String(p.title||'').toUpperCase();
   let size=96,lines=[title];
   while(size>60&&mw(title,size,'BC',800)>maxW)size-=4;
@@ -402,7 +402,7 @@ function header(p){
 }
 function headerV(p){
   let s='';const x=80,maxW=920;
-  s+=`<rect x="${x}" y="276" width="40" height="6" fill="#fff"/>`+tx(x+54,288,'RTS-Stats · '+(p.tag||''),{size:28,fam:'BC',w:800,ls:4,up:true});
+  s+=`<rect x="${x}" y="276" width="40" height="6" fill="#fff"/>`+tx(x+54,288,'RTS Stats · '+(p.tag||''),{size:28,fam:'BC',w:800,ls:4,up:true});
   const title=String(p.title||'').toUpperCase();
   let size=88,lines=wrap(title,maxW,size,'BC',800);
   while(lines.length>2&&size>56){size-=4;lines=wrap(title,maxW,size,'BC',800)}
@@ -955,7 +955,7 @@ const fact={
   sugg(){return facts()},
   svg(p,bg){if(isV())return this.svgV(p,bg);
     let s='';
-    s+=`<g filter="url(#sh)"><rect x="104" y="95" width="40" height="6" fill="#fff"/>`+tx(158,107,'RTS-Stats · '+(p.tag||'Liczba'),{size:30,fam:'BC',w:800,ls:4,up:true});
+    s+=`<g filter="url(#sh)"><rect x="104" y="95" width="40" height="6" fill="#fff"/>`+tx(158,107,'RTS Stats · '+(p.tag||'Liczba'),{size:30,fam:'BC',w:800,ls:4,up:true});
     const big=String(p.big||''),fs=Math.min(520,Math.max(160,1500/Math.max(big.length,1)*1.15));
     const bw=mw(big,fs,'BC',800);
     s+=tx(104,700,big,{size:fs,fam:'BC',w:800});
@@ -969,7 +969,7 @@ const fact={
   },
   svgV(p,bg){
     let s='';
-    s+=`<g filter="url(#sh)"><rect x="80" y="283" width="40" height="6" fill="#fff"/>`+tx(134,295,'RTS-Stats · '+(p.tag||'Liczba'),{size:28,fam:'BC',w:800,ls:4,up:true});
+    s+=`<g filter="url(#sh)"><rect x="80" y="283" width="40" height="6" fill="#fff"/>`+tx(134,295,'RTS Stats · '+(p.tag||'Liczba'),{size:28,fam:'BC',w:800,ls:4,up:true});
     const big=String(p.big||'');let fs=460;while(fs>140&&mw(big,fs,'BC',800)>920)fs-=10;
     const by=340+fs*.78;
     s+=tx(80,by,big,{size:fs,fam:'BC',w:800});
@@ -1501,7 +1501,7 @@ function buildPack(){
   const link=(S.pkLink||'').trim();
   const tx=packTexts();
   t.value=['ZADANIE',
-  'Opracuj KOMPLETNY wpis na social media (konto Rozmowy Tylko Sportowe, podcast „od kibiców dla kibiców” o Widzewie Łódź) do załączonej grafiki RTSstat. Wpis ma poprawnie komentować i wyjaśniać to, co widać na grafice: co oznacza każda liczba, jak ją czytać, skąd pochodzi i dlaczego jest ciekawa dla kibica.',
+  'Opracuj KOMPLETNY wpis na social media (konto Rozmowy Tylko Sportowe, podcast „od kibiców dla kibiców” o Widzewie Łódź) do załączonej grafiki RTS Stats. Wpis ma poprawnie komentować i wyjaśniać to, co widać na grafice: co oznacza każda liczba, jak ją czytać, skąd pochodzi i dlaczego jest ciekawa dla kibica.',
   'Dostarcz: (1) hak do 280 znaków na X z główną liczbą, w 2 wariantach; (2) wątek na X (3–5 postów) tłumaczący grafikę krok po kroku; (3) dłuższą wersję na Facebooka; (4) tekst alternatywny grafiki; (5) pytanie do kibiców na koniec; (6) hasztagi.','',
   'KARTA: '+Ty.name+' ('+(FMT==='v'?'4:5':'16:9')+')',
   'JAK CZYTAĆ KARTĘ: '+(PACKNOTE[S.type]||''),'',
@@ -1578,7 +1578,7 @@ async function doDownload(){
     $('#dl').disabled=true;m.textContent='Przygotowuję PNG…';
     const blob=await toPng(S.svg);
     const slug=(curP().title||S.type).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50)||'karta';
-    saveBlob(`RTSstat-${slug}${isV()?'-pion':''}.png`,blob);
+    saveBlob(`RTS-Stats-${slug}${isV()?'-pion':''}.png`,blob);
     m.textContent='Zapisano.';m.className='msg ok';
   }catch(e){m.textContent=e&&e.code==='declined'?'Anulowano.':'Nie udało się zapisać pliku ('+(e&&e.code||e&&e.message||'błąd')+').';m.className='msg err'}
   finally{$('#dl').disabled=false}
