@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>RTSstat Studio</title>
+<link rel="icon" type="image/png" href="brand/favicon.png"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png"><link rel="manifest" href="brand/manifest.webmanifest"><meta name="theme-color" content="#D91E25"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RTSstat">
 <style>
 :root{--bg:#F5F3F0;--panel:#FFFFFF;--ink:#17181B;--mute:#6A6D75;--line:#DAD6D0;--red:#D91E25;--red-ink:#FFFFFF;--soft:#EDE9E4;--ok:#1E7A46}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;color-scheme:dark}}
@@ -12,6 +13,24 @@ h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;text
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;border-bottom:3px solid var(--red);margin-bottom:16px;flex-wrap:wrap}
 .brand{font:800 26px/1 'Barlow Condensed','Arial Narrow',sans-serif;letter-spacing:.06em;text-transform:uppercase}
 .brand b{color:var(--red)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-logo{width:48px;height:48px;border-radius:50%;background:var(--red);padding:3px;flex:none;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px #D4B950}
+.brand-t{display:flex;flex-direction:column;gap:3px;white-space:nowrap;min-width:0}
+.brand-n{display:block}
+.brand-t small{font:600 11px/1 'Barlow',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#B89B35}
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:26px 16px 22px;border-radius:16px;background:radial-gradient(120% 90% at 50% 0%,#B3171E 0%,#7C0E14 55%,#2A0A0D 100%);color:#fff;border:1px solid #4a1418;box-shadow:0 14px 40px rgba(120,10,16,.35)}
+.hero img{width:min(220px,58vw);height:auto;filter:drop-shadow(0 6px 18px rgba(0,0,0,.45))}
+.hero .gold{font:800 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#D4B950}
+.hero h2{font-size:38px;line-height:1}
+.hero p{margin:0;color:#f3d9da;max-width:30ch}
+.hero.sm img{width:min(120px,36vw)}
+.bootlogo{display:flex;flex-direction:column;align-items:center;gap:14px;padding:70px 0;color:var(--mute)}
+.bootlogo img{width:96px;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45;transform:scale(.96)}}
+@media (prefers-reduced-motion:reduce){.bootlogo img{animation:none}}
+.who .badge{background:var(--red)}
+.gate .actions{justify-content:center}
+
 .who{display:flex;gap:10px;align-items:center;color:var(--mute);font-size:14px}
 .badge{background:var(--red);color:var(--red-ink);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:4px}
 .wrap{max-width:1280px;margin-inline:auto}
@@ -59,6 +78,7 @@ table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid va
 .admin{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px}
 .mini{width:100%;max-width:360px;aspect-ratio:16/9;border:1px solid var(--line);border-radius:6px;object-fit:cover;background:#000}
 @media (max-width:640px){
+.brand-logo{width:40px;height:40px}.brand-t small{display:none}
 body{padding-inline:12px;padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
 .top{padding-block:10px;margin-bottom:0;border-bottom-width:2px;flex-wrap:nowrap}
 .brand{font-size:21px}
@@ -102,15 +122,16 @@ textarea{min-height:120px}
 }
 </style></head><body>
 <div class="wrap">
-<header class="top"><div class="brand">RTS<b>stat</b> Studio</div><div class="who" id="who"></div></header>
-<div id="boot" class="msg">Ładuję…</div>
+<header class="top"><div class="brand"><img class="brand-logo" src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS<b>stat</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
+<div id="boot" class="bootlogo"><img src="brand/logo-gold-light.png" alt=""><span class="msg">Ładuję Studio…</span></div>
 <section id="gate" class="gate" hidden>
-  <h2>Wejście dla ekipy</h2>
-  <p class="msg">Zaloguj się kontem Google. Wejdą tylko adresy, które admin dodał do listy ekipy.</p>
+  <div class="hero"><img src="brand/logo-gold-dark.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTSstat Studio</h2><p>Miejsce, w którym Rozmowy Tylko Sportowe robią statystyki i plansze do programu.</p></div>
+  <p class="msg" style="text-align:center">Zaloguj się kontem Google. Wejdą tylko adresy z listy ekipy.</p>
   <div class="actions"><button class="btn pri" id="g-go">Zaloguj przez Google</button></div>
   <div class="msg" id="g-msg"></div>
 </section>
 <section id="deny" class="gate" hidden>
+  <div class="hero sm"><img src="brand/logo-gold-dark.png" alt=""></div>
   <h2>Brak dostępu</h2>
   <p class="msg">Zalogowano jako <b id="d-email"></b>, ale tego adresu nie ma na liście ekipy. Podaj go adminowi (Bartkowi), żeby Cię dodał, i odśwież stronę. Możesz też zalogować się innym kontem Google.</p>
   <div class="actions"><button class="btn" id="d-out">Wyloguj i zmień konto</button></div>

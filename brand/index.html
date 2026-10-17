@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RTSstat Brand</title>
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Barlow:wght@400;600&display=swap">
+<style>
+:root{--bg:#F5F3F0;--panel:#fff;--ink:#17181B;--mute:#6A6D75;--line:#DAD6D0;--red:#D91E25;--deep:#7C0E14;--gold:#D4B950;--graph:#0F1012}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 'Barlow',system-ui,sans-serif;padding-inline:20px}
+.w{max-width:1100px;margin:0 auto;padding-block:36px 60px}
+h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.05em;margin:0;text-wrap:balance}
+h1{font-size:clamp(44px,8vw,84px);line-height:.95;font-weight:800}
+h2{font-size:30px;font-weight:800;margin-top:54px;padding-bottom:8px;border-bottom:3px solid var(--red)}
+h3{font-size:16px;font-weight:800;color:var(--mute);margin:18px 0 8px}
+.kick{font:800 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.32em;color:#B89B35;text-transform:uppercase}
+.hero{margin-top:18px;border-radius:20px;overflow:hidden;background:radial-gradient(120% 120% at 20% 0%,#C0181F 0%,var(--deep) 55%,#2A0A0D 100%);color:#fff;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:center;gap:20px;padding:38px}
+.hero img{width:100%;max-width:340px;justify-self:center;filter:drop-shadow(0 10px 28px rgba(0,0,0,.5))}
+.hero p{max-width:44ch;color:#f3d9da;margin:14px 0 0}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.tile{border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:260px;text-align:center;border:1px solid var(--line)}
+.tile img{width:150px}
+.tile small{font-size:12.5px;opacity:.85}
+.sw{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.sw i{display:block;height:84px}.sw div{padding:10px 12px;font-size:13.5px}.sw b{display:block;font-size:15px}
+.lock{display:flex;align-items:center;gap:14px;padding:22px;border-radius:14px;border:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+.lock .badge{width:64px;height:64px;border-radius:50%;background:var(--red);padding:4px;box-shadow:0 0 0 3px var(--panel),0 0 0 5px var(--gold)}
+.lock .t{font:800 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}.lock .t b{color:var(--red)}
+.lock small{display:block;font:600 11px/1 'Barlow',sans-serif;letter-spacing:.18em;color:#B89B35;margin-top:6px;text-transform:uppercase}
+.dark{background:var(--graph);color:#fff;border-color:#2b2d32}
+.type{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+.type .a{font:800 54px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.03em}
+ul{padding-left:20px;margin:6px 0}li{margin:4px 0}
+.no{color:#B3171E}.ok{color:#1E7A46}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding:26px}.hero img{max-width:220px}}
+</style></head><body><div class="w">
+<div class="kick">Brand · RTSstat Studio</div>
+<h1>Rozmowy Tylko Sportowe<br>robią liczby</h1>
+<div class="hero"><div><div class="kick" style="color:var(--gold)">Od kibiców dla kibiców</div><p style="font-size:20px;color:#fff;margin-top:12px">Studio to miejsce, w którym podcast kibiców zamienia statystyki Widzewa w plansze i posty. Czerwień klubu, złoto podcastu, mikrofon jako znak.</p><p>Logo jest znakiem podcastu i stoi zawsze w kole. Tło: czerwień klubu lub grafit. Złoto to akcent, nie wypełnienie.</p></div><img src="logo-gold-dark.png" alt="Logo Rozmowy Tylko Sportowe"></div>
+
+<h2>Logo: warianty</h2>
+<div class="g">
+ <div class="tile" style="background:var(--red);color:#fff"><img src="logo-white.png" alt=""><b>Białe na czerwieni</b><small>Główne. Karty, ikona, nagłówek.</small></div>
+ <div class="tile dark"><img src="logo-gold-dark.png" alt=""><b>Złote na grafice</b><small>Ekran logowania, ciemny motyw.</small></div>
+ <div class="tile" style="background:var(--bg)"><img src="logo-gold-light.png" alt=""><b>Złote na jasnym</b><small>Ekran ładowania, jasny motyw.</small></div>
+ <div class="tile" style="background:var(--deep);color:#fff"><img src="logo-white.png" alt=""><b>Białe na ciemnej czerwieni</b><small>Plansze pionowe, tła kart.</small></div>
+</div>
+
+<h2>Zapis nazwy i znaczek</h2>
+<div class="g" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+ <div class="lock"><img class="badge" src="logo-white.png" alt=""><div><div class="t">RTS<b>stat</b> Studio</div><small>Rozmowy Tylko Sportowe</small></div></div>
+ <div class="lock dark"><img class="badge" src="logo-white.png" alt=""><div><div class="t" style="color:#fff">RTS<b>stat</b> Studio</div><small>Rozmowy Tylko Sportowe</small></div></div>
+ <div class="lock"><img src="icon-192.png" width="64" height="64" style="border-radius:14px" alt=""><div><b>Ikona aplikacji</b><br><span style="color:var(--mute);font-size:14px">Czerwony kwadrat, białe logo. Pliki: icon-192, icon-512, apple-touch-icon, favicon.</span></div></div>
+</div>
+<p style="color:var(--mute)">W kartach i postach seria nazywa się <b>RTS-Stats</b> (nagłówek karty), hasztag to <b>#RTSstat</b>.</p>
+
+<h2>Kolory</h2>
+<div class="g" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+ <div class="sw"><i style="background:#D91E25"></i><div><b>Czerwień RTS</b>#D91E25<br>przyciski, aktywna zakładka, ikona</div></div>
+ <div class="sw"><i style="background:#7C0E14"></i><div><b>Czerwień głęboka</b>#7C0E14<br>tła kart, hero</div></div>
+ <div class="sw"><i style="background:#D4B950"></i><div><b>Złoto podcastu</b>#D4B950<br>pierścień logo, akcenty</div></div>
+ <div class="sw"><i style="background:#0F1012"></i><div><b>Grafit</b>#0F1012<br>ciemny motyw</div></div>
+ <div class="sw"><i style="background:#F5F3F0"></i><div><b>Kość</b>#F5F3F0<br>jasny motyw</div></div>
+ <div class="sw"><i style="background:#FFFFFF"></i><div><b>Biel</b>#FFFFFF<br>teksty na czerwieni, logo</div></div>
+</div>
+
+<h2>Typografia</h2>
+<div class="type"><div class="a">Barlow Condensed ExtraBold</div><p style="margin:6px 0 0">Nagłówki, liczby na kartach, napisy wersalikami z rozstrzeleniem .05em.</p>
+<p style="font-size:20px;margin:16px 0 0"><b>Barlow</b> Regular i SemiBold: teksty, opisy, formularze (min. 16 px na telefonie).</p></div>
+
+<h2>Zasady użycia</h2>
+<div class="g" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+ <div class="type"><h3 class="ok">Tak</h3><ul><li>Logo zawsze w kole, z zachowanym pierścieniem.</li><li>Wolne pole wokół logo co najmniej 1/4 jego średnicy.</li><li>Białe logo na czerwieni i złote na grafitowym.</li><li>Złoto jako cienki akcent (pierścień, linia, napis „Od kibiców dla kibiców”).</li></ul></div>
+ <div class="type"><h3 class="no">Nie</h3><ul><li>Nie rozciągamy, nie obracamy, nie dodajemy cieni obrysu.</li><li>Złote logo nie stoi na jasnej czerwieni #D91E25 (słaby kontrast): tam biel. Na głębokiej czerwieni i grafice złoto działa.</li><li>Nie zmieniamy napisu w kole.</li><li>Nie mieszamy z herbem klubu w jednym znaku.</li></ul></div>
+</div>
+</div></body></html>
