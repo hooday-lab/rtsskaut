@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function mail() { return request.auth.token.email.lower(); }
+    function mref() { return /databases/$(database)/documents/members/$(mail()); }
+    function isAdmin() {
+      return signedIn() && (
+        mail() == 'hooday@gmail.com' ||
+        (exists(mref()) && get(mref()).data.role == 'admin'));
+    }
+    // Ekipa (member/admin) zawsze; wspierający tylko do daty "until".
+    function isMember() {
+      return signedIn() && (isAdmin() || (exists(mref()) && (
+        get(mref()).data.role != 'supporter' ||
+        (get(mref()).data.get('until', null) != null && get(mref()).data.until > request.time))));
+    }
+    match /members/{id} {
+      allow read: if signedIn() && (id == mail() || isAdmin());
+      allow write: if isAdmin();
+    }
+    match /accessRequests/{id} {
+      allow read: if signedIn() && (id == mail() || isAdmin());
+      allow create, update: if signedIn() && id == mail()
+        && request.resource.data.keys().hasOnly(['email','nick','at','status'])
+        && request.resource.data.email == mail()
+        && request.resource.data.status == 'pending'
+        && request.resource.data.nick is string && request.resource.data.nick.size() <= 80;
+      allow write: if isAdmin();
+    }
+    match /data/{id} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+    match /settings/{id} {
+      allow read: if isMember();
+      allow write: if isAdmin();
+    }
+  }
+}

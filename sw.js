@@ -1,5 +1,5 @@
-/* RTSstat Studio: prosty service worker (sieć najpierw, pamięć podręczna jako zapas) */
-const C='rtsstat-v1';
+/* RTS Skaut: prosty service worker (sieć najpierw, pamięć podręczna jako zapas) */
+const C='rtsskaut-v2';
 self.addEventListener('install',e=>{self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==C)await caches.delete(k);await self.clients.claim()})())});
 self.addEventListener('fetch',e=>{

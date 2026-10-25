@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RTS Stats Studio</title>
+<title>RTS Skaut</title>
 <script>try{var t=localStorage.getItem('rts-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
-<link rel="icon" type="image/png" href="brand/favicon.png"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png"><link rel="manifest" href="brand/manifest.webmanifest"><meta name="theme-color" content="#D91E25"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RTS Stats">
+<link rel="icon" type="image/png" href="brand/favicon.png"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png"><link rel="manifest" href="brand/manifest.webmanifest"><meta name="theme-color" content="#D91E25"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RTS Skaut">
 <style>
 :root{--bg:#F5F3F0;--panel:#FFFFFF;--ink:#17181B;--mute:#6A6D75;--line:#DAD6D0;--red:#D91E25;--red-ink:#FFFFFF;--soft:#EDE9E4;--ok:#1E7A46}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;color-scheme:dark}}
@@ -227,18 +227,25 @@ body.inapp #topbar0{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body>
 <div class="wrap">
-<header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS <b>Stats</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
+<header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS <b>Skaut</b></span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
 <div id="boot" class="bootlogo"><img src="brand/logo-gold-light.png" alt=""><span class="msg">Ładuję Studio…</span></div>
 <section id="gate" class="gate" hidden>
-  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Stats Studio</h2><p>Miejsce, w którym Rozmowy Tylko Sportowe robią statystyki i plansze do programu.</p></div>
+  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p>Widzewski skaut dla kibiców: statystyki i porównania od Rozmów Tylko Sportowych. Dostęp mają wspierający kanał w planie „Tylko dla orłów” oraz ekipa.</p></div>
   <p class="msg" style="text-align:center">Zaloguj się kontem Google. Wejdą tylko adresy z listy ekipy.</p>
   <div class="actions"><button class="btn pri" id="g-go">Zaloguj przez Google</button></div>
   <div class="msg" id="g-msg"></div>
 </section>
 <section id="deny" class="gate" hidden>
   <div class="hero sm"><img src="brand/logo-white.png" alt=""></div>
-  <h2>Brak dostępu</h2>
-  <p class="msg">Zalogowano jako <b id="d-email"></b>, ale tego adresu nie ma na liście ekipy. Podaj go adminowi (Bartkowi), żeby Cię dodał, i odśwież stronę. Możesz też zalogować się innym kontem Google.</p>
+  <h2 id="d-h">Dostęp dla wspierających</h2>
+  <p class="msg">Zalogowano jako <b id="d-email"></b>. RTS Skaut to perk dla osób, które cyklicznie wspierają kanał Rozmowy Tylko Sportowe w planie „Tylko dla orłów” na YouTube, oraz dla ekipy.</p>
+  <p class="msg" id="d-state"></p>
+  <div id="d-form" class="actions" style="flex-direction:column;align-items:stretch;max-width:420px;margin:0 auto">
+    <input type="text" id="rq-nick" maxlength="80" placeholder="Twoja nazwa na YouTube (np. @Kibic1910)" aria-label="Nazwa na YouTube">
+    <button class="btn pri" id="rq-go">Poproś o dostęp</button>
+    <div class="msg" id="rq-msg"></div>
+    <a class="btn" id="d-join" href="https://www.youtube.com/@RozmowyTylkoSportowe/join" target="_blank" rel="noopener">Zostań wspierającym na YouTube</a>
+  </div>
   <div class="actions"><button class="btn" id="d-out">Wyloguj i zmień konto</button></div>
 </section>
 <section id="setup" class="gate" hidden>
@@ -253,7 +260,7 @@ body.inapp #topbar0{display:none}
 <section id="studio" hidden>
  <div class="app">
   <aside class="side" id="side" aria-label="Nawigacja">
-   <div class="sb-brand"><img src="brand/logo-white.png" alt="" width="46" height="46"><div><span class="sb-n">RTS <b>Stats</b> Studio</span><small>Rozmowy Tylko Sportowe</small></div><button class="sb-x" id="sb-x" aria-label="Zamknij menu">&times;</button></div>
+   <div class="sb-brand"><img src="brand/logo-white.png" alt="" width="46" height="46"><div><span class="sb-n">RTS <b>Skaut</b></span><small>Rozmowy Tylko Sportowe</small></div><button class="sb-x" id="sb-x" aria-label="Zamknij menu">&times;</button></div>
    <nav class="nav" id="nav" aria-label="Typy kart"></nav>
    <div class="sb-foot">
     <div class="sb-who" id="sbwho"></div>
@@ -378,7 +385,7 @@ function shell(inner,bg){
 }
 function header(p){
   let s='';const x=104,maxW=1290;
-  s+=`<rect x="${x}" y="88" width="40" height="6" fill="#fff"/>`+tx(x+54,98,'RTS Stats · '+(p.tag||''),{size:30,fam:'BC',w:800,ls:4,up:true});
+  s+=`<rect x="${x}" y="88" width="40" height="6" fill="#fff"/>`+tx(x+54,98,'RTS Skaut · '+(p.tag||''),{size:30,fam:'BC',w:800,ls:4,up:true});
   const title=String(p.title||'').toUpperCase();
   let size=96,lines=[title];
   while(size>60&&mw(title,size,'BC',800)>maxW)size-=4;
@@ -402,7 +409,7 @@ function header(p){
 }
 function headerV(p){
   let s='';const x=80,maxW=920;
-  s+=`<rect x="${x}" y="276" width="40" height="6" fill="#fff"/>`+tx(x+54,288,'RTS Stats · '+(p.tag||''),{size:28,fam:'BC',w:800,ls:4,up:true});
+  s+=`<rect x="${x}" y="276" width="40" height="6" fill="#fff"/>`+tx(x+54,288,'RTS Skaut · '+(p.tag||''),{size:28,fam:'BC',w:800,ls:4,up:true});
   const title=String(p.title||'').toUpperCase();
   let size=88,lines=wrap(title,maxW,size,'BC',800);
   while(lines.length>2&&size>56){size-=4;lines=wrap(title,maxW,size,'BC',800)}
@@ -426,7 +433,7 @@ function headerV(p){
 }
 function footerV(p){const L=wrap(p.foot||'',920,20,'BA',400).slice(0,2);return `<g filter="url(#sh)">`+L.map((l,i)=>tx(80,1260+i*26,l,{size:20,fam:'BA',w:400,fill:'#e9cfd0'})).join('')+`</g>`}
 function footer(p){return `<g filter="url(#sh)">${tx(104,1002,p.foot||'',{size:22,fam:'BA',w:400,fill:'#e9cfd0'})}</g>`}
-function defFoot(extra){return `#RTSstat · stan po ${lastRound}. kolejce Ekstraklasy ${D.meta.season} · dane: API-Football`+(extra?' · '+extra:'')}
+function defFoot(extra){return `#RTSkaut · stan po ${lastRound}. kolejce Ekstraklasy ${D.meta.season} · dane: zewnętrzny dostawca danych sportowych`+(extra?' · '+extra:'')}
 
 /* --- rival --- */
 const RM={
@@ -555,7 +562,7 @@ const rival={
     s+=tx(lx,ly,'pasek = barwy rywala',{size:22,fam:'BA',w:600,fill:'#f1dede'})+`</g>`;
     return shell(s+footerV(p),bg);
   },
-  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Która z tych liczb mówi Wam najwięcej o Widzewie? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Która z tych liczb mówi Wam najwięcej o Widzewie? 👇'}\n#RTSkaut #Widzew`}
 };
 
 /* --- mecz --- */
@@ -649,7 +656,7 @@ const matchT={
     });
     return shell(s+footerV(p),bg);
   },
-  post(p){const f=fxById[p.fid];return `${p.title}.\n\n${p.sub}\n\n${p.q||'Co z tego meczu zostaje Wam w głowie? 👇'}\n#RTSstat #Widzew`}
+  post(p){const f=fxById[p.fid];return `${p.title}.\n\n${p.sub}\n\n${p.q||'Co z tego meczu zostaje Wam w głowie? 👇'}\n#RTSkaut #Widzew`}
 };
 
 /* --- zawodnik --- */
@@ -734,7 +741,7 @@ const player={
     });
     return shell(s+footerV(p),bg);
   },
-  post(p){const r=PI[p.pid];return `${r[1]}.\n\n${p.sub}\n\n${p.q||'Która z tych liczb robi na Was największe wrażenie? 👇'}\n#RTSstat #Widzew`}
+  post(p){const r=PI[p.pid];return `${r[1]}.\n\n${p.sub}\n\n${p.q||'Która z tych liczb robi na Was największe wrażenie? 👇'}\n#RTSkaut #Widzew`}
 };
 
 /* --- porównanie --- */
@@ -782,7 +789,7 @@ const cmp={
     });
     return shell(s+footerV(p),bg);
   },
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Czyja to będzie historia? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Czyja to będzie historia? 👇'}\n#RTSkaut #Widzew`}
 };
 
 /* --- własna liczba + kopalnia faktów --- */
@@ -955,7 +962,7 @@ const fact={
   sugg(){return facts()},
   svg(p,bg){if(isV())return this.svgV(p,bg);
     let s='';
-    s+=`<g filter="url(#sh)"><rect x="104" y="95" width="40" height="6" fill="#fff"/>`+tx(158,107,'RTS Stats · '+(p.tag||'Liczba'),{size:30,fam:'BC',w:800,ls:4,up:true});
+    s+=`<g filter="url(#sh)"><rect x="104" y="95" width="40" height="6" fill="#fff"/>`+tx(158,107,'RTS Skaut · '+(p.tag||'Liczba'),{size:30,fam:'BC',w:800,ls:4,up:true});
     const big=String(p.big||''),fs=Math.min(520,Math.max(160,1500/Math.max(big.length,1)*1.15));
     const bw=mw(big,fs,'BC',800);
     s+=tx(104,700,big,{size:fs,fam:'BC',w:800});
@@ -969,7 +976,7 @@ const fact={
   },
   svgV(p,bg){
     let s='';
-    s+=`<g filter="url(#sh)"><rect x="80" y="283" width="40" height="6" fill="#fff"/>`+tx(134,295,'RTS Stats · '+(p.tag||'Liczba'),{size:28,fam:'BC',w:800,ls:4,up:true});
+    s+=`<g filter="url(#sh)"><rect x="80" y="283" width="40" height="6" fill="#fff"/>`+tx(134,295,'RTS Skaut · '+(p.tag||'Liczba'),{size:28,fam:'BC',w:800,ls:4,up:true});
     const big=String(p.big||'');let fs=460;while(fs>140&&mw(big,fs,'BC',800)>920)fs-=10;
     const by=340+fs*.78;
     s+=tx(80,by,big,{size:fs,fam:'BC',w:800});
@@ -980,7 +987,7 @@ const fact={
     s+='</g>';
     return shell(s+footerV(p),bg);
   },
-  post(p){return `${p.big} – ${p.label}.\n\n${[p.l1,p.l2].filter(Boolean).join(' ')}${p.q?'\n\n'+p.q:''}\n\n#RTSstat #Widzew`}
+  post(p){return `${p.big} – ${p.label}.\n\n${[p.l1,p.l2].filter(Boolean).join(' ')}${p.q?'\n\n'+p.q:''}\n\n#RTSkaut #Widzew`}
 };
 
 /* ================= Wyscout-style: radar zawodników, radar klubów, mapa ligi ================= */
@@ -1108,7 +1115,7 @@ const pcmp={
   },
   svg(p,bg){return radarCard(p,this.cfg(p),bg)},
   svgV(p,bg){return radarCard(p,this.cfg(p),bg)},
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z nich jest dla Was lepszy? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z nich jest dla Was lepszy? 👇'}\n#RTSkaut #Widzew`}
 };
 function pcmpSuggestions(p){
   const g=posG(p.pa),pa=PI[p.pa],la=lastN(pa[1]),pool=POOL(g),out=[];
@@ -1186,7 +1193,7 @@ const tcmp={
   },
   svg(p,bg){return radarCard(p,this.cfg(p),bg)},
   svgV(p,bg){return radarCard(p,this.cfg(p),bg)},
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z tych profili Wam bardziej odpowiada? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Który z tych profili Wam bardziej odpowiada? 👇'}\n#RTSkaut #Widzew`}
 };
 function tcmpSuggestions(p){
   const a=p.a,A=sn(a),out=[],ks=TDEF;
@@ -1284,7 +1291,7 @@ const scat={
   },
   svg(p,bg){return scatSvg(p,bg)},
   svgV(p,bg){return scatSvg(p,bg)},
-  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Gdzie na tej mapie widzicie Widzew za miesiąc? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n\n${p.q||'Gdzie na tej mapie widzicie Widzew za miesiąc? 👇'}\n#RTSkaut #Widzew`}
 };
 
 /* --- dom i wyjazd --- */
@@ -1365,7 +1372,7 @@ const ha={
     o+=tx(lx,ly,'wynik z perspektywy drużyny · pasek = barwy rywala',{size:fs,fam:'BA',w:600,fill:'#f1dede'})+`</g>`;
     return shell(o+(V?footerV(p):footer(p)),bg);
   },
-  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSstat #Widzew`}
+  post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSkaut #Widzew`}
 };
 
 const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact};
@@ -1374,6 +1381,9 @@ const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','s
 
 /* ---------- stan ---------- */
 let isAdmin=!!ctx.isAdmin,downloads=true;
+const isSupporter=!isAdmin&&ctx.role==='supporter';
+const SUP_KEYS=['player','pcmp','tcmp','scat','cmp'];
+let PENDING=0;
 let SET={bg:null,cards:ctx.cards||{}};
 let bgData=ctx.bg||BG_DEFAULT;
 const S={type:'rival',p:{},url:null,postEd:false,busy:false};
@@ -1392,7 +1402,7 @@ const TMETA={
  fact:{g:'Mapy i fakty',d:'Dowolna liczba z własnym podpisem.'},
  admin:{g:'',d:'Ekipa, tło kart, dostępne typy kart i dane.'}};
 const TGROUPS=['Mecz','Ludzie i kluby','Mapy i fakty'];
-function visKeys(){return TKEYS.filter(k=>isAdmin||SET.cards[k]!==false)}
+function visKeys(){return TKEYS.filter(k=>isAdmin||(SET.cards[k]!==false&&(!isSupporter||SUP_KEYS.includes(k))))}
 function titleOf(k){return k==='home'?'Start':k==='admin'?'Ustawienia':(TYPES[k]||{}).name||''}
 function closeDrawer(){$('#side').classList.remove('open');$('#scrim').classList.remove('on')}
 function go(k){S.type=k;S.postEd=false;closeDrawer();renderNav();$('#mtitle').textContent=titleOf(k);
@@ -1403,7 +1413,7 @@ function renderNav(){
   nav.appendChild(item('home','Start'));
   TGROUPS.forEach(g=>{const ks=visKeys().filter(k=>TMETA[k].g===g);if(!ks.length)return;
     nav.appendChild(el(`<div class="ng">${esc(g)}</div>`));ks.forEach(k=>nav.appendChild(item(k,TYPES[k].name)))});
-  if(isAdmin){nav.appendChild(el('<div class="ng">Zarządzanie</div>'));nav.appendChild(item('admin','Ustawienia'))}
+  if(isAdmin){nav.appendChild(el('<div class="ng">Zarządzanie</div>'));const ab=item('admin','Ustawienia');if(PENDING)ab.insertAdjacentHTML('beforeend',`<span class="badge" style="margin-left:auto">${PENDING}</span>`);nav.appendChild(ab)}
 }
 function renderTabs(){renderNav()}
 function nextMatchHtml(){
@@ -1412,13 +1422,24 @@ function nextMatchHtml(){
   let when='';try{when=new Date(nx[1]+':00Z').toLocaleString('pl-PL',{timeZone:'Europe/Warsaw',weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}catch(e){}
   return `<div class="nm"><span class="nm-k">Najbliższy mecz</span><b>${esc(nx[2])} – ${esc(nx[3])}</b><span>${esc(when)} · ${nx[0]}. kolejka</span></div>`;
 }
+function homeNotice(){
+  const dl=window.RTS_DISCORD_INVITE;
+  if(isAdmin&&PENDING)return `<div class="card-box" style="margin:12px 0"><b>Prośby o dostęp czekają: ${PENDING}</b><div class="actions"><button class="btn pri" id="hn-go">Zobacz prośby</button></div></div>`;
+  if(isSupporter){
+    const u=ctx.until,left=u?Math.ceil((u-Date.now())/864e5):null;
+    const when=u?u.toLocaleDateString('pl-PL',{day:'numeric',month:'long',year:'numeric'}):'';
+    return `<div class="card-box" style="margin:12px 0"><b>Dziękujemy, że wspierasz Rozmowy Tylko Sportowe!</b><span class="msg">Dostęp ważny do ${esc(when)}${left!=null&&left<=7?' (zostało '+Math.max(left,0)+' dni; po wygaśnięciu napisz o przedłużenie)':''}. Karty możesz pobierać i wrzucać do swoich wpisów z hasztagiem #RTSkaut. Nie do użytku komercyjnego.</span>${dl?`<div class="actions"><a class="btn" href="${esc(dl)}" target="_blank" rel="noopener">Wejdź na Discorda wspierających</a></div>`:''}</div>`;
+  }
+  return '';
+}
 function renderHome(){
   const v=$('#view');
   const tiles=TGROUPS.map(g=>{const ks=visKeys().filter(k=>TMETA[k].g===g);if(!ks.length)return '';
     return `<h3 class="hg">${esc(g)}</h3><div class="tiles">${ks.map(k=>`<button class="tl" data-k="${k}"><span class="tl-i">${ico(k,24)}</span><span class="tl-t">${esc(TYPES[k].name)}</span><span class="tl-d">${esc(TMETA[k].d)}</span><span class="tl-a">${ico('arrow',18)}</span></button>`).join('')}</div>`}).join('');
-  v.innerHTML=`<div class="hhero"><img src="brand/logo-white.png" alt="" width="120" height="120"><div class="hh"><span class="kick">Od kibiców dla kibiców</span><h1>Studio statystyk i plansz</h1><p>Wybierz kartę, dopasuj ją, pobierz PNG i skopiuj pakiet do posta. Dane: po ${lastRound}. kolejce Ekstraklasy ${esc(D.meta.season)}.</p>${nextMatchHtml()}</div></div>
+  v.innerHTML=`<div class="hhero"><img src="brand/logo-white.png" alt="" width="120" height="120"><div class="hh"><span class="kick">Od kibiców dla kibiców</span><h1>RTS Skaut</h1><p>Wybierz kartę, dopasuj ją, pobierz PNG i skopiuj pakiet do posta. Dane: po ${lastRound}. kolejce Ekstraklasy ${esc(D.meta.season)}.</p>${nextMatchHtml()}</div></div>${homeNotice()}
   <ol class="steps"><li><b>Wybierz kartę</b><span>Kafelki poniżej lub menu z lewej.</span></li><li><b>Dopasuj</b><span>Gotowe pomysły albo własne ustawienia.</span></li><li><b>Pobierz i opublikuj</b><span>PNG plus pakiet tekstu dla komunikacji.</span></li></ol>${tiles}`;
   v.querySelectorAll('.tl').forEach(b=>b.onclick=()=>go(b.dataset.k));
+  const hg=$('#hn-go');if(hg)hg.onclick=()=>go('admin');
 }
 function pageHead(k){const m=TMETA[k]||{};return `<div class="ph"><span class="ph-i">${ico(k,26)}</span><div><h1>${esc(titleOf(k))}</h1><p>${esc(m.d||'')}</p></div></div>`}
 function bindChrome(){
@@ -1501,17 +1522,17 @@ function buildPack(){
   const link=(S.pkLink||'').trim();
   const tx=packTexts();
   t.value=['ZADANIE',
-  'Opracuj KOMPLETNY wpis na social media (konto Rozmowy Tylko Sportowe, podcast „od kibiców dla kibiców” o Widzewie Łódź) do załączonej grafiki RTS Stats. Wpis ma poprawnie komentować i wyjaśniać to, co widać na grafice: co oznacza każda liczba, jak ją czytać, skąd pochodzi i dlaczego jest ciekawa dla kibica.',
+  'Opracuj KOMPLETNY wpis na social media (konto Rozmowy Tylko Sportowe, podcast „od kibiców dla kibiców” o Widzewie Łódź) do załączonej grafiki RTS Skaut. Wpis ma poprawnie komentować i wyjaśniać to, co widać na grafice: co oznacza każda liczba, jak ją czytać, skąd pochodzi i dlaczego jest ciekawa dla kibica.',
   'Dostarcz: (1) hak do 280 znaków na X z główną liczbą, w 2 wariantach; (2) wątek na X (3–5 postów) tłumaczący grafikę krok po kroku; (3) dłuższą wersję na Facebooka; (4) tekst alternatywny grafiki; (5) pytanie do kibiców na koniec; (6) hasztagi.','',
   'KARTA: '+Ty.name+' ('+(FMT==='v'?'4:5':'16:9')+')',
   'JAK CZYTAĆ KARTĘ: '+(PACKNOTE[S.type]||''),'',
   'ZAWARTOŚĆ GRAFIKI (wszystkie napisy z karty, w kolejności):',
   tx.map(x=>'- '+x).join('\n')||'(brak)','',
-  'DANE: sezon '+(m.season||'')+', stan po '+(m.lastRound||'?')+'. kolejce, źródło API-Football (baza ClubFantasy), generowane '+(m.generatedAt||'')+'. Liczby wyłącznie z grafiki i z kontekstu poniżej.','',
+  'DANE: sezon '+(m.season||'')+', stan po '+(m.lastRound||'?')+'. kolejce, źródło: zewnętrzny dostawca danych sportowych, generowane '+(m.generatedAt||'')+'. Liczby wyłącznie z grafiki i z kontekstu poniżej.','',
   'KONTEKST LIGOWY:',
   packCtx().map(x=>'- '+x).join('\n'),'',
   'SZKIC TEKSTU ZE STUDIO (punkt wyjścia, do znacznego rozwinięcia):',post,'',
-  'ZASADY GŁOSU RTS: kolejność fakt, krótka reakcja deadpan, pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów, bez zbędnych myślników. Nie jesteśmy kontem newsowym, tylko podcastem. Nie zadawaj pytań o typowanie wyniku. Nie wymyślaj liczb, „rekordów ligi” ani przyczyn spoza danych; jeśli czegoś nie ma w danych, napisz to wprost albo pomiń. Hasztag serii: #RTSstat.',
+  'ZASADY GŁOSU RTS: kolejność fakt, krótka reakcja deadpan, pytanie do kibiców. Pisz jak człowiek, bez sztucznych zwrotów, bez zbędnych myślników. Nie jesteśmy kontem newsowym, tylko podcastem. Nie zadawaj pytań o typowanie wyniku. Nie wymyślaj liczb, „rekordów ligi” ani przyczyn spoza danych; jeśli czegoś nie ma w danych, napisz to wprost albo pomiń. Hasztag serii: #RTSkaut.',
   'Jeśli wpis odsyła do podcastu: '+(link?'dodaj link do audycji na YouTube: '+link:'dodaj link do audycji na YouTube (podam link live)')+'.',
   'Do wpisu dołączona jest karta PNG '+(FMT==='v'?'4:5':'16:9')+'.'].join('\n');
 }
@@ -1586,12 +1607,17 @@ async function doDownload(){
 
 /* ---------- admin ---------- */
 const fs=ctx.fs;
+function roleTxt(r){if(r.role==='admin')return 'admin';if(r.role==='supporter'){const u=r.until&&r.until.toDate?r.until.toDate():null;const exp=u&&u<new Date();return 'wspierający'+(u?' do '+fmtD(u):'')+(exp?' <b style="color:var(--red)">(wygasł)</b>':'')+(r.nick?' · '+esc(r.nick):'')}return 'dziennikarz'}
 function siteUrl(){return location.origin+location.pathname}
 async function renderAdmin(){
   const v=$('#view');
   v.innerHTML=`<div class="admin">
-  <div class="card-box"><h3>Ekipa (adresy Google)</h3><p class="msg">Tylko adresy z tej listy zobaczą dane i zrobią karty. Wpisz adres, którego dziennikarz używa do logowania przez Google (najczęściej @gmail.com).</p>
-   <div class="actions"><input type="text" id="m-email" placeholder="adres@gmail.com" style="max-width:260px"><select id="m-role" style="max-width:140px"><option value="member">dziennikarz</option><option value="admin">admin</option></select><button class="btn pri" id="m-add">Dodaj</button></div><div class="msg" id="m-msg"></div>
+  <div class="card-box"><h3>Prośby o dostęp <span class="msg" id="rq-cnt"></span></h3>
+   <p class="msg">Jak nadać dostęp wspierającemu: 1) w YouTube Studio wejdź w Zarabianie → Wspierający i sprawdź, czy nazwa z prośby ma poziom „Tylko dla orłów”. 2) Kliknij „Nadaj dostęp”. Dostęp jest na wybrany czas (domyślnie 31 dni) i wygasa sam, więc raz w miesiącu przedłużasz go osobom, które nadal wspierają.</p>
+   <div class="actions"><label class="msg">Ważność (dni) <input type="number" id="rq-days" value="31" min="1" max="400" style="width:80px"></label></div>
+   <div class="scroll"><table class="t"><thead><tr><th>Adres</th><th>Nazwa na YT</th><th>Kiedy</th><th></th></tr></thead><tbody id="rq-list"></tbody></table></div><div class="msg" id="rq-amsg"></div></div>
+  <div class="card-box"><h3>Ekipa i wspierający (adresy Google)</h3><p class="msg">Tylko adresy z tej listy zobaczą dane i zrobią karty. Wpisz adres, którego dziennikarz używa do logowania przez Google (najczęściej @gmail.com).</p>
+   <div class="actions"><input type="text" id="m-email" placeholder="adres@gmail.com" style="max-width:260px"><select id="m-role" style="max-width:140px"><option value="member">dziennikarz</option><option value="supporter">wspierający (na czas)</option><option value="admin">admin</option></select><button class="btn pri" id="m-add">Dodaj</button></div><div class="msg" id="m-msg"></div>
    <div class="scroll"><table class="t"><thead><tr><th>Adres</th><th>Rola</th><th></th></tr></thead><tbody id="m-list"></tbody></table></div>
    <button class="btn sm" id="m-copy">Kopiuj zaproszenie na WhatsApp</button><span class="msg" id="m-copymsg"></span></div>
   <div class="card-box"><h3>Tło kart</h3><p class="msg">Obraz 1920×1080 w stylu RTS: logo w prawym górnym rogu, wolny lewy panel. Zostanie przeskalowany i zapisany jako JPEG.</p>
@@ -1609,10 +1635,10 @@ async function renderAdmin(){
   $('#m-add').onclick=async()=>{
     const em=$('#m-email').value.trim().toLowerCase(),m=$('#m-msg');m.className='msg';
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){m.textContent='To nie wygląda na adres e-mail.';m.className='msg err';return}
-    try{await fs.doc('members/'+em).set({role:$('#m-role').value,addedBy:ctx.email,addedAt:new Date().toISOString()});$('#m-email').value='';m.textContent='Dodano '+em;m.className='msg ok';loadMembers()}
+    try{const rl=$('#m-role').value,doc={role:rl,addedBy:ctx.email,addedAt:new Date().toISOString()};if(rl==='supporter')doc.until=untilTs(+($('#rq-days')&&$('#rq-days').value)||31);await fs.doc('members/'+em).set(doc);$('#m-email').value='';m.textContent='Dodano '+em;m.className='msg ok';loadMembers()}
     catch(e){m.textContent='Błąd zapisu ('+(e.code||e.message)+')';m.className='msg err'}
   };
-  $('#m-copy').onclick=async()=>{const t=`Cześć! Mamy w Rozmowach Tylko Sportowych narzędzie do robienia kart ze statystykami (#RTSstat): ${siteUrl()}\nWejdź, kliknij „Zaloguj przez Google" i wybierz konto, którego adres mi podałeś/aś. Jeśli nie wpuszcza, napisz do mnie.`;
+  $('#m-copy').onclick=async()=>{const t=`Cześć! Mamy w Rozmowach Tylko Sportowych narzędzie do robienia kart ze statystykami (RTS Skaut, #RTSkaut): ${siteUrl()}\nWejdź, kliknij „Zaloguj przez Google" i wybierz konto, którego adres mi podałeś/aś. Jeśli nie wpuszcza, napisz do mnie.`;
     try{await navigator.clipboard.writeText(t);$('#m-copymsg').textContent=' Skopiowano'}catch(e){$('#m-copymsg').textContent=' Nie udało się skopiować – zaznacz ręcznie'}};
   $('#bgf').onchange=async e=>{
     const f=e.target.files[0];if(!f)return;const m=$('#bg-msg');m.className='msg';
@@ -1635,7 +1661,44 @@ async function renderAdmin(){
       m.textContent='Dane zapisane (kolejki do '+d.meta.lastRound+'). Odśwież stronę, żeby je zobaczyć.';m.className='msg ok';
     }catch(err){m.textContent='Nie udało się: '+(err.code||err.message);m.className='msg err'}
   };
-  loadMembers();
+  loadMembers();loadRequests();
+}
+function untilTs(days){const d=new Date(Date.now()+days*864e5);d.setHours(23,59,59,0);return firebase.firestore.Timestamp.fromDate(d)}
+const fmtD=d=>d.toLocaleDateString('pl-PL',{day:'numeric',month:'short',year:'numeric'});
+async function loadPending(){
+  if(!isAdmin)return;
+  try{const q=await fs.collection('accessRequests').where('status','==','pending').get();PENDING=q.size}catch(e){PENDING=0}
+  renderNav();if(S.type==='home')renderHome();
+}
+async function grantAccess(r,days){
+  const m=$('#rq-amsg');m.className='msg';
+  try{
+    const cur=await fs.doc('members/'+r.id).get();
+    if(!(cur.exists&&['admin','member'].includes(cur.data().role))){
+      await fs.doc('members/'+r.id).set({role:'supporter',until:untilTs(days),nick:r.nick||'',source:'youtube',addedBy:ctx.email,addedAt:new Date().toISOString()});
+    }
+    await fs.doc('accessRequests/'+r.id).update({status:'granted',handledBy:ctx.email,handledAt:new Date().toISOString()});
+    const sent=await notifyAdmin('granted',{email:r.id,days});
+    m.textContent='Nadano dostęp: '+r.id+(sent?' (wysłano mail do wspierającego)':'')+'.';m.className='msg ok';
+  }catch(e){m.textContent='Błąd ('+(e.code||e.message)+')';m.className='msg err'}
+  loadMembers();loadRequests();loadPending();
+}
+async function loadRequests(){
+  const tb=$('#rq-list');if(!tb)return;
+  try{
+    const snap=await fs.collection('accessRequests').where('status','==','pending').get();
+    const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.at||'').localeCompare(b.at||''));
+    $('#rq-cnt').textContent=rows.length?'('+rows.length+')':'';
+    tb.innerHTML=rows.length?'':'<tr><td colspan="4" class="msg">Brak oczekujących próśb.</td></tr>';
+    rows.forEach(r=>{
+      const tr=el(`<tr><td>${esc(r.id)}</td><td>${esc(r.nick||'')}</td><td>${r.at?esc(fmtD(new Date(r.at))):''}</td><td class="actions"></td></tr>`);
+      const ok=el('<button class="btn sm pri">Nadaj dostęp</button>');
+      ok.onclick=()=>grantAccess(r,Math.max(1,+($('#rq-days').value)||31));
+      const no=el('<button class="btn sm">Odrzuć</button>');
+      no.onclick=async()=>{await fs.doc('accessRequests/'+r.id).update({status:'rejected',handledBy:ctx.email,handledAt:new Date().toISOString()});loadRequests();loadPending()};
+      tr.querySelector('.actions').append(ok,no);tb.appendChild(tr);
+    });
+  }catch(e){tb.innerHTML=`<tr><td colspan="4" class="msg err">Nie udało się wczytać próśb (${esc(e.code||e.message)})</td></tr>`}
 }
 async function loadMembers(){
   const tb=$('#m-list');if(!tb)return;
@@ -1644,19 +1707,20 @@ async function loadMembers(){
     const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.id.localeCompare(b.id));
     tb.innerHTML=rows.length?'':'<tr><td colspan="3" class="msg">Na razie nikogo – dodaj pierwszy adres.</td></tr>';
     rows.forEach(r=>{
-      const tr=el(`<tr><td>${esc(r.id)}</td><td>${r.role==='admin'?'admin':'dziennikarz'}</td><td class="actions"></td></tr>`);
+      const tr=el(`<tr><td>${esc(r.id)}</td><td>${roleTxt(r)}</td><td class="actions"></td></tr>`);
       const ac=tr.querySelector('.actions');
       const tg=el(`<button class="btn sm">${r.role==='admin'?'Zrób dziennikarzem':'Zrób adminem'}</button>`);
       tg.onclick=async()=>{await fs.doc('members/'+r.id).update({role:r.role==='admin'?'member':'admin'});loadMembers()};
+      if(r.role==='supporter'){const ex=el('<button class="btn sm">+ dni</button>');ex.title='Przedłuż o liczbę dni z pola wyżej';ex.onclick=async()=>{const days=Math.max(1,+($('#rq-days').value)||31);const base=r.until&&r.until.toDate&&r.until.toDate()>new Date()?r.until.toDate():new Date();const d=new Date(base.getTime()+days*864e5);d.setHours(23,59,59,0);await fs.doc('members/'+r.id).update({until:firebase.firestore.Timestamp.fromDate(d)});loadMembers()};ac.append(ex)}
       const del=el(`<button class="btn sm">Usuń</button>`);
       del.onclick=async()=>{if(del.dataset.s!=='1'){del.dataset.s='1';del.textContent='Na pewno?';return}await fs.doc('members/'+r.id).delete();loadMembers()};
-      ac.append(tg,del);tb.appendChild(tr);
+      if(r.role!=='supporter')ac.insertBefore(tg,ac.firstChild);ac.append(del);tb.appendChild(tr);
     });
   }catch(e){tb.innerHTML=`<tr><td colspan="3" class="msg err">Nie udało się wczytać listy (${esc(e.code||e.message)})</td></tr>`}
 }
 function showStudio(who){
   $('#gate').hidden=true;$('#boot').hidden=true;$('#deny').hidden=true;$('#studio').hidden=false;document.body.classList.add('inapp');
-  bindChrome();S.type='home';$('#mtitle').textContent='Start';renderNav();renderHome();
+  bindChrome();S.type='home';$('#mtitle').textContent='Start';renderNav();renderHome();loadPending();
 }
 await loadFonts();
 showStudio();
@@ -1683,11 +1747,41 @@ arrow:'<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'};
 function ico(k,sz){return `<svg class="ic" width="${sz||20}" height="${sz||20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||''}</svg>`}
 const ADMIN_EMAIL='hooday@gmail.com';
 function show(id){for(const x of ['boot','gate','deny','setup','first','studio'])$('#'+x).hidden=(x!==id);document.body.classList.toggle('inapp',id==='studio')}
-function renderWho(email,admin){
+function renderWho(email,admin,role){
   const out=()=>firebase.auth().signOut().then(()=>location.reload());
-  $('#who').innerHTML=`<span>${esc(email)}</span>${admin?'<span class="badge">admin</span>':''} <button class="btn sm so">Wyloguj</button>`;
-  $('#sbwho').innerHTML=`<span class="av">${esc((email[0]||'?').toUpperCase())}</span><span class="em"><b>${esc(email)}</b><small>${admin?'Administrator':'Ekipa'}</small></span><button class="ic-btn so" title="Wyloguj" aria-label="Wyloguj">${ico('out',20)}</button>`;
+  $('#who').innerHTML=`<span>${esc(email)}</span>${admin?'<span class="badge">admin</span>':role==='supporter'?'<span class="badge">wspierający</span>':''} <button class="btn sm so">Wyloguj</button>`;
+  $('#sbwho').innerHTML=`<span class="av">${esc((email[0]||'?').toUpperCase())}</span><span class="em"><b>${esc(email)}</b><small>${admin?'Administrator':role==='supporter'?'Wspierający':'Ekipa'}</small></span><button class="ic-btn so" title="Wyloguj" aria-label="Wyloguj">${ico('out',20)}</button>`;
   document.querySelectorAll('.so').forEach(b=>b.onclick=out);
+}
+async function notifyAdmin(type,payload){
+  const url=window.RTS_NOTIFY_URL;if(!url)return false;
+  try{const u=firebase.auth().currentUser;const idToken=await u.getIdToken();
+    await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type,idToken,...payload})});return true}
+  catch(e){return false}
+}
+async function setupDeny(fs,email){
+  const st=$('#d-state'),form=$('#d-form'),btn=$('#rq-go'),msg=$('#rq-msg');
+  const fmt=d=>d.toLocaleDateString('pl-PL',{day:'numeric',month:'long',year:'numeric'});
+  let expired=null,req=null;
+  try{const m=await fs.doc('members/'+email).get();if(m.exists&&m.data().role==='supporter'&&m.data().until)expired=m.data().until.toDate()}catch(e){}
+  try{const r=await fs.doc('accessRequests/'+email).get();if(r.exists)req=r.data()}catch(e){}
+  if(expired){$('#d-h').textContent='Dostęp wygasł';st.textContent='Twój dostęp skończył się '+fmt(expired)+'. Jeśli nadal wspierasz kanał, poproś o przedłużenie.';btn.textContent='Poproś o przedłużenie'}
+  if(req&&req.status==='pending'&&!expired){st.textContent='Prośba wysłana'+(req.at?' ('+fmt(new Date(req.at))+')':'')+'. Admin sprawdzi Twoje wsparcie w YouTube i nada dostęp. Odśwież stronę po decyzji.';st.className='msg ok'}
+  else if(req&&req.status==='rejected'&&!expired){st.textContent='Poprzednia prośba została odrzucona'+(req.note?': '+req.note:'')+'. Możesz wysłać nową, jeśli to pomyłka.'}
+  if(req&&req.nick)$('#rq-nick').value=req.nick;
+  btn.onclick=async()=>{
+    const nick=$('#rq-nick').value.trim();msg.className='msg';
+    if(nick.length<2){msg.textContent='Wpisz nazwę, pod którą wspierasz kanał na YouTube.';msg.className='msg err';return}
+    btn.disabled=true;
+    try{
+      const at=new Date().toISOString();
+      await fs.doc('accessRequests/'+email).set({email,nick,at,status:'pending'});
+      const sent=await notifyAdmin('request',{email,nick});
+      msg.textContent='Prośba wysłana. Admin dostał powiadomienie'+(sent?'':' (w aplikacji; mail może przyjść z opóźnieniem)')+'.';msg.className='msg ok';
+      st.textContent='Prośba wysłana. Odśwież stronę po decyzji admina.';st.className='msg ok';
+    }catch(e){msg.textContent='Nie udało się wysłać ('+(e.code||e.message)+').';msg.className='msg err'}
+    finally{btn.disabled=false}
+  };
 }
 async function startApp(){
   const cfg=window.RTS_FIREBASE;
@@ -1713,12 +1807,14 @@ async function startApp(){
     let snap;
     try{snap=await fs.doc('data/stats').get()}
     catch(e){
-      if(e.code==='permission-denied'){renderWho(email,false);show('deny');return}
+      if(e.code==='permission-denied'){renderWho(email,false);show('deny');setupDeny(fs,email);return}
       $('#boot').textContent='Błąd połączenia z bazą ('+(e.code||e.message)+')';show('boot');return;
     }
     started=true;
-    const isAdmin=email===ADMIN_EMAIL||await fs.doc('members/'+email).get().then(d=>d.exists&&d.data().role==='admin').catch(()=>false);
-    renderWho(email,isAdmin);
+    const mdoc=await fs.doc('members/'+email).get().then(d=>d.exists?d.data():null).catch(()=>null);
+    const role=mdoc&&mdoc.role||null,isAdmin=email===ADMIN_EMAIL||role==='admin';
+    const until=mdoc&&mdoc.until&&mdoc.until.toDate?mdoc.until.toDate():null;
+    renderWho(email,isAdmin,role);
     if(!snap.exists){
       if(!isAdmin){$('#boot').textContent='Dane nie zostały jeszcze wgrane. Napisz do admina.';show('boot');return}
       show('first');
@@ -1733,7 +1829,7 @@ async function startApp(){
     try{const b=await fs.doc('data/bg').get();if(b.exists)bg=b.data().dataUrl}catch(e){}
     try{const c=await fs.doc('settings/cards').get();if(c.exists)cards=c.data()}catch(e){}
     show('studio');
-    runApp(d,{fs,email,isAdmin,bg,cards});
+    runApp(d,{fs,email,isAdmin,role,until,bg,cards});
   });
 }
 startApp();
