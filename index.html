@@ -368,8 +368,10 @@ function agg(t){
   return o;
 }
 const AG={};Object.keys(T).forEach(id=>AG[id]=agg(+id));
+/* Najbliższy mecz Widzewa: pomija mecze zakończone (start + 2,5 h w przeszłości), także gdy dane nie są jeszcze odświeżone. */
+const widNext=()=>D.upcoming.filter(u=>/Widzew/.test(u[2]+u[3])&&Date.parse(u[1]+':00Z')+9e6>Date.now()).sort((a,b)=>a[1]<b[1]?-1:1)[0];
 const nextOpp=(()=>{
-  const u=D.upcoming.find(x=>x[2]==='Widzew Łódź'||x[3]==='Widzew Łódź');
+  const u=widNext();
   if(!u)return null;const o=u[2]==='Widzew Łódź'?u[3]:u[2];return byFull[o]||null;
 })();
 function upcomingFor(a,b){
@@ -1456,7 +1458,7 @@ function renderNav(){
 }
 function renderTabs(){renderNav()}
 function nextMatchHtml(){
-  const nx=D.upcoming.filter(u=>/Widzew/.test(u[2]+u[3])).sort((a,b)=>a[1]<b[1]?-1:1)[0];
+  const nx=widNext();
   if(!nx)return '';
   let when='';try{when=new Date(nx[1]+':00Z').toLocaleString('pl-PL',{timeZone:'Europe/Warsaw',weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}catch(e){}
   return `<div class="nm"><span class="nm-k">Najbliższy mecz</span><b>${esc(nx[2])} – ${esc(nx[3])}</b><span>${esc(when)} · ${nx[0]}. kolejka</span></div>`;
@@ -1633,8 +1635,9 @@ function packCtx(){
     L.push('Czołówka: '+tt.slice(0,3).map((x,i)=>(i+1)+'. '+x.sh+' '+x.p+' pkt').join(', ')+'.');
     const wm=ft.filter(r=>r[3]===WID||r[4]===WID).sort((a,b)=>a[2]<b[2]?-1:1).slice(-5);
     L.push('Ostatnie mecze Widzewa: '+wm.map(r=>(T[r[3]]||{}).short+' '+r[5]+':'+r[6]+' '+(T[r[4]]||{}).short).join('; ')+'.');
-    const nx=D.upcoming.filter(u=>/Widzew/.test(u[2]+u[3])).sort((a,b)=>a[1]<b[1]?-1:1)[0];
-    if(nx)L.push('Najbliższy mecz Widzewa: '+nx[2]+' – '+nx[3]+', kolejka '+nx[0]+', '+nx[1].replace('T',' ')+' UTC (czas polski +2 h).');
+    const nx=widNext();
+    if(nx){let pl=nx[1].replace('T',' ')+' UTC';try{pl=new Date(nx[1]+':00Z').toLocaleString('pl-PL',{timeZone:'Europe/Warsaw',weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' (czas polski)'}catch(e){}
+      L.push('Najbliższy mecz Widzewa: '+nx[2]+' – '+nx[3]+', kolejka '+nx[0]+', '+pl+'.')}
     return L;
   }catch(e){return []}
 }
