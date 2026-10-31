@@ -225,6 +225,36 @@ body.inapp #topbar0{display:none}
  .mt{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.gr{display:flex;flex-direction:column;gap:18px}
+.gr-l{font:800 13px 'Barlow Condensed',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.gr-row{display:flex;flex-wrap:wrap;gap:8px}
+.gr-b{appearance:none;font:600 15px 'Barlow',sans-serif;min-height:40px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center}
+.gr-b:hover{border-color:var(--red)}
+.gr-b[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--red-ink)}
+.gr-res{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.gr-r{appearance:none;text-align:left;font:inherit;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:8px 12px;min-height:44px;cursor:pointer;display:flex;flex-direction:column;justify-content:center}
+.gr-r:hover{border-color:var(--red)}
+.gr-r span{color:var(--mute);font-size:13px}
+.gr-panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 16px 8px;display:flex;flex-direction:column;gap:4px}
+.gr-panel h2{font-size:clamp(30px,6vw,44px);line-height:1}
+.gr-lead{font:700 clamp(20px,4.4vw,26px)/1.2 'Barlow Condensed',sans-serif;margin:8px 0 0;text-wrap:balance}
+.gr-lead b{color:var(--red)}
+#gr-chart{width:100%;margin-top:6px}
+#gr-chart svg{display:block;width:100%;overflow:visible}
+#gr-chart text{font-family:'Barlow',sans-serif}
+.gr-seasons{display:grid;border-top:1px solid var(--line);margin-top:6px}
+.gr-c{padding:12px 4px 14px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0;align-items:center;text-align:center}
+.gr-c:first-child{border-left:0}
+.gr-s{font:700 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;color:var(--mute)}
+.gr-club{font-size:12px;line-height:1.2;min-height:2.4em;overflow-wrap:anywhere}
+.gr-club.new{color:var(--red);font-weight:700}
+.gr-min{font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.gr-pc{font:800 30px/1 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums}
+.gr-pc.na{color:var(--mute);font-weight:500}
+.gr-bar{position:relative;width:100%;max-width:70px;height:6px;background:var(--line);border-radius:3px}
+.gr-bar i{position:absolute;inset:0 auto 0 0;background:var(--red);border-radius:3px}
+.gr-bar u{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--mute)}
+.gr-pl{font-size:11px;color:var(--mute);letter-spacing:.04em}
 </style></head><body>
 <div class="wrap">
 <header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS <b>Skaut</b></span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
@@ -1381,9 +1411,9 @@ const ha={
   post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSkaut #Widzew`}
 };
 
-const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact};
+const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact,growth:{name:'Rozwój'}};
 const EXT=PL.length>0&&PL[0].length>=28;
-const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','scat']:[]),'fact'];
+const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','scat']:[]),'fact','growth'];
 
 /* ---------- stan ---------- */
 let isAdmin=!!ctx.isAdmin,downloads=true;
@@ -1408,13 +1438,14 @@ const TMETA={
  tcmp:{g:'Ludzie i kluby',d:'Dwa kluby na jednym radarze.'},
  scat:{g:'Mapy i fakty',d:'Cała liga na jednej mapie punktów.'},
  fact:{g:'Mapy i fakty',d:'Dowolna liczba z własnym podpisem.'},
+ growth:{g:'Historia',d:'Zawodnik sezon po sezonie: wskaźniki na 90 minut i percentyle na pozycji.'},
  admin:{g:'',d:'Ekipa, tło kart, dostępne typy kart i dane.'}};
-const TGROUPS=['Mecz','Ludzie i kluby','Mapy i fakty'];
+const TGROUPS=['Mecz','Ludzie i kluby','Mapy i fakty','Historia'];
 function visKeys(){return TKEYS.filter(k=>isAdmin||(SET.cards[k]!==false&&(!isSupporter||SUP_KEYS.includes(k))))}
 function titleOf(k){return k==='home'?'Start':k==='admin'?'Ustawienia':(TYPES[k]||{}).name||''}
 function closeDrawer(){$('#side').classList.remove('open');$('#scrim').classList.remove('on')}
 function go(k){S.type=k;S.postEd=false;closeDrawer();renderNav();$('#mtitle').textContent=titleOf(k);
-  if(k==='home')renderHome();else if(k==='admin')Promise.resolve(renderAdmin()).then(()=>$('#view').insertAdjacentHTML('afterbegin',pageHead('admin')));else renderWork();window.scrollTo({top:0})}
+  if(k==='home')renderHome();else if(k==='growth')renderGrowth();else if(k==='admin')Promise.resolve(renderAdmin()).then(()=>$('#view').insertAdjacentHTML('afterbegin',pageHead('admin')));else renderWork();window.scrollTo({top:0})}
 function renderNav(){
   const nav=$('#nav');nav.innerHTML='';
   const item=(k,label)=>{const b=el(`<button class="ni${S.type===k?' on':''}" ${S.type===k?'aria-current="page"':''}>${ico(k,20)}<span>${esc(label)}</span></button>`);b.onclick=()=>go(k);return b};
@@ -1449,6 +1480,94 @@ function renderHome(){
   v.querySelectorAll('.tl').forEach(b=>b.onclick=()=>go(b.dataset.k));
   const hg=$('#hn-go');if(hg)hg.onclick=()=>go('admin');
 }
+/* ---------- Rozwój: historia zawodników (Firestore data/history_*) ---------- */
+const GM=[{l:'Gole',i:0,d:2},{l:'Asysty',i:1,d:2},{l:'Strzały',i:2,d:2},{l:'Kluczowe podania',i:3,d:2},{l:'Odbiory i przechwyty',i:4,d:2},{l:'Wygrane pojedynki',i:5,d:1},{l:'Udane dryblingi',i:6,d:2},{l:'Faule wymuszone',i:7,d:2},{l:'Ocena średnia',i:8,d:2,rat:1}];
+const GPOS={G:['Bramkarz','bramkarzy'],D:['Obrońca','obrońców'],M:['Pomocnik','pomocników'],F:['Napastnik','napastników']};
+const G={H:null,sel:null,m:0};
+const gfold=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l').replace(/Ł/g,'L').toLowerCase();
+const GCL={};D.teams.forEach(t=>GCL[gfold(t[1])]=t[1]);
+const gclub=n=>GCL[gfold(n)]||n;
+const gf=(v,d)=>v.toFixed(d).replace('.',',');
+const gmin=v=>String(v).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+const gss=s=>s+'/'+String(s+1).slice(2);
+async function gLoad(){
+  if(G.H)return G.H;
+  const get=async n=>{const d=await ctx.fs.doc('data/'+n).get();return d.exists?JSON.parse(d.data().json):null};
+  const idx=await get('history_index');
+  if(!idx)return null;
+  const s0=Math.min(...idx.players.map(p=>p[5])),s1=Math.max(...idx.players.map(p=>p[4]));
+  const seasons=[];for(let s=s0;s<=s1;s++)seasons.push(s);
+  const docs=await Promise.all(seasons.map(s=>get('history_'+s)));
+  const by={};docs.forEach((d,i)=>{if(d)d.rows.forEach(r=>{(by[r[0]]||(by[r[0]]={}))[seasons[i]]=r})});
+  const names=idx.players.map(p=>({pid:p[0],n:p[1],k:gfold(p[1]+' '+p[3]),pos:p[2],club:p[3],ls:p[4]}));
+  return G.H={seasons,by,names,byPid:Object.fromEntries(names.map(x=>[x.pid,x]))};
+}
+function gNice(span){for(const s of [.05,.1,.2,.25,.5,1,2,5,10])if(span/s<=4)return s;return 10}
+async function renderGrowth(){
+  const v=$('#view'),head=pageHead('growth');
+  v.innerHTML=head+'<div class="msg">Wczytuję historię…</div>';
+  let H;
+  try{H=await gLoad()}catch(e){if(S.type==='growth')v.innerHTML=head+`<div class="msg err">Nie udało się wczytać historii (${esc(e.code||e.message)}).</div>`;return}
+  if(S.type!=='growth')return;
+  if(!H){v.innerHTML=head+`<div class="card-box"><b>Historia nie została jeszcze wgrana.</b><span class="msg">${isAdmin?'Wgraj dokumenty data/history_* (instrukcja: studio/history w repo rts-workspace).':'Dane pojawią się wkrótce.'}</span></div>`;return}
+  const wid=D.players.filter(p=>p[2]===WID&&H.byPid[p[0]]).sort((a,b)=>b[6]-a[6]).slice(0,16).map(p=>H.byPid[p[0]]);
+  if(G.sel==null||!H.byPid[G.sel])G.sel=(wid.find(x=>Object.keys(H.by[x.pid]||{}).length>=3)||wid[0]||H.names[0]).pid;
+  v.innerHTML=head+`<div class="gr">
+  <section><div class="gr-l">Szukaj zawodnika</div><input type="text" id="gr-q" placeholder="Nazwisko lub klub, np. Shehu" autocomplete="off" aria-label="Szukaj zawodnika"><div class="gr-res" id="gr-res"></div></section>
+  ${wid.length?'<section><div class="gr-l">Widzew w obecnym sezonie</div><div class="gr-row" id="gr-w"></div></section>':''}
+  <section><div class="gr-l">Wskaźnik</div><div class="gr-row" id="gr-m"></div></section>
+  <section class="gr-panel"><h2 id="gr-name"></h2><p class="msg" id="gr-sub"></p><p class="gr-lead" id="gr-lead"></p><p class="msg" id="gr-hint"></p><div id="gr-chart"></div><div class="gr-seasons" id="gr-seasons"></div></section>
+  <p class="msg">Wartości na 90 minut; ocena to średnia sezonowa z API-Football. Percentyl to miejsce wśród zawodników tej samej pozycji w tym samym sezonie Ekstraklasy (min. 450 minut), 50 = środek stawki. Puste kółko i brak percentyla: poniżej 450 minut.</p></div>`;
+  const chipRow=(box,items,cur,fn)=>{box.innerHTML='';items.forEach((it,i)=>{const b=el(`<button class="gr-b" type="button" aria-pressed="${it.on}">${esc(it.l)}</button>`);b.onclick=()=>fn(i);box.appendChild(b)})};
+  const paint=()=>{
+    if($('#gr-w'))chipRow($('#gr-w'),wid.map(x=>({l:x.n,on:x.pid===G.sel})),0,i=>{G.sel=wid[i].pid;paint()});
+    chipRow($('#gr-m'),GM.map((m,i)=>({l:m.l,on:i===G.m})),0,i=>{G.m=i;paint()});
+    gDraw(H);
+  };
+  const q=$('#gr-q'),res=$('#gr-res');
+  q.oninput=()=>{const t=gfold(q.value.trim());res.innerHTML='';if(t.length<2)return;
+    H.names.filter(x=>x.k.includes(t)).slice(0,8).forEach(x=>{const b=el(`<button class="gr-r" type="button"><b>${esc(x.n)}</b><span>${esc((GPOS[x.pos]||[''])[0])} · ${esc(gclub(x.club))} (${gss(x.ls)})</span></button>`);
+      b.onclick=()=>{G.sel=x.pid;q.value='';res.innerHTML='';paint()};res.appendChild(b)})};
+  paint();
+}
+function gDraw(H){
+  const box=$('#gr-chart');if(!box||S.type!=='growth')return;
+  const info=H.byPid[G.sel],rows=H.by[G.sel]||{},m=GM[G.m],S_=H.seasons,n=S_.length;
+  const pts=[];S_.forEach((s,ix)=>{const r=rows[s];if(r)pts.push({ix,s,r,v:m.rat?r[5]:r[6+m.i],pc:r[14]?r[14][m.i]:null,ok:!!r[14]})});
+  $('#gr-name').textContent=info.n;
+  const clubs=[];S_.forEach(s=>{const r=rows[s];if(r&&clubs[clubs.length-1]!==gclub(r[1]))clubs.push(gclub(r[1]))});
+  const last=pts.filter(p=>p.ok).pop(),prev=pts.filter(p=>p.ok).slice(-2)[0];
+  $('#gr-sub').textContent=((GPOS[info.pos]||[''])[0]+' · '+clubs.join(' → ')).replace(/^ · /,'');
+  if(last&&last!==prev){
+    $('#gr-lead').innerHTML=`${esc(m.l)} w sezonie ${gss(last.s)}: <b>${gf(last.v,m.d)}</b>, ${last.pc}. percentyl wśród ${esc((GPOS[last.r[2]]||['','zawodników'])[1])}`;
+    const dv=last.v-prev.v,dp=last.pc-prev.pc;
+    $('#gr-hint').textContent=(m.rat?'Średnia sezonowa. ':'Na 90 minut. ')+`Wobec sezonu ${gss(prev.s)}: ${dv>=0?'+':'−'}${gf(Math.abs(dv),m.d)}, percentyl ${dp>=0?'+':'−'}${Math.abs(dp)} pkt.`;
+  }else{
+    $('#gr-lead').textContent=last?`${m.l} w sezonie ${gss(last.s)}: ${gf(last.v,m.d)}, ${last.pc}. percentyl`:'Za mało minut na percentyl';
+    $('#gr-hint').textContent=last?(m.rat?'Średnia sezonowa.':'Na 90 minut.'):'Zawodnik nie ma sezonu z min. 450 minut w Ekstraklasie 2021–2025.';
+  }
+  const vals=pts.map(p=>p.v);let lo=0,hi=(Math.max(0,...vals))*1.25;
+  if(m.rat&&vals.length){lo=Math.floor((Math.min(...vals)-.25)*10)/10;hi=Math.ceil((Math.max(...vals)+.2)*10)/10}
+  if(!(hi>lo))hi=lo+1;
+  const step=gNice(hi-lo),ticks=[];for(let t=Math.ceil(lo/step)*step;t<=hi+1e-9;t+=step)ticks.push(+t.toFixed(3));
+  const W=box.clientWidth||320,Hh=210,top=22,bot=10;
+  const X=ix=>(ix+.5)*W/n,Y=v=>top+(Hh-top-bot)*(1-(v-lo)/(hi-lo));
+  let g='';
+  ticks.forEach(t=>{g+=`<line x1="0" x2="${W}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="2" y="${Y(t)-4}" font-size="11" fill="var(--mute)">${gf(t,t===0?0:step<1?(step<.1?2:1):0)}</text>`});
+  for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i];if(b.ix-a.ix!==1)continue;
+    g+=`<line x1="${X(a.ix)}" y1="${Y(a.v)}" x2="${X(b.ix)}" y2="${Y(b.v)}" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"${a.ok&&b.ok?'':' stroke-dasharray="2 6" opacity=".6"'}/>`}
+  pts.forEach((p,i)=>{const L=i===pts.length-1,x=X(p.ix),y=Y(p.v);
+    g+=`<circle cx="${x}" cy="${y}" r="${L?6.5:5}" fill="${p.ok?'var(--red)':'var(--panel)'}" stroke="var(--red)" stroke-width="2.5"/><text x="${x}" y="${y-13}" text-anchor="middle" font-size="${L?15:13}" font-weight="${L?700:500}" fill="var(--ink)" style="font-variant-numeric:tabular-nums">${gf(p.v,m.d)}</text>`});
+  box.innerHTML=`<svg height="${Hh}" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${esc(m.l)} sezon po sezonie">${g}</svg>`;
+  let h='',pc=null;
+  S_.forEach(s=>{const r=rows[s],lab=`<span class="gr-s">${gss(s)}</span>`;
+    if(!r){h+=`<div class="gr-c">${lab}<span class="gr-club">brak w lidze</span><span class="gr-pc na">–</span></div>`;return}
+    const q=r[14]?r[14][m.i]:null,cn=gclub(r[1]),ch=pc&&pc!==cn;pc=cn;
+    h+=`<div class="gr-c">${lab}<span class="gr-club${ch?' new':''}">${esc(cn)}${ch?'<br>nowy klub':''}</span><span class="gr-min">${gmin(r[3])} min</span>`+
+      (q===null?'<span class="gr-pc na">–</span><span class="gr-pl">poniżej 450 min</span>':`<span class="gr-pc">${q}</span><div class="gr-bar"><i style="width:${Math.max(q,2)}%"></i><u></u></div><span class="gr-pl">percentyl</span>`)+'</div>'});
+  const sc=$('#gr-seasons');sc.style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;sc.innerHTML=h;
+}
+addEventListener('resize',()=>{if(S.type==='growth'&&G.H)gDraw(G.H)});
 function pageHead(k){const m=TMETA[k]||{};return `<div class="ph"><span class="ph-i">${ico(k,26)}</span><div><h1>${esc(titleOf(k))}</h1><p>${esc(m.d||'')}</p></div></div>`}
 function bindChrome(){
   $('#burger').innerHTML=ico('menu',24);
@@ -1584,7 +1703,7 @@ function buildCtl(){
 }
 let rt=null;
 function syncAutoInputs(){const p=curP();for(const k of ['title','sub','date1','date2','foot']){const i=$('#f-'+k);if(i&&i!==document.activeElement&&i.value!==(p[k]??''))i.value=p[k]??''}}
-function refresh(now){clearTimeout(rt);const go=()=>{if(S.type==='admin')return;draw();syncAutoInputs()};if(now)go();else rt=setTimeout(go,180)}
+function refresh(now){clearTimeout(rt);const go=()=>{if(S.type==='admin'||S.type==='growth')return;draw();syncAutoInputs()};if(now)go();else rt=setTimeout(go,180)}
 async function svgToUrl(svg){return URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}))}
 async function draw(){
   const Ty=TYPES[S.type],p=curP();let svg;
@@ -1758,6 +1877,7 @@ menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
 dl:'<path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M5 21h14"/>',
 out:'<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
 inst:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M12 7v7"/><path d="M9 11l3 3 3-3"/>',
+growth:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
 arrow:'<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'};
 function ico(k,sz){return `<svg class="ic" width="${sz||20}" height="${sz||20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||''}</svg>`}
 const ADMIN_EMAIL='hooday@gmail.com';
