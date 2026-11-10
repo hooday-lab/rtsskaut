@@ -41,13 +41,14 @@ h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;text
 .work{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:20px;align-items:start}
 @media (max-width:860px){.work{grid-template-columns:minmax(0,1fr)}.pvcol{order:-1}}
 .ctl,.card-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
-.pvcol{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:8px}
-@media (max-width:860px){.pvcol{position:static}}
+.pvcol{display:flex;flex-direction:column;gap:12px;min-width:0;align-self:stretch}
+.pvstick{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:8px;z-index:5}
+@media (max-width:860px){.pvstick{position:static}}
 .mob-only{display:none}
 .card-box>.sec{display:flex;justify-content:space-between;align-items:center}
 .frame{background:#000;border-radius:8px;overflow:hidden;aspect-ratio:16/9;width:100%;border:1px solid var(--line)}
-.frame img{display:block;width:100%;height:100%}
-.frame.v{aspect-ratio:4/5;max-width:min(100%,480px);margin:0 auto}
+.frame img{display:block;width:100%;height:100%;object-fit:contain}
+.frame.v{aspect-ratio:4/5;height:min(600px,calc(100vh - 175px));height:min(600px,calc(100dvh - 175px));min-height:260px;width:auto;max-width:100%;margin:0 auto}
 .fmt{display:flex;gap:8px}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute);font-weight:600;letter-spacing:.02em}
 label.f span.hint{font-weight:400}
@@ -92,7 +93,7 @@ body{padding-inline:12px;padding-bottom:calc(88px + env(safe-area-inset-bottom,0
 .work{display:flex;flex-direction:column;gap:12px;width:100%;min-width:0}
 .work>*,.ctl,.pkgrid,.card-box{min-width:0;max-width:100%;width:100%}
 .ctl{overflow:hidden}
-.pvcol{display:contents}
+.pvcol,.pvstick{display:contents;position:static}
 #fmt{order:1}
 #fmt .btn{flex:1;min-height:44px;font-size:14px;white-space:nowrap;padding-inline:8px}
 #frame{order:2;position:sticky;top:62px;z-index:20;box-shadow:0 6px 14px rgba(0,0,0,.25)}
@@ -216,7 +217,7 @@ body.inapp #topbar0{display:none}
  .hhero{padding:22px;gap:18px;flex-direction:column;align-items:flex-start}
  .hhero img{width:84px;height:84px}
 }
-@media (max-width:1180px) and (min-width:960px){.work{grid-template-columns:minmax(0,1fr)}.pvcol{order:-1;position:static}}
+@media (max-width:1180px) and (min-width:960px){.work{grid-template-columns:minmax(0,1fr)}.pvcol{order:-1}.pvstick{position:static}}
 @media (max-width:640px){
  .main{padding:0 12px 100px}.mtop{margin:0 -12px 10px}
  #frame{top:58px}
@@ -1595,12 +1596,12 @@ function renderWork(){
   if(S.type==='admin')return renderAdmin();
   const Ty=TYPES[S.type],p=curP();
   const v=$('#view');
-  v.innerHTML=pageHead(S.type)+`<div class="work"><div class="ctl" id="ctl"></div><div class="pvcol"><div class="fmt" id="fmt"></div><div class="frame" id="frame"><img id="pv" alt="Podgląd karty"></div>
-  <div class="actions dlbar"><button class="btn pri" id="dl">${ico('dl',18)}<span>Pobierz PNG</span></button><button class="btn mob-only" id="pkbar">Kopiuj pakiet</button><span class="msg" id="dlmsg"></span></div>
-  <div class="pkgrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start"><div class="card-box"><div class="sec">2 · Tekst posta (do edycji)</div><textarea id="post"></textarea>
+  v.innerHTML=pageHead(S.type)+`<div class="work"><div class="ctl" id="ctl"></div><div class="pvcol"><div class="pvstick"><div class="fmt" id="fmt"></div><div class="frame" id="frame"><img id="pv" alt="Podgląd karty"></div>
+  <div class="actions dlbar"><button class="btn pri" id="dl">${ico('dl',18)}<span>Pobierz PNG</span></button><button class="btn mob-only" id="pkbar">Kopiuj pakiet</button><span class="msg" id="dlmsg"></span></div></div></div></div>
+  <div class="pkgrid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start"><div class="card-box"><div class="sec">2 · Tekst posta (do edycji)</div><textarea id="post"></textarea>
   <div class="actions"><button class="btn sm" id="cp">Kopiuj tekst</button><button class="btn sm" id="rp">Odśwież z karty</button><span class="msg" id="cpmsg"></span></div></div>
   <div class="card-box"><div class="sec">3 · Pakiet dla komunikacji (prompt do posta)</div><label class="f">Link do live na YouTube (opcjonalnie)<input type="text" id="pk-link" placeholder="https://youtu.be/..."></label><textarea id="pk-txt" readonly style="min-height:260px"></textarea>
-  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div></div></div>`;
+  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div>`;
   buildFmt();buildCtl();$('#dl').onclick=doDownload;
   $('#post').oninput=()=>{S.postEd=true;buildPack()};
   $('#cp').onclick=async()=>{const t=$('#post');try{await navigator.clipboard.writeText(t.value);$('#cpmsg').textContent='Skopiowano';$('#cpmsg').className='msg ok'}catch(e){t.select();$('#cpmsg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#cpmsg').className='msg'}};
