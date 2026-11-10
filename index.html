@@ -1754,14 +1754,14 @@ async function renderAdmin(){
   <div class="card-box"><h3>Tło kart</h3><p class="msg">Osobne tła dla ekipy (admin i dziennikarze) oraz dla wspierających. Wybierz dla kogo i w jakim formacie, wgraj obraz i gotowe. Gdy wspierający nie ma własnego tła, dostaje tło ekipy.</p>
    <div class="actions"><label class="msg">Dla kogo <select id="bg-for"><option value="E">Ekipa (admin i dziennikarze)</option><option value="S">Wspierający</option></select></label>
    <label class="msg">Format <select id="bg-fmt"><option value="H">16:9 (1920×1080)</option><option value="V">4:5 (1080×1350)</option></select></label></div>
-   <img class="mini" id="bgp" alt="Aktualne tło" style="max-height:220px;width:auto"><div class="msg" id="bg-info"></div>
+   <img class="mini" id="bgp" alt="Aktualne tło"><div class="msg" id="bg-info"></div>
    <div class="actions"><input type="file" id="bgf" accept="image/png,image/jpeg,image/webp"><button class="btn" id="bgr">Przywróć domyślne</button></div><div class="msg" id="bg-msg"></div></div>
   <div class="card-box"><h3>Dostępne typy kart</h3><div class="checks" id="cards-box"></div><div class="msg" id="k-msg"></div></div>
   <div class="card-box"><h3>Dane</h3><p class="msg">Aktualne dane: z dnia <b>${esc(D.meta.generatedAt)}</b>, rozegrane kolejki 1–${lastRound}, sezon ${esc(D.meta.season)}.</p>
    <p class="msg">Po kolejce wgraj tu nowy plik <code>rtsstat-data.json</code> (dostajesz go od Claude'a), a potem odśwież stronę.</p>
    <div class="actions"><input type="file" id="df" accept="application/json,.json"></div><div class="msg" id="d-msg"></div></div></div>`;
   const slot=()=>{const f=$('#bg-for').value,m=$('#bg-fmt').value;return {key:f==='E'?m:(m==='H'?'S':'SV'),path:{H:'data/bg',V:'data/bgV',S:'data/bgS',SV:'data/bgSV'}[f==='E'?m:(m==='H'?'S':'SV')],m,f}};
-  const showBg=()=>{const sl=slot();const own=BGS[sl.key];const eff=own||(sl.f==='S'?BGS[sl.m]:null)||(sl.m==='H'?BG_DEFAULT:BG_V0);$('#bgp').src=eff;$('#bg-info').textContent=own?'Własne tło ustawione.':(sl.f==='S'&&BGS[sl.m]?'Brak własnego tła, używane jest tło ekipy.':'Domyślne tło RTS.')};
+  const showBg=()=>{const sl=slot();const own=BGS[sl.key];const eff=own||(sl.f==='S'?BGS[sl.m]:null)||(sl.m==='H'?BG_DEFAULT:BG_V0);$('#bgp').src=eff;{const bp=$('#bgp');const v=sl.m!=='H';bp.style.aspectRatio=v?'4/5':'16/9';bp.style.maxWidth=v?'288px':'360px';bp.style.objectFit='contain'}$('#bg-info').textContent=own?'Własne tło ustawione.':(sl.f==='S'&&BGS[sl.m]?'Brak własnego tła, używane jest tło ekipy.':'Domyślne tło RTS.')};
   $('#bg-for').onchange=$('#bg-fmt').onchange=showBg;showBg();
   const cb=$('#cards-box');cb.innerHTML=TKEYS.map(k=>`<label><input type="checkbox" data-k="${k}" ${SET.cards[k]!==false?'checked':''}> ${esc(TYPES[k].name)}</label>`).join('');
   cb.querySelectorAll('input').forEach(i=>i.onchange=async()=>{
