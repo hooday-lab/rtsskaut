@@ -4,16 +4,23 @@ service cloud.firestore {
     function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
     function mail() { return request.auth.token.email.lower(); }
     function mref() { return /databases/$(database)/documents/members/$(mail()); }
+    function hasM() { return exists(mref()); }
+    function mdoc() { return get(mref()).data; }
     function isAdmin() {
       return signedIn() && (
         mail() == 'hooday@gmail.com' ||
-        (exists(mref()) && get(mref()).data.role == 'admin'));
+        (hasM() && mdoc().role == 'admin'));
     }
-    // Ekipa (member/admin) zawsze; wspierający tylko do daty "until".
-    function isMember() {
-      return signedIn() && (isAdmin() || (exists(mref()) && (
-        get(mref()).data.role != 'supporter' ||
-        (get(mref()).data.get('until', null) != null && get(mref()).data.until > request.time))));
+    // Ekipa (member/admin): zawsze, bez ograniczeń poziomu.
+    function isCrew() { return signedIn() && (isAdmin() || (hasM() && mdoc().role != 'supporter')); }
+    // Poziomy dostępu (decyzja 11.11.2026): 0 = każdy zalogowany (darmowy i Poziom I), 1 = Poziom II, 2 = Poziom III.
+    // Wspierający: poziom z pola "level" (brak pola = 2, dawni wspierający), ważny do daty "until" (karencja 3 dni
+    // jest wliczona w "until" przez synchronizację). Po "until" poziom spada do 0.
+    function level() {
+      return !signedIn() ? -1 :
+        (isCrew() ? 2 :
+        (!hasM() ? 0 :
+        ((mdoc().get('until', null) != null && mdoc().until > request.time) ? mdoc().get('level', 2) : 0)));
     }
     match /members/{id} {
       allow read: if signedIn() && (id == mail() || isAdmin());
@@ -29,11 +36,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /data/{id} {
-      allow read: if isMember();
+      // Dane bieżące i tła: każdy zalogowany (poziom darmowy). Historia zawodników 2021–2025 (Rozwój): Poziom III.
+      // Pozostałe dokumenty (kopie zapasowe itp.): tylko ekipa.
+      allow read: if signedIn() && (
+        id in ['stats', 'bg', 'bgV', 'bgS', 'bgSV'] ||
+        (id.matches('history_.*') && level() >= 2) ||
+        isCrew());
       allow write: if isAdmin();
     }
     match /settings/{id} {
-      allow read: if isMember();
+      allow read: if signedIn();
       allow write: if isAdmin();
     }
   }

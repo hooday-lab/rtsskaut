@@ -50,6 +50,17 @@ h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;text
 .frame img{display:block;width:100%;height:100%;object-fit:contain}
 .frame.v{aspect-ratio:4/5;height:min(600px,calc(100vh - 175px));height:min(600px,calc(100dvh - 175px));min-height:260px;width:auto;max-width:100%;margin:0 auto}
 .fmt{display:flex;gap:8px}
+.ni.lk{opacity:.62}.ni .need,.tl .need,.btn .need{margin-left:auto;font-size:12px;font-weight:700;border:1px solid currentColor;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.btn .need{margin-left:6px;padding:0 6px;font-size:11px}
+.tl.lk{opacity:.7}.btn.lk{opacity:.7}
+.lockedview #pv{filter:blur(6px) grayscale(1) brightness(.65)}
+.lockedview #ctl{opacity:.55}
+.frame .veil{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:14px;color:#fff;background:rgba(0,0,0,.35)}
+.frame .veil b{font-family:var(--disp,inherit);font-size:24px;text-transform:uppercase;letter-spacing:.04em}
+.frame .veil .btn{margin-top:4px}
+.frame{position:relative}
+.pklock{opacity:.6}
+.pknote{font-weight:600}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute);font-weight:600;letter-spacing:.02em}
 label.f span.hint{font-weight:400}
 input[type=text],input[type=number],select,textarea{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
@@ -1420,12 +1431,22 @@ const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','s
 
 /* ---------- stan ---------- */
 let isAdmin=!!ctx.isAdmin,downloads=true;
+const isCrew=isAdmin||ctx.role==='member';
 const isSupporter=!isAdmin&&ctx.role==='supporter';
-const SUP_KEYS=['player','pcmp','tcmp','scat','cmp'];
+/* Poziomy dostępu (decyzja Bartka 11.11.2026): 0 = darmowy i Poziom I, 1 = Poziom II, 2 = Poziom III. Ekipa zawsze 2.
+   Wsparcie ma ważność "until" (karencja 3 dni liczona przez synchronizację); brak ważności = poziom 0. */
+const LV=(()=>{if(isCrew)return 2;if(ctx.role==='supporter'&&ctx.until&&ctx.until>new Date())return Math.max(0,Math.min(2,ctx.level==null?2:+ctx.level));return 0})();
+if(LV<1)FMT='h';
+const NEED={rival:0,match:0,homeaway:0,player:1,cmp:1,scat:1,fact:1,pcmp:2,tcmp:2,growth:2};
+const ROM=['','II','III'];
+const SUBN=['Kibic Rozmów','Stały Bywalec','Elita Rozmów'];
+const JOIN='https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join';
+const locked=k=>LV<(NEED[k]||0);
+const lockTxt=k=>'od Poziomu '+ROM[NEED[k]||0];
 let PENDING=0;
 let SET={bg:null,cards:ctx.cards||{}};
 const BGS=ctx.bgs||{};
-const bgOf=(k)=>{const sup=isSupporter;return (sup?BGS[k==='H'?'S':'SV']:null)||BGS[k]||(k==='H'?BG_DEFAULT:BG_V0)};
+const bgOf=(k)=>{const sup=!isCrew;return (sup?BGS[k==='H'?'S':'SV']:null)||BGS[k]||(k==='H'?BG_DEFAULT:BG_V0)};
 let bgData=bgOf('H');BG_V=bgOf('V');
 const S={type:'rival',p:{},url:null,postEd:false,busy:false};
 function saveBlob(name,blob){const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
@@ -1444,14 +1465,14 @@ const TMETA={
  growth:{g:'Historia',d:'Zawodnik sezon po sezonie: wskaźniki na 90 minut i percentyle na pozycji.'},
  admin:{g:'',d:'Ekipa, tło kart, dostępne typy kart i dane.'}};
 const TGROUPS=['Mecz','Ludzie i kluby','Mapy i fakty','Historia'];
-function visKeys(){return TKEYS.filter(k=>isAdmin||(SET.cards[k]!==false&&(!isSupporter||SUP_KEYS.includes(k))))}
+function visKeys(){return TKEYS.filter(k=>isAdmin||SET.cards[k]!==false)}
 function titleOf(k){return k==='home'?'Start':k==='admin'?'Ustawienia':(TYPES[k]||{}).name||''}
 function closeDrawer(){$('#side').classList.remove('open');$('#scrim').classList.remove('on')}
 function go(k){S.type=k;S.postEd=false;closeDrawer();renderNav();$('#mtitle').textContent=titleOf(k);
-  if(k==='home')renderHome();else if(k==='growth')renderGrowth();else if(k==='admin')Promise.resolve(renderAdmin()).then(()=>$('#view').insertAdjacentHTML('afterbegin',pageHead('admin')));else renderWork();window.scrollTo({top:0})}
+  if(k==='home')renderHome();else if(k==='growth')renderGrowth();else if(k==='admin')Promise.resolve(renderAdmin()).then(()=>$('#view').insertAdjacentHTML('afterbegin',pageHead('admin')));else{renderWork();applyLock()}window.scrollTo({top:0})}
 function renderNav(){
   const nav=$('#nav');nav.innerHTML='';
-  const item=(k,label)=>{const b=el(`<button class="ni${S.type===k?' on':''}" ${S.type===k?'aria-current="page"':''}>${ico(k,20)}<span>${esc(label)}</span></button>`);b.onclick=()=>go(k);return b};
+  const item=(k,label)=>{const lk=k in NEED&&locked(k);const b=el(`<button class="ni${S.type===k?' on':''}${lk?' lk':''}" ${S.type===k?'aria-current="page"':''}>${ico(k,20)}<span>${esc(label)}</span>${lk?`<span class="need" title="${esc(lockTxt(k))}">${ROM[NEED[k]]}</span>`:''}</button>`);b.onclick=()=>go(k);return b};
   nav.appendChild(item('home','Start'));
   TGROUPS.forEach(g=>{const ks=visKeys().filter(k=>TMETA[k].g===g);if(!ks.length)return;
     nav.appendChild(el(`<div class="ng">${esc(g)}</div>`));ks.forEach(k=>nav.appendChild(item(k,TYPES[k].name)))});
@@ -1464,10 +1485,35 @@ function nextMatchHtml(){
   let when='';try{when=new Date(nx[1]+':00Z').toLocaleString('pl-PL',{timeZone:'Europe/Warsaw',weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})}catch(e){}
   return `<div class="nm"><span class="nm-k">Najbliższy mecz</span><b>${esc(nx[2])} – ${esc(nx[3])}</b><span>${esc(when)} · ${nx[0]}. kolejka</span></div>`;
 }
-function homeNotice(){
+function levelNotice(){
+  if(isCrew)return '';
+  let h='';
+  const hs=location.hash||'';
+  if(hs.startsWith('#discord=')){
+    const r=hs.slice(9),t={ok:'Połączono z Discordem. Poziom odświeży się za chwilę, odśwież stronę.',none:'Połączono z Discordem, ale nie widzimy u Ciebie roli wspierającego. Upewnij się, że konto YouTube jest połączone z Discordem.',err:'Nie udało się połączyć z Discordem. Spróbuj jeszcze raz.'}[r];
+    if(t)h+=`<div class="card-box" style="margin:12px 0"><span class="msg ${r==='err'?'err':'ok'}">${esc(t)}</span></div>`;
+  }
+  if(ctx.lapsedAt&&ctx.until&&ctx.until>new Date()){
+    const f=d=>d.toLocaleDateString('pl-PL',{day:'numeric',month:'long'});
+    h+=`<div class="card-box" style="margin:12px 0"><b>Twoje wsparcie wygasło ${esc(f(ctx.lapsedAt))}.</b><span class="msg">Dostęp Poziomu ${ROM[LV]||'I'} zostaje do ${esc(f(ctx.until))} (3 dni karencji). Odnów wsparcie na YouTube, a nic się nie zmieni.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Odnów wsparcie</a></div></div>`;
+  }else if(LV<2){
+    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?'Poziom II ('+SUBN[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}Poziom III (${SUBN[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziomy to wsparcie kanału na YouTube.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_ACCESS_URL?'<button class="btn" id="dc-link">Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
+  }
+  return h;
+}
+async function startDiscordLink(){
+  const m=$('#dc-msg'),base=window.RTS_ACCESS_URL;
+  try{if(m)m.textContent='Łączę…';const tok=await ctx.getToken();
+    const r=await fetch(base.replace(/\/$/,'')+'/link/start',{method:'POST',headers:{Authorization:'Bearer '+tok}});
+    const j=await r.json();if(!r.ok||!j.url)throw new Error(j.error||r.status);location.href=j.url}
+  catch(e){if(m){m.textContent='Nie udało się połączyć ('+(e.message||e)+').';m.className='msg err'}}
+}
+document.addEventListener('click',e=>{if(e.target&&e.target.id==='dc-link')startDiscordLink()});
+function homeNotice(){return levelNotice()+homeNotice0()}
+function homeNotice0(){
   const dl=window.RTS_DISCORD_INVITE;
   if(isAdmin&&PENDING)return `<div class="card-box" style="margin:12px 0"><b>Prośby o dostęp czekają: ${PENDING}</b><div class="actions"><button class="btn pri" id="hn-go">Zobacz prośby</button></div></div>`;
-  if(isSupporter){
+  if(isSupporter&&ctx.until&&ctx.until>new Date()&&!ctx.lapsedAt){
     const u=ctx.until,left=u?Math.ceil((u-Date.now())/864e5):null;
     const when=u?u.toLocaleDateString('pl-PL',{day:'numeric',month:'long',year:'numeric'}):'';
     return `<div class="card-box" style="margin:12px 0"><b>Dziękujemy, że wspierasz Rozmowy Tylko Sportowe!</b><span class="msg">Dostęp ważny do ${esc(when)}${left!=null&&left<=7?' (zostało '+Math.max(left,0)+' dni; po wygaśnięciu napisz o przedłużenie)':''}. Karty możesz pobierać i wrzucać do swoich wpisów z hasztagiem #RTSkaut. Nie do użytku komercyjnego.</span>${dl?`<div class="actions"><a class="btn" href="${esc(dl)}" target="_blank" rel="noopener">Wejdź na Discorda wspierających</a></div>`:''}</div>`;
@@ -1477,7 +1523,7 @@ function homeNotice(){
 function renderHome(){
   const v=$('#view');
   const tiles=TGROUPS.map(g=>{const ks=visKeys().filter(k=>TMETA[k].g===g);if(!ks.length)return '';
-    return `<h3 class="hg">${esc(g)}</h3><div class="tiles">${ks.map(k=>`<button class="tl" data-k="${k}"><span class="tl-i">${ico(k,24)}</span><span class="tl-t">${esc(TYPES[k].name)}</span><span class="tl-d">${esc(TMETA[k].d)}</span><span class="tl-a">${ico('arrow',18)}</span></button>`).join('')}</div>`}).join('');
+    return `<h3 class="hg">${esc(g)}</h3><div class="tiles">${ks.map(k=>`<button class="tl${k in NEED&&locked(k)?' lk':''}" data-k="${k}"><span class="tl-i">${ico(k,24)}</span><span class="tl-t">${esc(TYPES[k].name)}</span><span class="tl-d">${esc(TMETA[k].d)}</span><span class="tl-a">${k in NEED&&locked(k)?'<span class="need">'+esc(lockTxt(k))+'</span>':ico('arrow',18)}</span></button>`).join('')}</div>`}).join('');
   v.innerHTML=`<div class="hhero"><img src="brand/logo-white.png" alt="" width="120" height="120"><div class="hh"><span class="kick">Od kibiców dla kibiców</span><h1>RTS Skaut</h1><p>Wybierz kartę, dopasuj ją, pobierz PNG i skopiuj pakiet do posta. Dane: po ${lastRound}. kolejce Ekstraklasy ${esc(D.meta.season)}.</p>${nextMatchHtml()}</div></div>${homeNotice()}
   <ol class="steps"><li><b>Wybierz kartę</b><span>Kafelki poniżej lub menu z lewej.</span></li><li><b>Dopasuj</b><span>Gotowe pomysły albo własne ustawienia.</span></li><li><b>Pobierz i opublikuj</b><span>PNG plus pakiet tekstu dla komunikacji.</span></li></ol>${tiles}`;
   v.querySelectorAll('.tl').forEach(b=>b.onclick=()=>go(b.dataset.k));
@@ -1506,7 +1552,29 @@ async function gLoad(){
   return G.H={seasons,by,names,byPid:Object.fromEntries(names.map(x=>[x.pid,x]))};
 }
 function gNice(span){for(const s of [.05,.1,.2,.25,.5,1,2,5,10])if(span/s<=4)return s;return 10}
+function renderLockedPage(k){
+  const need=NEED[k];
+  $('#view').innerHTML=pageHead(k)+`<div class="card-box" style="margin:12px 0"><b>${esc(TYPES[k].name)}: Poziom ${ROM[need]} (${esc(SUBN[need])})</b><span class="msg">Ta zakładka jest dla wspierających kanał Rozmowy Tylko Sportowe na YouTube od Poziomu ${ROM[need]}. Dane historyczne są chronione po stronie serwera.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a></div></div>`;
+}
+function applyLock(){
+  const w=document.querySelector('.work');if(!w)return;
+  if(S.type in NEED&&locked(S.type)){
+    const need=NEED[S.type];
+    w.classList.add('lockedview');
+    const ctl=$('#ctl');if(ctl)ctl.setAttribute('inert','');
+    const fr=$('#frame');
+    if(fr&&!fr.querySelector('.veil'))fr.insertAdjacentHTML('beforeend',`<div class="veil"><b>Poziom ${ROM[need]}</b><span>${esc(SUBN[need])}</span><span>Dla wspierających kanał na YouTube</span><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a></div>`);
+    const dl=$('#dl');if(dl)dl.disabled=true;
+  }
+  if(LV<2){
+    const pk=document.querySelector('.pkgrid .card-box:last-child');
+    if(pk){pk.classList.add('pklock');pk.setAttribute('inert','');
+      const sec=pk.querySelector('.sec');if(sec&&!pk.querySelector('.pknote'))sec.insertAdjacentHTML('afterend','<div class="msg pknote">Pakiet dla komunikacji: od Poziomu III ('+esc(SUBN[2])+').</div>')}
+    const pb=$('#pkbar');if(pb)pb.disabled=true;
+  }
+}
 async function renderGrowth(){
+  if(locked('growth'))return renderLockedPage('growth');
   const v=$('#view'),head=pageHead('growth');
   v.innerHTML=head+'<div class="msg">Wczytuję historię…</div>';
   let H;
@@ -1670,8 +1738,9 @@ function buildPack(){
 function buildFmt(){
   const b=$('#fmt');if(!b)return;b.innerHTML='';
   [['h','Poziomo 16:9'],['v','Pionowo 4:5']].forEach(([k,l])=>{
-    const x=el(`<button class="btn sm${FMT===k?' pri':''}">${l}</button>`);
-    x.onclick=()=>{FMT=k;buildFmt();refresh(true)};b.appendChild(x);
+    const lk=k==='v'&&LV<1;
+    const x=el(`<button class="btn sm${FMT===k?' pri':''}${lk?' lk':''}" ${lk?'title="Format 4:5 od Poziomu II"':''}>${l}${lk?' <span class="need">II</span>':''}</button>`);
+    x.onclick=()=>{if(lk){const m=$('#dlmsg');if(m){m.textContent='Format pionowy 4:5 jest od Poziomu II ('+SUBN[1]+').';m.className='msg err'}return}FMT=k;buildFmt();refresh(true)};b.appendChild(x);
   });
 }
 function buildCtl(){
@@ -1724,6 +1793,7 @@ async function toPng(svg){
   return await new Promise((res,rej)=>cv.toBlob(b=>b?res(b):rej(new Error('toBlob')),'image/png'));
 }
 async function doDownload(){
+  if(locked(S.type))return;
   const m=$('#dlmsg');m.className='msg';
   
   try{
@@ -1738,17 +1808,17 @@ async function doDownload(){
 
 /* ---------- admin ---------- */
 const fs=ctx.fs;
-function roleTxt(r){if(r.role==='admin')return 'admin';if(r.role==='supporter'){const u=r.until&&r.until.toDate?r.until.toDate():null;const exp=u&&u<new Date();return 'wspierający'+(u?' do '+fmtD(u):'')+(exp?' <b style="color:var(--red)">(wygasł)</b>':'')+(r.nick?' · '+esc(r.nick):'')}return 'dziennikarz'}
+function roleTxt(r){if(r.role==='admin')return 'admin';if(r.role==='supporter'){const u=r.until&&r.until.toDate?r.until.toDate():null;const exp=u&&u<new Date();return 'wspierający'+(r.level!=null?' · Poziom '+['I','II','III'][r.level]:'')+(u?' do '+fmtD(u):'')+(exp?' <b style="color:var(--red)">(wygasł)</b>':'')+(r.nick?' · '+esc(r.nick):'')}return 'dziennikarz'}
 function siteUrl(){return location.origin+location.pathname}
 async function renderAdmin(){
   const v=$('#view');
   v.innerHTML=`<div class="admin">
   <div class="card-box"><h3>Prośby o dostęp <span class="msg" id="rq-cnt"></span></h3>
-   <p class="msg">Jak nadać dostęp wspierającemu: 1) w YouTube Studio wejdź w Zarabianie → Wspierający i sprawdź, czy nazwa z prośby ma poziom „Tylko dla orłów”. 2) Kliknij „Nadaj dostęp”. Dostęp jest na wybrany czas (domyślnie 31 dni) i wygasa sam, więc raz w miesiącu przedłużasz go osobom, które nadal wspierają.</p>
-   <div class="actions"><label class="msg">Ważność (dni) <input type="number" id="rq-days" value="31" min="1" max="400" style="width:80px"></label></div>
+   <p class="msg">Jak nadać dostęp wspierającemu: 1) w YouTube Studio wejdź w Zarabianie → Wspierający i sprawdź, jaki poziom (I, II lub III) ma nazwa z prośby. 2) Wybierz ten poziom poniżej i kliknij „Nadaj dostęp”. Poziomy odświeżają się też same po połączeniu z Discordem (jeśli włączone). Dostęp jest na wybrany czas (domyślnie 31 dni) i wygasa sam, więc raz w miesiącu przedłużasz go osobom, które nadal wspierają.</p>
+   <div class="actions"><label class="msg">Ważność (dni) <input type="number" id="rq-days" value="31" min="1" max="400" style="width:80px"></label><label class="msg">Poziom <select id="rq-lv"><option value="0">Poziom I</option><option value="1">Poziom II</option><option value="2" selected>Poziom III</option></select></label></div>
    <div class="scroll"><table class="t"><thead><tr><th>Adres</th><th>Nazwa na YT</th><th>Kiedy</th><th></th></tr></thead><tbody id="rq-list"></tbody></table></div><div class="msg" id="rq-amsg"></div></div>
   <div class="card-box"><h3>Ekipa i wspierający (adresy Google)</h3><p class="msg">Tylko adresy z tej listy zobaczą dane i zrobią karty. Wpisz adres, którego dziennikarz używa do logowania przez Google (najczęściej @gmail.com).</p>
-   <div class="actions"><input type="text" id="m-email" placeholder="adres@gmail.com" style="max-width:260px"><select id="m-role" style="max-width:140px"><option value="member">dziennikarz</option><option value="supporter">wspierający (na czas)</option><option value="admin">admin</option></select><button class="btn pri" id="m-add">Dodaj</button></div><div class="msg" id="m-msg"></div>
+   <div class="actions"><input type="text" id="m-email" placeholder="adres@gmail.com" style="max-width:260px"><select id="m-role" style="max-width:140px"><option value="member">dziennikarz</option><option value="supporter">wspierający (na czas)</option><option value="admin">admin</option></select><select id="m-lv" style="max-width:150px" title="Poziom wspierającego"><option value="0">Poziom I</option><option value="1">Poziom II</option><option value="2" selected>Poziom III</option></select><button class="btn pri" id="m-add">Dodaj</button></div><div class="msg" id="m-msg"></div>
    <div class="scroll"><table class="t"><thead><tr><th>Adres</th><th>Rola</th><th></th></tr></thead><tbody id="m-list"></tbody></table></div>
    <button class="btn sm" id="m-copy">Kopiuj zaproszenie na WhatsApp</button><span class="msg" id="m-copymsg"></span></div>
   <div class="card-box"><h3>Tło kart</h3><p class="msg">Osobne tła dla ekipy (admin i dziennikarze) oraz dla wspierających. Wybierz dla kogo i w jakim formacie, wgraj obraz i gotowe. Gdy wspierający nie ma własnego tła, dostaje tło ekipy.</p>
@@ -1771,7 +1841,7 @@ async function renderAdmin(){
   $('#m-add').onclick=async()=>{
     const em=$('#m-email').value.trim().toLowerCase(),m=$('#m-msg');m.className='msg';
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){m.textContent='To nie wygląda na adres e-mail.';m.className='msg err';return}
-    try{const rl=$('#m-role').value,doc={role:rl,addedBy:ctx.email,addedAt:new Date().toISOString()};if(rl==='supporter')doc.until=untilTs(+($('#rq-days')&&$('#rq-days').value)||31);await fs.doc('members/'+em).set(doc);$('#m-email').value='';m.textContent='Dodano '+em;m.className='msg ok';loadMembers()}
+    try{const rl=$('#m-role').value,doc={role:rl,addedBy:ctx.email,addedAt:new Date().toISOString()};if(rl==='supporter'){doc.until=untilTs(+($('#rq-days')&&$('#rq-days').value)||31);doc.level=+$('#m-lv').value;doc.source='manual'}await fs.doc('members/'+em).set(doc);$('#m-email').value='';m.textContent='Dodano '+em;m.className='msg ok';loadMembers()}
     catch(e){m.textContent='Błąd zapisu ('+(e.code||e.message)+')';m.className='msg err'}
   };
   $('#m-copy').onclick=async()=>{const t=`Cześć! Mamy w Rozmowach Tylko Sportowych narzędzie do robienia kart ze statystykami (RTS Skaut, #RTSkaut): ${siteUrl()}\nWejdź, kliknij „Zaloguj przez Google" i wybierz konto, którego adres mi podałeś/aś. Jeśli nie wpuszcza, napisz do mnie.`;
@@ -1813,7 +1883,7 @@ async function grantAccess(r,days){
   try{
     const cur=await fs.doc('members/'+r.id).get();
     if(!(cur.exists&&['admin','member'].includes(cur.data().role))){
-      await fs.doc('members/'+r.id).set({role:'supporter',until:untilTs(days),nick:r.nick||'',source:'youtube',addedBy:ctx.email,addedAt:new Date().toISOString()});
+      await fs.doc('members/'+r.id).set({role:'supporter',level:+(($('#rq-lv')||{}).value||2),until:untilTs(days),nick:r.nick||'',source:'youtube',addedBy:ctx.email,addedAt:new Date().toISOString()});
     }
     await fs.doc('accessRequests/'+r.id).update({status:'granted',handledBy:ctx.email,handledAt:new Date().toISOString()});
     const sent=await notifyAdmin('granted',{email:r.id,days});
@@ -1889,7 +1959,7 @@ function show(id){for(const x of ['boot','gate','deny','setup','first','studio']
 function renderWho(email,admin,role){
   const out=()=>firebase.auth().signOut().then(()=>location.reload());
   $('#who').innerHTML=`<span>${esc(email)}</span>${admin?'<span class="badge">admin</span>':role==='supporter'?'<span class="badge">wspierający</span>':''} <button class="btn sm so">Wyloguj</button>`;
-  $('#sbwho').innerHTML=`<span class="av">${esc((email[0]||'?').toUpperCase())}</span><span class="em"><b>${esc(email)}</b><small>${admin?'Administrator':role==='supporter'?'Wspierający':'Ekipa'}</small></span><button class="ic-btn so" title="Wyloguj" aria-label="Wyloguj">${ico('out',20)}</button>`;
+  $('#sbwho').innerHTML=`<span class="av">${esc((email[0]||'?').toUpperCase())}</span><span class="em"><b>${esc(email)}</b><small>${admin?'Administrator':role==='supporter'?'Wspierający':role==='member'?'Ekipa':'Kibic'}</small></span><button class="ic-btn so" title="Wyloguj" aria-label="Wyloguj">${ico('out',20)}</button>`;
   document.querySelectorAll('.so').forEach(b=>b.onclick=out);
 }
 async function notifyAdmin(type,payload){
@@ -1953,7 +2023,7 @@ async function startApp(){
     const mdoc=await fs.doc('members/'+email).get().then(d=>d.exists?d.data():null).catch(()=>null);
     const role=mdoc&&mdoc.role||null,isAdmin=email===ADMIN_EMAIL||role==='admin';
     const until=mdoc&&mdoc.until&&mdoc.until.toDate?mdoc.until.toDate():null;
-    renderWho(email,isAdmin,role);
+    renderWho(email,isAdmin,role==='supporter'&&!(until&&until>new Date())?null:role);
     if(!snap.exists){
       if(!isAdmin){$('#boot').textContent='Dane nie zostały jeszcze wgrane. Napisz do admina.';show('boot');return}
       show('first');
@@ -1969,7 +2039,8 @@ async function startApp(){
     bg=bgs.H||null;
     try{const c=await fs.doc('settings/cards').get();if(c.exists)cards=c.data()}catch(e){}
     show('studio');
-    runApp(d,{fs,email,isAdmin,role,until,bg,bgs,cards});
+    const level=mdoc&&mdoc.level!=null?+mdoc.level:null,lapsedAt=mdoc&&mdoc.lapsedAt&&mdoc.lapsedAt.toDate?mdoc.lapsedAt.toDate():null;
+    runApp(d,{fs,email,isAdmin,role,until,level,lapsedAt,getToken:()=>u.getIdToken(),bg,bgs,cards});
   });
 }
 startApp();
