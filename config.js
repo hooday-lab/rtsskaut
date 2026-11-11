@@ -10,3 +10,5 @@ window.RTS_FIREBASE = {
 window.RTS_NOTIFY_URL = "";
 // Zaproszenie na Discorda wspierających (link bez daty ważności). Puste = brak przycisku.
 window.RTS_DISCORD_INVITE = "";
+// Adres Workera poziomów dostępu (access/README.md). Puste = brak przycisku „Połącz z Discordem”.
+window.RTS_ACCESS_URL = "";

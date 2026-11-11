@@ -1,0 +1,15 @@
+name = "rts-skaut-access"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[triggers]
+crons = ["0 * * * *"]   # co godzinę: odświeżenie poziomów osób połączonych z Discordem
+
+[vars]
+SKAUT_URL = "https://hooday-lab.github.io/rtsskaut/"
+FIREBASE_PROJECT = "rtsstat-55616"
+FIREBASE_API_KEY = "AIzaSyDAMnV0kpcw4y905gSY9R_fWsLKedkENwI"   # klucz publiczny aplikacji (ten sam co w config.js)
+DISCORD_CLIENT_ID = ""    # uzupełnić po utworzeniu aplikacji Discord
+DISCORD_GUILD_ID = ""     # ID serwera Discord
+DISCORD_ROLES = "{}"      # {"<ID roli Poziom I>":1,"<ID roli Poziom II>":2,"<ID roli Poziom III>":3}
+# SEKRETY ustawiane poza repo (wrangler secret put ...): DISCORD_CLIENT_SECRET, DISCORD_BOT_TOKEN, STATE_SECRET, FIREBASE_SERVICE_ACCOUNT
