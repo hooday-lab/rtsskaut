@@ -8,7 +8,7 @@ window.RTS_FIREBASE = {
 // Powiadomienia dla admina o prośbach o dostęp (adres wdrożenia Google Apps Script, kończy się na /exec).
 // Instrukcja: patrz notify/README.md. Puste = tylko znaczek w aplikacji.
 window.RTS_NOTIFY_URL = "";
-// Zaproszenie na Discorda wspierających (link bez daty ważności). Puste = brak przycisku.
+// Zaproszenie na serwer Discord RTS (https://discord.gg/... lub https://discord.com/invite/..., bez daty ważności i limitu). Puste lub inny format = brak przycisku. Ten sam link trafia do tekstów premiery (docs/premiera/teksty.py).
 window.RTS_DISCORD_INVITE = "";
 // Adres Workera poziomów dostępu (access/README.md). Puste = brak przycisku „Połącz z Discordem”.
 window.RTS_ACCESS_URL = "https://rts-skaut-access.hooday.workers.dev";

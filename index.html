@@ -2089,7 +2089,7 @@ const DCI={
 };
 // Panel pokoi w wyglądzie Discorda. Kliknięcie pokoju lub przycisku = zaproszenie na serwer.
 function roomsHtml(){
-  const inv=window.RTS_DISCORD_INVITE||'';
+  const inv=/^https:\/\/(discord\.gg\/|discord\.com\/invite\/)[\w-]+$/.test(window.RTS_DISCORD_INVITE||'')?window.RTS_DISCORD_INVITE:'';
   const row=(r,lock)=>{const inner='<span class="dci">'+(lock?DCI.lock:DCI[r.t])+'</span><span class="dcn">'+r.n+'</span>';
     return inv?'<a class="dch'+(lock?' lk':'')+'" href="'+inv+'" target="_blank" rel="noopener">'+inner+'</a>':'<div class="dch'+(lock?' lk':'')+'">'+inner+'</div>'};
   return '<div class="dcp"><div class="dcp-h"><img src="brand/icon-192.png" alt="" width="36" height="36"><div><b>Rozmowy Tylko Sportowe</b><span>Serwer na Discordzie</span></div></div>'

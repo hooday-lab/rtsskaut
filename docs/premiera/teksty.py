@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 URL='https://rtsskaut.pl'
 JOIN='https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join'
-DCL='[LINK DO SERWERA DISCORD]'
+import os,re,sys
+PLACEHOLDER='[LINK DO SERWERA DISCORD]'
+INVITE_RE=r'https://(?:discord\.gg/|discord\.com/invite/)[A-Za-z0-9-]+'
+def read_invite():
+    # Jedno źródło prawdy: RTS_DISCORD_INVITE w config.js (ten sam link używa strona).
+    cfg=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','config.js')
+    m=re.search(r'RTS_DISCORD_INVITE\s*=\s*"([^"]*)"',open(cfg,encoding='utf-8').read())
+    v=(m.group(1) if m else '').strip()
+    return v if re.fullmatch(INVITE_RE,v) else PLACEHOLDER
+DCL=read_invite()
 T={}
 T['yt_pub']=f"""Przedstawiamy RTS Skaut: statystyki RTS Widzew Łódź, od kibiców dla kibiców.
 
@@ -108,4 +117,7 @@ def xlen(s):
     import re
     s=re.sub(r'https?://\S+','x'*23,s);return len(s)
 if __name__=='__main__':
+    if '--check' in sys.argv:
+        bad=[k for k,v in T.items() if PLACEHOLDER in v]
+        print('BRAK linku w config.js, teksty z placeholderem: '+', '.join(bad) if bad else 'OK: link Discord wstawiony we wszystkich tekstach');sys.exit(1 if bad else 0)
     for k in ['x1','x2','x3','x4']: print(k,xlen(T[k]))
