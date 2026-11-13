@@ -120,21 +120,24 @@ a.btn{text-decoration:none}
 .ux2-l,.ux2-r{min-width:0}
 @media (min-width:1180px){.ux2{grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);align-items:start}}
 /* pokoje w wyglądzie Discorda (zawsze ciemne, jak w aplikacji Discord) */
-.dcp{background:#2b2d31;color:#dbdee1;border-radius:14px;padding:8px 8px 12px;display:flex;flex-direction:column;gap:1px;font:500 15px/1.25 'Barlow',system-ui,sans-serif;box-shadow:var(--sh)}
-.dcp-h{display:flex;align-items:center;gap:10px;padding:8px 8px 12px;border-bottom:1px solid #3f4147;margin-bottom:4px}
-.dcp-h img{width:36px;height:36px;border-radius:50%;flex:none}
-.dcp-h b{display:block;color:#f2f3f5;font-weight:700;font-size:16px}
-.dcp-h span{font-size:12.5px;color:#949ba4}
-.dcc{padding:12px 8px 4px;font-size:13px;font-weight:700;color:#949ba4}
-.dch{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:#949ba4;text-decoration:none;min-height:36px}
-a.dch:hover{background:#35373c;color:#f2f3f5}
-a.dch:focus-visible{outline:2px solid #5865f2;outline-offset:1px}
-.dch .dci{width:20px;flex:none;display:grid;place-items:center;color:#80848e}
+.dcp{background:linear-gradient(160deg,#3b2f8f 0%,#2a2170 48%,#1d1850 100%);color:#fff;border-radius:16px;padding:12px 12px 14px;display:flex;flex-direction:column;gap:6px;font:600 16px/1.25 'Barlow',system-ui,sans-serif;box-shadow:var(--sh)}
+.dcp-h{display:flex;align-items:center;gap:12px;padding:4px 4px 12px;border-bottom:1px solid rgba(255,255,255,.16);margin-bottom:4px}
+.dcp-h img{width:40px;height:40px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.dcp-h b{display:block;color:#fff;font-weight:800;font-size:17px}
+.dcp-h span{font-size:13px;color:#c9c6f2}
+.dcc{padding:10px 4px 2px;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#d8d5ff}
+.dch{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;color:#fff;text-decoration:none;min-height:44px;background:rgba(255,255,255,.09);transition:background .15s,transform .15s}
+a.dch:hover{background:rgba(255,255,255,.18);transform:translateX(2px)}
+a.dch:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.dch .dci{width:28px;height:28px;flex:none;display:grid;place-items:center;color:#fff;background:#5865F2;border-radius:8px;box-shadow:0 2px 6px rgba(88,101,242,.5)}
+.dch .dci svg{width:17px;height:17px}
+.dch.lk .dci{background:#7b6ff0}
 .dch .dcn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.dcp-f{display:flex;flex-direction:column;gap:8px;padding:12px 8px 2px;border-top:1px solid #3f4147;margin-top:8px}
+.dch .dcn em{font-style:normal;color:#b9b5ee;padding:0 4px}
+.dcp-f{display:flex;flex-direction:column;gap:8px;padding:12px 4px 0;border-top:1px solid rgba(255,255,255,.16);margin-top:6px}
 .dcp-f .btn{width:100%;min-height:46px}
-.dcp-f span{font-size:12.5px;color:#949ba4}
-.dcp-soon{color:#dbdee1!important;font-size:13.5px!important}
+.dcp-f span{font-size:13px;color:#d8d5ff}
+.dcp-soon{color:#fff!important;font-size:14px!important}
 .btn.dc:focus-visible{outline:2px solid #fff;outline-offset:2px;box-shadow:0 0 0 4px var(--dc)}
 .btn .need{margin-left:6px;padding:0 6px;font-size:11px}
 .btn.lk{opacity:.7}
@@ -2056,7 +2059,6 @@ const GICON='<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
 // Pokoje serwera Discord, zapisane tak jak na Discordzie (emotka, pionowa kreska, nazwa). Kolejność jak na serwerze.
 const DCROOMS=[
   {cat:'🟢 | KIBICE (dla wszystkich)',rooms:[
-    {t:'rules',n:'👋 | start-zasady'},
     {t:'text',n:'💬 | czat-z-ekipą'},
     {t:'text',n:'📊 | rts-skaut'},
     {t:'text',n:'😂 | memy-dla-rozmów'},
@@ -2067,7 +2069,7 @@ const DCROOMS=[
     {t:'text',n:'📢 | ogłoszenia-dla-wspierających'}]}
 ];
 const DCI={
-  text:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 9h14M4 15h14M10 3 8 21M16 3l-2 18"/></svg>',
+  text:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 9h14M4 15h14M10 3 8 21M16 3l-2 18"/></svg>',
   forum:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12v8H8l-5 4z"/><path d="M9 17h7l5 4V9h-2"/></svg>',
   rules:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/></svg>',
   lock:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9h9M3 15h9M8 3 6 21M13 3l-1 8"/><rect x="14" y="13" width="7" height="6" rx="1.3"/><path d="M15.5 13v-1.5a2 2 0 0 1 4 0V13"/></svg>'
