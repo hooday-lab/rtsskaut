@@ -301,7 +301,7 @@ body.inapp #topbar0{display:none}
 <header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/icon-192.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS <b>Skaut</b></span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
 <div id="boot" class="bootlogo"><img src="brand/logo-gold-light.png" alt=""><span class="msg">Ładuję Studio…</span></div>
 <section id="gate" class="gate" hidden>
-  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p>Widzewski skaut dla kibiców: liczby, karty i porównania od Rozmów Tylko Sportowych.</p></div>
+  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p>Statystyki RTS Widzew Łódź: klub, zawodnicy i cała liga w liczbach, od Rozmów Tylko Sportowych.</p></div>
   <div class="actions"><button class="btn pri" id="g-go">Zaloguj przez Google</button></div>
   <p class="msg" style="text-align:center">Za darmo: podstawowe karty dla każdego zalogowanego.</p>
   <div class="msg" id="g-msg"></div>
@@ -1563,8 +1563,8 @@ function renderHome(){
   const v=$('#view');
   const tiles=TGROUPS.map(g=>{const ks=visKeys().filter(k=>TMETA[k].g===g);if(!ks.length)return '';
     return `<h3 class="hg">${esc(g)}</h3><div class="tiles">${ks.map(k=>`<button class="tl${k in NEED&&locked(k)?' lk':''}" data-k="${k}"><span class="tl-i">${ico(k,24)}</span><span class="tl-t">${esc(TYPES[k].name)}</span><span class="tl-d">${esc(TMETA[k].d)}</span><span class="tl-a">${ico('arrow',18)}</span>${k in NEED&&locked(k)?`<span class="tl-c">${lockChip(k,false)}<span class="tip" role="tooltip"><b>${esc(SUBN[NEED[k]])}</b>${esc(lockTxt(k))}. Kliknij, żeby zobaczyć, co daje ta karta.</span></span>`:''}</button>`).join('')}</div>`}).join('');
-  v.innerHTML=`<div class="hhero"><img src="brand/logo-white.png" alt="" width="120" height="120"><div class="hh"><span class="kick">Od kibiców dla kibiców</span><h1>RTS Skaut</h1><p>Wybierz kartę, dopasuj ją, pobierz PNG i skopiuj pakiet do posta. Dane: po ${lastRound}. kolejce Ekstraklasy ${esc(D.meta.season)}.</p>${nextMatchHtml()}</div></div>${homeNotice()}
-  <ol class="steps"><li><b>Wybierz kartę</b><span>Kafelki poniżej lub menu z lewej.</span></li><li><b>Dopasuj</b><span>Gotowe pomysły albo własne ustawienia.</span></li><li><b>Pobierz i opublikuj</b><span>PNG plus pakiet tekstu dla komunikacji.</span></li></ol>${tiles}`;
+  v.innerHTML=`<div class="hhero"><img src="brand/logo-white.png" alt="" width="120" height="120"><div class="hh"><span class="kick">Od kibiców dla kibiców</span><h1>RTS Skaut</h1><p>Statystyki RTS Widzew Łódź: klub, zawodnicy i cała liga. Każdą liczbę możesz pobrać jako grafikę. Dane: po ${lastRound}. kolejce Ekstraklasy ${esc(D.meta.season)}.</p>${nextMatchHtml()}</div></div>${homeNotice()}
+  <ol class="steps"><li><b>Wybierz, co sprawdzasz</b><span>Kafelki poniżej lub menu z lewej.</span></li><li><b>Ustaw liczby</b><span>Gotowe pomysły albo własne ustawienia.</span></li><li><b>Pobierz, jeśli chcesz się pochwalić</b><span>PNG plus gotowy tekst posta.</span></li></ol>${tiles}`;
   v.querySelectorAll('.tl').forEach(b=>b.onclick=()=>go(b.dataset.k));
   const hg=$('#hn-go');if(hg)hg.onclick=()=>go('admin');
 }
