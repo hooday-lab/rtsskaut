@@ -5,8 +5,8 @@
 <link rel="icon" type="image/png" href="brand/favicon.png"><link rel="apple-touch-icon" href="brand/apple-touch-icon.png"><link rel="manifest" href="brand/manifest.webmanifest"><meta name="theme-color" content="#D91E25"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RTS Skaut">
 <style>
 :root{--bg:#F5F3F0;--panel:#FFFFFF;--ink:#17181B;--mute:#6A6D75;--line:#DAD6D0;--red:#D91E25;--red-ink:#FFFFFF;--soft:#EDE9E4;--ok:#1E7A46;--sv-fg:#46586A;--sv-bg:rgba(70,88,106,.10);--sv-bd:rgba(70,88,106,.38);--gd-fg:#7A5C06;--gd-bg:rgba(184,146,30,.16);--gd-bd:rgba(150,114,10,.5);--tip-bg:#1D1A1A;--tip-fg:#F6F1EE;--dc:#5865F2;--dc-h:#4752C4}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;--sv-fg:#A9BCCD;--sv-bg:rgba(169,188,205,.12);--sv-bd:rgba(169,188,205,.4);--gd-fg:#E6C45C;--gd-bg:rgba(230,196,92,.14);--gd-bd:rgba(230,196,92,.5);--tip-bg:#F3EEEC;--tip-fg:#1D1A1A;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;--sv-fg:#A9BCCD;--sv-bg:rgba(169,188,205,.12);--sv-bd:rgba(169,188,205,.4);--gd-fg:#E6C45C;--gd-bg:rgba(230,196,92,.14);--gd-bd:rgba(230,196,92,.5);--tip-bg:#F3EEEC;--tip-fg:#1D1A1A;color-scheme:dark}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;--sv-fg:#A9BCCD;--sv-bg:rgba(169,188,205,.12);--sv-bd:rgba(169,188,205,.4);--gd-fg:#E6C45C;--gd-bg:rgba(230,196,92,.14);--gd-bd:rgba(230,196,92,.5);--tip-bg:#F3EEEC;--tip-fg:#1D1A1A;--dc-t:#8F98FF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1012;--panel:#18191C;--ink:#F4F4F2;--mute:#9A9DA5;--line:#2B2D32;--red:#E5242B;--red-ink:#FFFFFF;--soft:#222428;--ok:#4CC27F;--sv-fg:#A9BCCD;--sv-bg:rgba(169,188,205,.12);--sv-bd:rgba(169,188,205,.4);--gd-fg:#E6C45C;--gd-bg:rgba(230,196,92,.14);--gd-bd:rgba(230,196,92,.5);--tip-bg:#F3EEEC;--tip-fg:#1D1A1A;--dc-t:#8F98FF;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;padding-inline:16px;padding-block:0 40px}
@@ -70,6 +70,15 @@ h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;text
 @media (prefers-reduced-motion:reduce){.tip{transition:none}}
 .btn.dc{background:var(--dc);border-color:var(--dc);color:#fff}
 .btn.dc:hover{background:var(--dc-h);border-color:var(--dc-h)}
+.btn.dc.out{background:transparent;color:var(--dc-t,var(--dc))}.btn.dc.out:hover{background:var(--dc);color:#fff}
+.gsteps{display:flex;flex-direction:column;gap:14px;text-align:left;padding:18px 16px}
+a.btn{text-decoration:none}
+.gsteps h3{margin:0;font:800 16px/1 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.gst{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start}
+.gst i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--red);color:var(--red-ink);font:800 15px/28px 'Barlow Condensed',sans-serif;text-align:center}
+.gst b{display:block;font:700 15px/1.25 'Barlow',sans-serif}
+.gst span{display:block;color:var(--mute);font-size:13.5px;line-height:1.4;margin-top:2px}
+.gst .btn{margin-top:8px}
 .btn.dc:focus-visible{outline:2px solid #fff;outline-offset:2px;box-shadow:0 0 0 4px var(--dc)}
 .btn .need{margin-left:6px;padding:0 6px;font-size:11px}
 .btn.lk{opacity:.7}
@@ -292,15 +301,20 @@ body.inapp #topbar0{display:none}
 <header class="top" id="topbar0"><div class="brand"><img class="brand-logo" src="brand/icon-192.png" alt="Rozmowy Tylko Sportowe" width="48" height="48"><div class="brand-t"><span class="brand-n">RTS <b>Skaut</b></span><small>Rozmowy Tylko Sportowe</small></div></div><div class="who" id="who"></div></header>
 <div id="boot" class="bootlogo"><img src="brand/logo-gold-light.png" alt=""><span class="msg">Ładuję Studio…</span></div>
 <section id="gate" class="gate" hidden>
-  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p>Widzewski skaut dla kibiców: statystyki i porównania od Rozmów Tylko Sportowych. Dostęp mają wspierający kanał w planie „Tylko dla orłów” oraz ekipa.</p></div>
-  <p class="msg" style="text-align:center">Zaloguj się kontem Google. Wejdą tylko adresy z listy ekipy.</p>
+  <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p>Widzewski skaut dla kibiców: liczby, karty i porównania od Rozmów Tylko Sportowych.</p></div>
   <div class="actions"><button class="btn pri" id="g-go">Zaloguj przez Google</button></div>
+  <p class="msg" style="text-align:center">Za darmo: podstawowe karty dla każdego zalogowanego.</p>
   <div class="msg" id="g-msg"></div>
+  <div class="card-box gsteps"><h3>Chcesz więcej?</h3>
+    <div class="gst"><i>1</i><div><b>Wesprzyj kanał na YouTube</b><span>Stały Bywalec 29,99 zł lub Elita Rozmów 59,99 zł miesięcznie.</span><a class="btn" href="https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join" target="_blank" rel="noopener">Zostań wspierającym</a></div></div>
+    <div class="gst"><i>2</i><div><b>Połącz YouTube z Discordem</b><span>W Discordzie: Ustawienia użytkownika, Połączenia, YouTube. Dołącz też do serwera RTS.</span><a class="btn dc out" id="g-dc" target="_blank" rel="noopener" hidden></a></div></div>
+    <div class="gst"><i>3</i><div><b>Wróć i kliknij „Połącz z Discordem”</b><span>Przycisk jest w aplikacji po zalogowaniu. Poziom nadaje się sam.</span></div></div>
+  </div>
 </section>
 <section id="deny" class="gate" hidden>
   <div class="hero sm"><img src="brand/logo-white.png" alt=""></div>
   <h2 id="d-h">Dostęp dla wspierających</h2>
-  <p class="msg">Zalogowano jako <b id="d-email"></b>. RTS Skaut to perk dla osób, które cyklicznie wspierają kanał Rozmowy Tylko Sportowe w planie „Tylko dla orłów” na YouTube, oraz dla ekipy.</p>
+  <p class="msg">Zalogowano jako <b id="d-email"></b>. RTS Skaut jest dla kibiców Rozmów Tylko Sportowych. Podstawowe karty są za darmo, a więcej odblokowuje wsparcie kanału w planie Stały Bywalec lub Elita Rozmów na YouTube.</p>
   <p class="msg" id="d-state"></p>
   <div id="d-form" class="actions" style="flex-direction:column;align-items:stretch;max-width:420px;margin:0 auto">
     <input type="text" id="rq-nick" maxlength="80" placeholder="Twoja nazwa na YouTube (np. @Kibic1910)" aria-label="Nazwa na YouTube">
@@ -1463,7 +1477,6 @@ const SUBN=['Kibic Rozmów','Stały Bywalec','Elita Rozmów'];
 const SUBS=['Kibic','Bywalec','Elita'];
 const PRICE=['15,99 zł','29,99 zł','59,99 zł'];   // ceny planów na YouTube (miesięcznie): zmiana ceny = tu
 const ICLOCK='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-const ICDISCORD='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>';
 const lockCls=k=>NEED[k]>=2?'e':'b';
 const JOIN='https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join';
 const locked=k=>LV<(NEED[k]||0);
@@ -1523,7 +1536,7 @@ function levelNotice(){
     const f=d=>d.toLocaleDateString('pl-PL',{day:'numeric',month:'long'});
     h+=`<div class="card-box" style="margin:12px 0"><b>Twoje wsparcie wygasło ${esc(f(ctx.lapsedAt))}.</b><span class="msg">Dostęp Poziomu ${ROM[LV]||'I'} zostaje do ${esc(f(ctx.until))} (3 dni karencji). Odnów wsparcie na YouTube, a nic się nie zmieni.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Odnów wsparcie</a></div></div>`;
   }else if(LV<2){
-    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?'Poziom II ('+SUBN[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}Poziom III (${SUBN[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziomy to wsparcie kanału na YouTube.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_ACCESS_URL?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
+    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?SUBN[1]+' ('+PRICE[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}${SUBN[2]} (${PRICE[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziom wybierasz, wspierając kanał na YouTube.</span><span class="msg">1. Wesprzyj kanał na YouTube. 2. W Discordzie połącz konto YouTube (Ustawienia użytkownika, Połączenia) i dołącz do serwera RTS. 3. Wróć tutaj i kliknij „Połącz z Discordem”: poziom nadaje się sam.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_DISCORD_INVITE?'<a class="btn dc out" href="'+esc(window.RTS_DISCORD_INVITE)+'" target="_blank" rel="noopener">'+ICDISCORD+'Dołącz do serwera Discord</a>':''}${window.RTS_ACCESS_URL?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
   }
   return h;
 }
@@ -1981,6 +1994,8 @@ growth:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
 arrow:'<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'};
 function ico(k,sz){return `<svg class="ic" width="${sz||20}" height="${sz||20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||''}</svg>`}
 const ADMIN_EMAIL='hooday@gmail.com';
+const ICDISCORD='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>';
+(function(){const u=window.RTS_DISCORD_INVITE,a=document.getElementById('g-dc');if(u&&a){a.href=u;a.innerHTML=ICDISCORD+'Dołącz do serwera Discord';a.hidden=false}})();
 function show(id){for(const x of ['boot','gate','deny','setup','first','studio'])$('#'+x).hidden=(x!==id);document.body.classList.toggle('inapp',id==='studio')}
 function renderWho(email,admin,role){
   const out=()=>firebase.auth().signOut().then(()=>location.reload());
