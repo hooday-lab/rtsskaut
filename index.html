@@ -102,10 +102,12 @@ a.btn{text-decoration:none}
   .gx-rooms .dcp{height:100%}
 }
 .tiers{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
-@media (min-width:560px){.tiers{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.free{margin:0 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;color:var(--mute);background:var(--panel)}
-.free b{color:var(--ink)}.free em{font-style:normal;margin-left:6px;font-size:11px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.08em}
-.free.on{box-shadow:inset 0 0 0 2px var(--red)}
+.unl{display:flex;align-items:center;gap:10px;padding:4px 0 0;color:var(--ink)}
+.unl span{font:800 15px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.unl::before,.unl::after{content:"";height:2px;flex:1;background:var(--red);border-radius:2px}
+.unl::before{flex:0 0 14px}
+@media (min-width:560px){.tiers{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:10px}
+  .tiers .t0{grid-column:1;grid-row:2}.tiers .unl{grid-column:2/4;grid-row:1}.tiers .t1{grid-column:2;grid-row:2}.tiers .t2{grid-column:3;grid-row:2}}
 .tier{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;background:var(--panel)}
 .tier-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
 .tier b{font:800 16px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase}
@@ -2097,11 +2099,11 @@ function roomsHtml(){
 }
 // Ścieżka wspierania: trzy poziomy i trzy kroki. mode: 'gate' (przed logowaniem) albo 'app' (po zalogowaniu).
 function supportHtml(mode,viaDiscord,lv){
-  const tiers=[[1,SUBN[1],PRICE[1],'+ Zawodnik, Porównanie, Mapa ligi, Własna liczba, format 4:5'],[2,SUBN[2],PRICE[2],'+ Radary, Rozwój, pakiet dla komunikacji']];
+  const tiers=[[0,'Za darmo','','Liczba przed rywalem, Mecz, Dom i wyjazd'],[1,SUBN[1],PRICE[1],'+ Zawodnik, Porównanie, Mapa ligi, Własna liczba, format 4:5'],[2,SUBN[2],PRICE[2],'+ Radary, Rozwój, pakiet dla komunikacji']];
   const last=mode==='gate'?'Zaloguj się przez Discord':viaDiscord?'Zaloguj się ponownie przez Discord':'Kliknij „Połącz z Discordem” poniżej';
   const cur=mode==='app'?lv:-1;
-  return '<p class="free'+(cur===0?' on':'')+'"><b>Za darmo:</b> Liczba przed rywalem, Mecz, Dom i wyjazd.'+(cur===0?' <em>Twój poziom</em>':'')+'</p>'
-    +'<h3 class="ux-h">Odblokuj więcej</h3><div class="tiers">'+tiers.map(t=>'<div class="tier t'+t[0]+(cur===t[0]?' on':'')+'"><div class="tier-h"><b>'+t[1]+'</b><i>'+t[2]+'/mies.</i></div><span>'+t[3]+'</span>'+(cur===t[0]?'<em>Twój poziom</em>':'')+'</div>').join('')+'</div>'
+  const card=t=>'<div class="tier t'+t[0]+(cur===t[0]?' on':'')+'"><div class="tier-h"><b>'+t[1]+'</b>'+(t[2]?'<i>'+t[2]+'/mies.</i>':'')+'</div><span>'+t[3]+'</span>'+(cur===t[0]?'<em>Twój poziom</em>':'')+'</div>';
+  return '<div class="tiers">'+card(tiers[0])+'<div class="unl"><span>Odblokuj więcej</span></div>'+card(tiers[1])+card(tiers[2])+'</div>'
     +'<ol class="s3"><li><span><b>Wesprzyj kanał</b> na <a href="'+JOIN+'" target="_blank" rel="noopener">YouTube</a></span></li><li><span><b>Połącz YouTube z Discordem</b> · <a href="jak-polaczyc-discord.html">instrukcja</a></span></li><li><span><b>'+last+'</b>, poziom ustawi się sam</span></li></ol>'
     +'<p class="fund">Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</p>'
     +'<div class="actions"><a class="btn pri" href="'+JOIN+'" target="_blank" rel="noopener">Zostań wspierającym</a>'+(mode==='app'&&!viaDiscord&&window.RTS_ACCESS_URL?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':'')+'</div>'+(mode==='app'?'<span class="msg" id="dc-msg"></span>':'');
