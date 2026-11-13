@@ -9,7 +9,7 @@ crons = ["0 * * * *"]   # co godzinę: odświeżenie poziomów osób połączony
 
 [vars]
 SKAUT_URL = "https://rtsskaut.pl/"                      # główny adres aplikacji (powrót z Discorda i CORS)
-SKAUT_ORIGINS = "https://rtsskaut.pages.dev/,https://hooday-lab.github.io/rtsskaut/"   # dodatkowe dozwolone adresy aplikacji (lista po przecinku, ze ścieżką); powrót z Discorda wraca tam, skąd kibic zaczął
+SKAUT_ORIGINS = "https://rtsskaut.hooday.workers.dev/,https://hooday-lab.github.io/rtsskaut/"   # dodatkowe dozwolone adresy aplikacji (lista po przecinku, ze ścieżką); powrót z Discorda wraca tam, skąd kibic zaczął
 FIREBASE_PROJECT = "rtsstat-55616"
 FIREBASE_API_KEY = "AIzaSyDAMnV0kpcw4y905gSY9R_fWsLKedkENwI"   # klucz publiczny aplikacji (ten sam co w config.js)
 DISCORD_CLIENT_ID = "1570743379153789020"    # Application ID aplikacji Discord RTS Skaut
