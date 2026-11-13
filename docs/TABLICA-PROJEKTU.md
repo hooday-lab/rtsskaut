@@ -49,7 +49,7 @@ Mapowanie: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wsp
 Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukcja „połącz YouTube z Discordem”, plakietki poziomów z tooltipami, ekran logowania z pokojami i ścieżką wspierania, brandbook, kit premiery (teksty i grafiki w `docs/premiera/`).
 
 ## 7. Otwarte sprawy
-1. **Link zaproszenia na Discord** (bez daty ważności, bez limitu użyć): wpisać do `config.js` jako `RTS_DISCORD_INVITE` i do tekstów premiery w miejsce `[LINK DO SERWERA DISCORD]` (zmienna `DCL` w `docs/premiera/teksty.py`). Dopóki go nie ma, pokoje i przycisk „Dołącz do serwera” są nieaktywne.
+1. **Link zaproszenia na Discord** (bez daty ważności, bez limitu użyć): wpisać do `config.js` jako `RTS_DISCORD_INVITE` (format `https://discord.gg/...`). To jedyne miejsce: teksty premiery (`docs/premiera/teksty.py`) czytają link stąd same, a `python3 docs/premiera/teksty.py --check` potwierdza, że żaden tekst nie ma już `[LINK DO SERWERA DISCORD]`. Dopóki linku nie ma, pokoje i przycisk „Dołącz do serwera” są nieaktywne.
 2. Admin Discorda: przenieść `rts-skaut` do sekcji KIBICE i poprawić role (rola YouTube Member ma widzieć kategorię SŁUCHACZE ROZMÓW).
 3. Potwierdzić emotkę przy `forum-kibiców` (założona 🗳️) i czy zostawić zajawkę z kłódką w panelu pokoi.
 4. Sprawdzić na rtsskaut.pl (incognito, Ctrl+Shift+R, komputer i telefon, jasny i ciemny motyw) ostatnie zmiany ekranu logowania. Jeśli widać starą wersję, sprawdzić w Cloudflare (Workers & Pages → `rts-skaut-access` → Deployments), czy ostatnie wdrożenie ma status Success.
