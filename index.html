@@ -1530,7 +1530,7 @@ function levelNotice(){
   let h='';
   const hs=location.hash||'';
   if(hs.startsWith('#discord=')){
-    const r=hs.slice(9),t={ok:'Połączono z Discordem. Poziom odświeży się za chwilę, odśwież stronę.',none:'Połączono z Discordem, ale nie widzimy u Ciebie roli wspierającego. Upewnij się, że konto YouTube jest połączone z Discordem.',err:'Nie udało się połączyć z Discordem. Spróbuj jeszcze raz.'}[r];
+    const r=hs.slice(9).split('&')[0],t={ok:'Połączono z Discordem. Poziom odświeży się za chwilę, odśwież stronę.',none:'Połączono z Discordem, ale nie widzimy u Ciebie roli wspierającego. Upewnij się, że konto YouTube jest połączone z Discordem.',err:'Nie udało się połączyć z Discordem. Spróbuj jeszcze raz.'}[r];
     if(t)h+=`<div class="card-box" style="margin:12px 0"><span class="msg ${r==='err'?'err':'ok'}">${esc(t)}</span>${r==='none'?'<a class="btn" href="jak-polaczyc-discord.html">Zobacz instrukcję krok po kroku</a>':''}</div>`;
   }
   if(ctx.lapsedAt&&ctx.until&&ctx.until>new Date()){
@@ -2047,9 +2047,11 @@ async function startApp(){
     if(hs.startsWith('#dlogin=')){
       const tok=hs.slice(8);history.replaceState(null,'',location.pathname+location.search);
       auth.signInWithCustomToken(tok).catch(e=>{gm.textContent='Nie udało się zalogować przez Discord ('+(e.code||e.message)+').';gm.className='msg err'});
-    }else if(hs==='#discord=crew'||hs==='#discord=err'){
+    }else if(/^#discord=(crew|err)/.test(hs)){
       history.replaceState(null,'',location.pathname+location.search);
-      gm.textContent=hs==='#discord=crew'?'To konto należy do ekipy lub admina i loguje się przez Google. Użyj przycisku „Zaloguj przez Google”.':'Nie udało się zalogować przez Discord. Spróbuj jeszcze raz.';
+      const why=(hs.split('&c=')[1]||'');
+      let dt='';try{dt=decodeURIComponent(why)}catch(e){dt=why}
+      gm.textContent=hs.startsWith('#discord=crew')?'To konto należy do ekipy lub admina i loguje się przez Google. Użyj przycisku „Zaloguj przez Google”.':'Nie udało się zalogować przez Discord. Spróbuj jeszcze raz'+(dt?' (kod: '+dt+')':'')+'.';
       gm.className='msg err';
     }
   }

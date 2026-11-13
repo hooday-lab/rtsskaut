@@ -22,7 +22,8 @@ const cors = (env, req) => {
   return { 'Access-Control-Allow-Origin': o, 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', Vary: 'Origin' };
 };
 const json = (obj, status, env, req) => new Response(JSON.stringify(obj), { status: status || 200, headers: { 'Content-Type': 'application/json', ...cors(env, req) } });
-const back = (env, r, origin) => Response.redirect(returnUrl(env, origin).split('#')[0] + '#discord=' + r, 302);
+// detail: krótki kod przyczyny błędu (bez sekretów), pokazywany w aplikacji, żeby dało się szybko znaleźć problem.
+const back = (env, r, origin, detail) => Response.redirect(returnUrl(env, origin).split('#')[0] + '#discord=' + r + (detail ? '&c=' + encodeURIComponent(String(detail).slice(0, 80)) : ''), 302);
 
 /* ---------- podpis stanu (powiązuje powrót z Discorda z zalogowanym kontem Google) ---------- */
 async function hmacKey(secret) { return crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']); }
@@ -171,8 +172,10 @@ async function handle(req, env, now) {
   }
 
   if (url.pathname === '/link/callback' && req.method === 'GET') {
+    let stOrigin;
     try {
       const st = await readState(env, url.searchParams.get('state'), now);
+      stOrigin = st && st.o;
       const code = url.searchParams.get('code');
       if (!st || !code) return back(env, 'err', st && st.o);
       if (st.k === 'login') return await loginFlow(env, url, st, code, now);
@@ -196,7 +199,7 @@ async function handle(req, env, now) {
       return back(env, tier ? 'ok' : 'none', st.o);
     } catch (e) {
       console.log('callback error', e.message);
-      return back(env, 'err');
+      return back(env, 'err', stOrigin, e.message);
     }
   }
   return new Response('Not found', { status: 404 });

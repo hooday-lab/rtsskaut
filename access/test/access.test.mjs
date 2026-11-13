@@ -67,7 +67,7 @@ const env = {
   DISCORD_ROLES: JSON.stringify({ r1: 1, r2: 2, r3: 3 }),
   FIREBASE_SERVICE_ACCOUNT: JSON.stringify({ client_email: 'sa@x', private_key: privateKey.export({ type: 'pkcs8', format: 'pem' }) }),
 };
-function world({ roles = {}, token = 'good', email = 'Kibic@Example.com', userId = '111', rateLimit = false, discordUser = {}, seed = {} } = {}) {
+function world({ roles = {}, token = 'good', email = 'Kibic@Example.com', userId = '111', rateLimit = false, discordUser = {}, seed = {}, meStatus = 200 } = {}) {
   const db = new Map(Object.entries(seed));
   const calls = [];
   const toFields = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v === null ? { nullValue: null } : ['until', 'lapsedAt', 'linkedAt'].includes(k) ? { timestampValue: new Date(v).toISOString() } : typeof v === 'number' ? { integerValue: String(v) } : { stringValue: v }]));
@@ -78,7 +78,7 @@ function world({ roles = {}, token = 'good', email = 'Kibic@Example.com', userId
     if (u.startsWith('https://identitytoolkit')) return init.body.includes(token) ? J({ users: [{ email, emailVerified: true }] }) : J({}, 400);
     if (u === 'https://oauth2.googleapis.com/token') return J({ access_token: 'sa-tok', expires_in: 3600 });
     if (u === 'https://discord.com/api/v10/oauth2/token') return init.body.toString().includes('code=ok') ? J({ access_token: 'user-tok' }) : J({}, 400);
-    if (u === 'https://discord.com/api/v10/users/@me') return J({ id: userId, ...discordUser });
+    if (u === 'https://discord.com/api/v10/users/@me') return meStatus === 200 ? J({ id: userId, ...discordUser }) : J({}, meStatus);
     if (u.endsWith('/users/@me/guilds/G/member')) return roles[userId] ? J({ roles: roles[userId] }) : J({}, 404);
     if (u.startsWith('https://discord.com/api/v10/guilds/G/members/')) {
       if (rateLimit) return J({}, 429);
@@ -246,4 +246,10 @@ test('logowanie przez Discord: zły kod i zły stan wracają z błędem', async 
   world({ roles: {} });
   assert.equal((await handle(cb(await loginState(eL, '', now0), 'zly'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err');
   assert.equal((await handle(cb('zly.stan'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err');
+});
+
+test('błąd w trakcie logowania wraca z krótkim kodem przyczyny', async () => {
+  world({ roles: { 111: ['r1'] }, meStatus: 500 });
+  const loc = (await handle(cb(await loginState(eL, '', now0)), eL, now0 + 1000)).headers.get('location');
+  assert.equal(loc, 'https://rtsskaut.pl/#discord=err&c=discord%20me%20500');
 });

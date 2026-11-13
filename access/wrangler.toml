@@ -12,6 +12,10 @@ command = "node ../scripts/build-site.mjs"
 [assets]
 directory = "../dist"
 
+# Logi Workera (Cloudflare: Observability), żeby dało się sprawdzić przyczynę błędów logowania.
+[observability]
+enabled = true
+
 [triggers]
 crons = ["0 * * * *"]   # co godzinę: odświeżenie poziomów osób połączonych z Discordem
 
