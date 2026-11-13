@@ -189,3 +189,16 @@ test('CORS: główny adres i adresy z SKAUT_ORIGINS są dozwolone, obcy dostaje 
   assert.equal((await ask('https://rtsskaut.pl')).headers.get('Access-Control-Allow-Origin'), 'https://rtsskaut.pl');
   assert.equal((await ask('https://zly.example')).headers.get('Access-Control-Allow-Origin'), 'https://rtsskaut.pl');
 });
+
+test('powrót z Discorda wraca na adres, z którego zaczęto, a nieznany adres wraca na główny', async () => {
+  const e = { ...env, SKAUT_URL: 'https://rtsskaut.pl/', SKAUT_ORIGINS: 'https://rtsskaut.pages.dev/,https://stary.example/app/' };
+  world({ roles: { 111: ['r1'] } });
+  const start = async (origin) => { const r = await handle(new Request('https://w.example/link/start', { method: 'POST', headers: { Authorization: 'Bearer good', ...(origin ? { Origin: origin } : {}) } }), e, now0); return new URL((await r.json()).url).searchParams.get('state'); };
+  assert.equal((await handle(cb(await start('https://stary.example')), e, now0 + 1000)).headers.get('location'), 'https://stary.example/app/#discord=ok');
+  world({ roles: { 111: ['r1'] } });
+  assert.equal((await handle(cb(await start('https://rtsskaut.pages.dev')), e, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pages.dev/#discord=ok');
+  world({ roles: { 111: ['r1'] } });
+  assert.equal((await handle(cb(await start('https://zly.example')), e, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=ok');
+  world({ roles: { 111: ['r1'] } });
+  assert.equal((await handle(cb(await start(null)), e, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=ok');
+});
