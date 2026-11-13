@@ -26,8 +26,8 @@ const back = (env, r, origin) => Response.redirect(returnUrl(env, origin).split(
 
 /* ---------- podpis stanu (powiązuje powrót z Discorda z zalogowanym kontem Google) ---------- */
 async function hmacKey(secret) { return crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']); }
-async function signState(env, email, now, origin) {
-  const body = b64u(enc.encode(JSON.stringify({ e: email, t: now, o: origin || '' })));
+async function signState(env, email, now, origin, kind) {
+  const body = b64u(enc.encode(JSON.stringify({ e: email, t: now, o: origin || '', k: kind || '' })));
   const sig = await crypto.subtle.sign('HMAC', await hmacKey(env.STATE_SECRET), enc.encode(body));
   return body + '.' + b64u(sig);
 }
@@ -48,6 +48,16 @@ async function verifyIdToken(env, idToken) {
   if (!r.ok) return null;
   const u = ((await r.json()).users || [])[0];
   return u && u.email && u.emailVerified ? u.email.toLowerCase() : null;
+}
+const rsaKey = (sa) => crypto.subtle.importKey('pkcs8', Uint8Array.from(atob(sa.private_key.replace(/-----[^-]+-----|\s/g, '')), (c) => c.charCodeAt(0)), { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']);
+// Token logowania Firebase (custom token) podpisany kontem serwisowym. Ważny 10 minut, aplikacja zamienia go na sesję.
+async function customToken(env, uid, claims, now) {
+  const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT);
+  const iat = Math.floor(now / 1000);
+  const head = b64u(enc.encode(JSON.stringify({ alg: 'RS256', typ: 'JWT' })));
+  const body = b64u(enc.encode(JSON.stringify({ iss: sa.client_email, sub: sa.client_email, aud: 'https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit', iat, exp: iat + 600, uid, claims })));
+  const sig = b64u(await crypto.subtle.sign('RSASSA-PKCS1-v1_5', await rsaKey(sa), enc.encode(head + '.' + body)));
+  return head + '.' + body + '.' + sig;
 }
 let tokCache = { t: null, exp: 0 };
 async function saToken(env, now) {
@@ -92,11 +102,12 @@ const rolesMap = (env) => JSON.parse(env.DISCORD_ROLES || '{}');
 async function userRoles(env, accessToken) {
   const me = await fetch(D + '/users/@me', { headers: { Authorization: 'Bearer ' + accessToken } });
   if (!me.ok) throw new Error('discord me ' + me.status);
-  const id = (await me.json()).id;
+  const u = await me.json();
+  const id = u.id, extra = { email: u.email || '', verified: !!u.verified, name: u.global_name || u.username || '' };
   const m = await fetch(`${D}/users/@me/guilds/${env.DISCORD_GUILD_ID}/member`, { headers: { Authorization: 'Bearer ' + accessToken } });
-  if (m.status === 404 || m.status === 403) return { id, roles: [] };
+  if (m.status === 404 || m.status === 403) return { id, roles: [], ...extra };
   if (!m.ok) throw new Error('discord member ' + m.status);
-  return { id, roles: (await m.json()).roles || [] };
+  return { id, roles: (await m.json()).roles || [], ...extra };
 }
 async function botRoles(env, discordId) {
   const m = await fetch(`${D}/guilds/${env.DISCORD_GUILD_ID}/members/${discordId}`, { headers: { Authorization: 'Bot ' + env.DISCORD_BOT_TOKEN } });
@@ -111,6 +122,29 @@ async function applyResult(env, email, existing, found, now) {
   const plan = planUpdate(existing, found, now);
   if (plan.write) await patchMember(env, email, plan.write, now);
   return plan.action;
+}
+
+// Adresy, które muszą logować się przez Google (admin, ekipa): nigdy przez Discord.
+const crewEmails = (env) => String(env.CREW_EMAILS || 'hooday@gmail.com').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+
+// Logowanie przez Discord: role z serwera -> poziom w bazie -> token logowania Firebase z adresem e-mail.
+// Zweryfikowany e-mail z Discorda łączy konto z Google (ten sam wpis w bazie), brak = adres techniczny <id>@discord.invalid.
+async function loginFlow(env, url, st, code, now) {
+  const tr = await fetch(D + '/oauth2/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: url.origin + '/link/callback' }) });
+  if (!tr.ok) return back(env, 'err', st.o);
+  const { id, roles, email, verified, name } = await userRoles(env, (await tr.json()).access_token);
+  const key = verified && email ? email.toLowerCase() : id + '@discord.invalid';
+  if (crewEmails(env).includes(key)) return back(env, 'crew', st.o);
+  const existing = await getMember(env, key, now);
+  if (existing && (existing.role === 'admin' || existing.role === 'member')) return back(env, 'crew', st.o);
+  const tier = tierFromRoles(roles, rolesMap(env));
+  if (tier || existing) {
+    await applyResult(env, key, existing, tier ? { ytTier: tier, discordId: id } : null, now);
+    if (tier && !(existing && existing.discordId === id)) await patchMember(env, key, { discordId: id, linkedAt: now }, now);
+  }
+  const tok = await customToken(env, 'discord:' + id, { email: key, email_verified: true, provider: 'discord', dn: name }, now);
+  return Response.redirect(returnUrl(env, st.o).split('#')[0] + '#dlogin=' + tok, 302);
 }
 
 async function handle(req, env, now) {
@@ -129,11 +163,19 @@ async function handle(req, env, now) {
     return json({ url: 'https://discord.com/oauth2/authorize?' + q }, 200, env, req);
   }
 
+  if (url.pathname === '/login/start' && req.method === 'GET') {
+    const asked = url.searchParams.get('o') || '';
+    const state = await signState(env, '', now, origins(env).includes(asked) ? asked : '', 'login');
+    const q = new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, response_type: 'code', redirect_uri: url.origin + '/link/callback', scope: 'identify email guilds.members.read', state, prompt: 'none' });
+    return Response.redirect('https://discord.com/oauth2/authorize?' + q, 302);
+  }
+
   if (url.pathname === '/link/callback' && req.method === 'GET') {
     try {
       const st = await readState(env, url.searchParams.get('state'), now);
       const code = url.searchParams.get('code');
       if (!st || !code) return back(env, 'err', st && st.o);
+      if (st.k === 'login') return await loginFlow(env, url, st, code, now);
       const tr = await fetch(D + '/oauth2/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: url.origin + '/link/callback' }) });
       if (!tr.ok) return back(env, 'err', st.o);

@@ -303,12 +303,13 @@ body.inapp #topbar0{display:none}
 <section id="gate" class="gate" hidden>
   <div class="hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe"><span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p>Statystyki RTS Widzew Łódź: klub, zawodnicy i cała liga w liczbach, od Rozmów Tylko Sportowych.</p></div>
   <div class="actions"><button class="btn pri" id="g-go">Zaloguj przez Google</button></div>
-  <p class="msg" style="text-align:center">Za darmo: podstawowe karty dla każdego zalogowanego.</p>
+  <div class="actions" style="margin-top:-2px"><button class="btn dc" id="g-dc-login" hidden></button></div>
+  <p class="msg" style="text-align:center">Za darmo: podstawowe karty dla każdego zalogowanego. Wspierasz kanał? Zaloguj się przez Discord, a poziom ustawi się sam.</p>
   <div class="msg" id="g-msg"></div>
   <div class="card-box gsteps"><h3>Chcesz więcej?</h3>
     <div class="gst"><i>1</i><div><b>Wesprzyj kanał na YouTube</b><span>Stały Bywalec 29,99 zł lub Elita Rozmów 59,99 zł miesięcznie. Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</span><a class="btn" href="https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join" target="_blank" rel="noopener">Zostań wspierającym</a></div></div>
     <div class="gst"><i>2</i><div><b>Połącz YouTube z Discordem</b><span>W Discordzie: Ustawienia użytkownika, Połączenia, YouTube. Dołącz też do serwera RTS.</span><a class="btn dc out" id="g-dc" target="_blank" rel="noopener" hidden></a></div></div>
-    <div class="gst"><i>3</i><div><b>Wróć i kliknij „Połącz z Discordem”</b><span>Przycisk jest w aplikacji po zalogowaniu. Poziom nadaje się sam.</span></div></div>
+    <div class="gst"><i>3</i><div><b>Zaloguj się przez Discord</b><span>Albo zaloguj się przez Google i w aplikacji kliknij „Połącz z Discordem”. Poziom nadaje się sam.</span></div></div>
   </div>
 </section>
 <section id="deny" class="gate" hidden>
@@ -1536,7 +1537,7 @@ function levelNotice(){
     const f=d=>d.toLocaleDateString('pl-PL',{day:'numeric',month:'long'});
     h+=`<div class="card-box" style="margin:12px 0"><b>Twoje wsparcie wygasło ${esc(f(ctx.lapsedAt))}.</b><span class="msg">Dostęp Poziomu ${ROM[LV]||'I'} zostaje do ${esc(f(ctx.until))} (3 dni karencji). Odnów wsparcie na YouTube, a nic się nie zmieni.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Odnów wsparcie</a></div></div>`;
   }else if(LV<2){
-    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?SUBN[1]+' ('+PRICE[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}${SUBN[2]} (${PRICE[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziom wybierasz, wspierając kanał na YouTube. Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</span><span class="msg">1. Wesprzyj kanał na YouTube. 2. W Discordzie połącz konto YouTube (Ustawienia użytkownika, Połączenia) i dołącz do serwera RTS. 3. Wróć tutaj i kliknij „Połącz z Discordem”: poziom nadaje się sam.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_DISCORD_INVITE?'<a class="btn dc out" href="'+esc(window.RTS_DISCORD_INVITE)+'" target="_blank" rel="noopener">'+ICDISCORD+'Dołącz do serwera Discord</a>':''}${window.RTS_ACCESS_URL?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
+    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?SUBN[1]+' ('+PRICE[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}${SUBN[2]} (${PRICE[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziom wybierasz, wspierając kanał na YouTube. Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</span>${ctx.viaDiscord?'<span class="msg">Jesteś zalogowany przez Discord, więc poziom ustawia się przy każdym logowaniu. Wspierasz kanał, a poziom się nie zmienił? Połącz YouTube z Discordem (Ustawienia użytkownika, Połączenia) i zaloguj się ponownie.</span>':'<span class="msg">1. Wesprzyj kanał na YouTube. 2. W Discordzie połącz konto YouTube (Ustawienia użytkownika, Połączenia) i dołącz do serwera RTS. 3. Wróć tutaj i kliknij „Połącz z Discordem”: poziom nadaje się sam.</span>'}<div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_DISCORD_INVITE?'<a class="btn dc out" href="'+esc(window.RTS_DISCORD_INVITE)+'" target="_blank" rel="noopener">'+ICDISCORD+'Dołącz do serwera Discord</a>':''}${window.RTS_ACCESS_URL&&!ctx.viaDiscord?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
   }
   return h;
 }
@@ -1995,7 +1996,9 @@ arrow:'<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>'};
 function ico(k,sz){return `<svg class="ic" width="${sz||20}" height="${sz||20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||''}</svg>`}
 const ADMIN_EMAIL='hooday@gmail.com';
 const ICDISCORD='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>';
-(function(){const u=window.RTS_DISCORD_INVITE,a=document.getElementById('g-dc');if(u&&a){a.href=u;a.innerHTML=ICDISCORD+'Dołącz do serwera Discord';a.hidden=false}})();
+(function(){const u=window.RTS_DISCORD_INVITE,a=document.getElementById('g-dc');if(u&&a){a.href=u;a.innerHTML=ICDISCORD+'Dołącz do serwera Discord';a.hidden=false}
+  const b=document.getElementById('g-dc-login'),A=window.RTS_ACCESS_URL;
+  if(b&&A){b.innerHTML=ICDISCORD+'Zaloguj przez Discord';b.hidden=false;b.onclick=function(){location.href=A.replace(/\/$/,'')+'/login/start?o='+encodeURIComponent(location.origin)}}})();
 function show(id){for(const x of ['boot','gate','deny','setup','first','studio'])$('#'+x).hidden=(x!==id);document.body.classList.toggle('inapp',id==='studio')}
 function renderWho(email,admin,role){
   const out=()=>firebase.auth().signOut().then(()=>location.reload());
@@ -2039,6 +2042,17 @@ async function startApp(){
   firebase.initializeApp(cfg);
   const auth=firebase.auth(),fs=firebase.firestore();
   let started=false;
+  {
+    const hs=location.hash||'',gm=$('#g-msg');
+    if(hs.startsWith('#dlogin=')){
+      const tok=hs.slice(8);history.replaceState(null,'',location.pathname+location.search);
+      auth.signInWithCustomToken(tok).catch(e=>{gm.textContent='Nie udało się zalogować przez Discord ('+(e.code||e.message)+').';gm.className='msg err'});
+    }else if(hs==='#discord=crew'||hs==='#discord=err'){
+      history.replaceState(null,'',location.pathname+location.search);
+      gm.textContent=hs==='#discord=crew'?'To konto należy do ekipy lub admina i loguje się przez Google. Użyj przycisku „Zaloguj przez Google”.':'Nie udało się zalogować przez Discord. Spróbuj jeszcze raz.';
+      gm.className='msg err';
+    }
+  }
   $('#g-go').onclick=async()=>{
     const m=$('#g-msg');m.className='msg';m.textContent='';
     const pr=new firebase.auth.GoogleAuthProvider();pr.setCustomParameters({prompt:'select_account'});
@@ -2051,7 +2065,8 @@ async function startApp(){
   auth.onAuthStateChanged(async u=>{
     if(!u){show('gate');return}
     if(started)return;
-    const email=(u.email||'').toLowerCase();
+    let claims={};try{claims=(await u.getIdTokenResult()).claims||{}}catch(e){}
+    const viaDiscord=claims.provider==='discord',email=(u.email||claims.email||'').toLowerCase();
     $('#d-email').textContent=email;
     $('#d-out').onclick=()=>auth.signOut().then(()=>location.reload());
     let snap;
@@ -2081,7 +2096,7 @@ async function startApp(){
     try{const c=await fs.doc('settings/cards').get();if(c.exists)cards=c.data()}catch(e){}
     show('studio');
     const level=mdoc&&mdoc.level!=null?+mdoc.level:null,lapsedAt=mdoc&&mdoc.lapsedAt&&mdoc.lapsedAt.toDate?mdoc.lapsedAt.toDate():null;
-    runApp(d,{fs,email,isAdmin,role,until,level,lapsedAt,getToken:()=>u.getIdToken(),bg,bgs,cards});
+    runApp(d,{fs,email,viaDiscord,isAdmin,role,until,level,lapsedAt,getToken:()=>u.getIdToken(),bg,bgs,cards});
   });
 }
 startApp();

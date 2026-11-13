@@ -20,6 +20,7 @@ SKAUT_URL = "https://rtsskaut.pl/"                      # główny adres aplikac
 SKAUT_ORIGINS = "https://rts-skaut-access.hooday.workers.dev/,https://hooday-lab.github.io/rtsskaut/"   # dodatkowe dozwolone adresy aplikacji (lista po przecinku, ze ścieżką); powrót z Discorda wraca tam, skąd kibic zaczął
 FIREBASE_PROJECT = "rtsstat-55616"
 FIREBASE_API_KEY = "AIzaSyDAMnV0kpcw4y905gSY9R_fWsLKedkENwI"   # klucz publiczny aplikacji (ten sam co w config.js)
+CREW_EMAILS = "hooday@gmail.com"      # adresy, które logują się tylko przez Google (admin i ekipa), nigdy przez Discord
 DISCORD_CLIENT_ID = "1570743379153789020"    # Application ID aplikacji Discord RTS Skaut
 DISCORD_GUILD_ID = "1549270230340210748"     # ID serwera Discord RTS
 DISCORD_ROLES = '{"1570741549569150987":1,"1570741549569150988":2,"1570741549569150989":3}'   # Kibic Rozmów = I, Stały Bywalec = II, Elita Rozmów = III (ogólna rola "YouTube Member" pominięta)
