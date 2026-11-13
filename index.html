@@ -80,8 +80,10 @@ a.btn{text-decoration:none}
 .gx-hero .gold{font:800 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
 .gate .gx-hero h2{margin:2px 0 0;font:800 46px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#fff}
 .gx-tag{margin:0;font:800 19px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff}
-.gx-vals{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;color:#f6dcdd;font-size:15px}
-.gx-vals b{color:#fff;margin-right:6px}
+.gx-vals{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:12px;color:#f6dcdd;font-size:15px}
+.gx-vals li{display:flex;flex-direction:column;gap:2px}
+.gx-vals b{color:#fff;font:800 16px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.gx-vals span{line-height:1.3}
 .gx-login{grid-area:login}.gx-more{grid-area:more}.gx-rooms{grid-area:rooms}
 .ux-h{margin:0;font:800 18px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase}
 .gx-login .msg{margin:0}.gx-login .msg:empty{display:none}
@@ -96,7 +98,7 @@ a.btn{text-decoration:none}
   .gx-hero img{width:150px;height:150px;flex:none}
   .gx-ht{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:64px;align-items:center;justify-items:start;flex:1;min-width:0}
   .gx-ht>*{grid-column:1}
-  .gx-ht .gx-vals{grid-column:2;grid-row:1/5;margin:0;font-size:17px;align-items:flex-start;text-align:left;gap:10px}
+  .gx-ht .gx-vals{grid-column:2;grid-row:1/5;margin:0;font-size:17px;align-items:flex-start;text-align:left;gap:14px}
   .gate .gx-hero h2{font-size:72px}
   .gx-tag{font-size:24px}
   .gx-rooms .dcp{height:100%}
@@ -374,8 +376,8 @@ body.inapp #topbar0{display:none}
 <div id="boot" class="bootlogo"><img src="brand/logo-gold-light.png" alt=""><span class="msg">Ładuję Studio…</span></div>
 <section id="gate" class="gate gx" hidden>
   <div class="gx-hero"><img src="brand/logo-white.png" alt="Rozmowy Tylko Sportowe" width="180" height="180"><div class="gx-ht">
-    <span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p class="gx-tag">Statystyki RTS Widzew Łódź</p>
-    <ul class="gx-vals"><li><b>Klub</b> mecz, dom i wyjazd, liczba przed rywalem</li><li><b>Zawodnicy</b> profil, porównanie, radar, rozwój</li><li><b>Liga</b> mapa ligi i radar klubów</li></ul></div></div>
+    <span class="gold">Od kibiców dla kibiców</span><h2>RTS Skaut</h2><p class="gx-tag">Statystyki i infografiki o<br>RTS Widzew Łódź</p>
+    <ul class="gx-vals"><li><b>Klub</b><span>Mecz, dom i wyjazd, liczba przed rywalem</span></li><li><b>Zawodnicy</b><span>Profil, porównanie, radar, rozwój</span></li><li><b>Liga</b><span>Mapa ligi i radar klubów</span></li></ul></div></div>
   <div class="card-box gx-login"><h3 class="ux-h">Zaloguj się</h3>
     <div class="gx-btns"><button class="btn gbtn" id="g-go">Zaloguj przez Google</button><button class="btn dc" id="g-dc-login" hidden></button></div>
     <div class="msg" id="g-msg" role="alert"></div>
