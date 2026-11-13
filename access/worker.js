@@ -9,8 +9,12 @@ const enc = new TextEncoder();
 const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const unb64u = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
 
+// Dozwolone adresy aplikacji: główny z SKAUT_URL oraz opcjonalne z SKAUT_ORIGINS (lista po przecinku, np. zapasowy adres pages.dev).
+const origins = (env) => [new URL(env.SKAUT_URL).origin, ...String(env.SKAUT_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean)];
 const cors = (env, req) => {
-  const o = new URL(env.SKAUT_URL).origin;
+  const list = origins(env);
+  const asked = req && req.headers && req.headers.get('Origin');
+  const o = list.includes(asked) ? asked : list[0];
   return { 'Access-Control-Allow-Origin': o, 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', Vary: 'Origin' };
 };
 const json = (obj, status, env, req) => new Response(JSON.stringify(obj), { status: status || 200, headers: { 'Content-Type': 'application/json', ...cors(env, req) } });

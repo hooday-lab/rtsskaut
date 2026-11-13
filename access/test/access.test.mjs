@@ -180,3 +180,12 @@ test('synchronizacja: limit zapytań Discorda zatrzymuje partię bez błędów d
   assert.equal(r.stoppedByRateLimit, true);
   assert.equal(w2.db.get('kibic@example.com').level, 2);
 });
+
+test('CORS: główny adres i adresy z SKAUT_ORIGINS są dozwolone, obcy dostaje adres główny', async () => {
+  const e = { ...env, SKAUT_URL: 'https://rtsskaut.pl/', SKAUT_ORIGINS: 'https://rtsskaut.pages.dev, https://inny.example' };
+  const ask = (origin) => handle(new Request('https://w.example/link/start', { method: 'OPTIONS', headers: { Origin: origin } }), e, now0);
+  assert.equal((await ask('https://rtsskaut.pages.dev')).headers.get('Access-Control-Allow-Origin'), 'https://rtsskaut.pages.dev');
+  assert.equal((await ask('https://inny.example')).headers.get('Access-Control-Allow-Origin'), 'https://inny.example');
+  assert.equal((await ask('https://rtsskaut.pl')).headers.get('Access-Control-Allow-Origin'), 'https://rtsskaut.pl');
+  assert.equal((await ask('https://zly.example')).headers.get('Access-Control-Allow-Origin'), 'https://rtsskaut.pl');
+});
