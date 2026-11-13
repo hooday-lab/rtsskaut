@@ -123,24 +123,24 @@ a.btn{text-decoration:none}
 .ux2-l,.ux2-r{min-width:0}
 @media (min-width:1180px){.ux2{grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);align-items:start}}
 /* pokoje w wyglądzie Discorda (zawsze ciemne, jak w aplikacji Discord) */
-.dcp{background:linear-gradient(160deg,#3b2f8f 0%,#2a2170 48%,#1d1850 100%);color:#fff;border-radius:16px;padding:12px 12px 14px;display:flex;flex-direction:column;gap:6px;font:600 16px/1.25 'Barlow',system-ui,sans-serif;box-shadow:var(--sh)}
-.dcp-h{display:flex;align-items:center;gap:12px;padding:4px 4px 12px;border-bottom:1px solid rgba(255,255,255,.16);margin-bottom:4px}
-.dcp-h img{width:40px;height:40px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
-.dcp-h b{display:block;color:#fff;font-weight:800;font-size:17px}
-.dcp-h span{font-size:13px;color:#c9c6f2}
-.dcc{padding:10px 4px 2px;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#d8d5ff}
-.dch{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;color:#fff;text-decoration:none;min-height:44px;background:rgba(255,255,255,.09);transition:background .15s,transform .15s}
-a.dch:hover{background:rgba(255,255,255,.18);transform:translateX(2px)}
-a.dch:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.dch .dci{width:28px;height:28px;flex:none;display:grid;place-items:center;color:#fff;background:#5865F2;border-radius:8px;box-shadow:0 2px 6px rgba(88,101,242,.5)}
+.dcp{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:14px 14px 16px;display:flex;flex-direction:column;gap:6px;font:600 16px/1.25 'Barlow',system-ui,sans-serif;box-shadow:var(--sh)}
+.dcp-h{display:flex;align-items:center;gap:12px;padding:2px 2px 12px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.dcp-h img{width:40px;height:40px;border-radius:50%;flex:none}
+.dcp-h b{display:block;color:var(--ink);font-weight:800;font-size:17px}
+.dcp-h span{font-size:13px;color:var(--mute)}
+.dcc{padding:10px 2px 2px;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.dch{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;color:var(--ink);text-decoration:none;min-height:44px;background:var(--soft);transition:background .15s,transform .15s}
+a.dch:hover{background:var(--line);transform:translateX(2px)}
+a.dch:focus-visible{outline:2px solid var(--dc);outline-offset:2px}
+.dch .dci{width:28px;height:28px;flex:none;display:grid;place-items:center;color:#fff;background:#5865F2;border-radius:8px;box-shadow:0 2px 6px rgba(88,101,242,.4)}
 .dch .dci svg{width:17px;height:17px}
 .dch.lk .dci{background:#7b6ff0}
 .dch .dcn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.dch .dcn em{font-style:normal;color:#b9b5ee;padding:0 4px}
-.dcp-f{display:flex;flex-direction:column;gap:8px;padding:12px 4px 0;border-top:1px solid rgba(255,255,255,.16);margin-top:6px}
+.dch .dcn em{font-style:normal;color:var(--mute);padding:0 4px}
+.dcp-f{display:flex;flex-direction:column;gap:8px;padding:12px 2px 0;border-top:1px solid var(--line);margin-top:6px}
 .dcp-f .btn{width:100%;min-height:46px}
-.dcp-f span{font-size:13px;color:#d8d5ff}
-.dcp-soon{color:#fff!important;font-size:14px!important}
+.dcp-f span{font-size:13px;color:var(--mute)}
+.dcp-soon{color:var(--ink)!important;font-size:14px!important}
 .btn.dc:focus-visible{outline:2px solid #fff;outline-offset:2px;box-shadow:0 0 0 4px var(--dc)}
 .btn .need{margin-left:6px;padding:0 6px;font-size:11px}
 .btn.lk{opacity:.7}
