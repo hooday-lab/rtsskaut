@@ -128,9 +128,9 @@ test('powrót z Discorda: brak roli = wpis oczekujący, poziom 0', async () => {
 test('powrót z Discorda: zły i przeterminowany stan oraz zły kod = err', async () => {
   world({ roles: { 111: ['r3'] } });
   const st = await stateFor(now0);
-  assert.equal((await handle(cb('zly.stan'), env, now0)).headers.get('location'), 'https://skaut.example/#discord=err');
-  assert.equal((await handle(cb(st), env, now0 + 11 * 60e3)).headers.get('location'), 'https://skaut.example/#discord=err');
-  assert.equal((await handle(cb(st, 'zly'), env, now0)).headers.get('location'), 'https://skaut.example/#discord=err');
+  assert.equal((await handle(cb('zly.stan'), env, now0)).headers.get('location'), 'https://skaut.example/#discord=err&c=state');
+  assert.equal((await handle(cb(st), env, now0 + 11 * 60e3)).headers.get('location'), 'https://skaut.example/#discord=err&c=state');
+  assert.equal((await handle(cb(st, 'zly'), env, now0)).headers.get('location'), 'https://skaut.example/#discord=err&c=token%20400');
 });
 test('powrót z Discorda: ekipa nie jest nadpisywana', async () => {
   const w = world({ roles: { 111: ['r3'] } });
@@ -244,8 +244,8 @@ test('logowanie przez Discord: admin i ekipa muszą używać Google', async () =
 });
 test('logowanie przez Discord: zły kod i zły stan wracają z błędem', async () => {
   world({ roles: {} });
-  assert.equal((await handle(cb(await loginState(eL, '', now0), 'zly'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err');
-  assert.equal((await handle(cb('zly.stan'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err');
+  assert.equal((await handle(cb(await loginState(eL, '', now0), 'zly'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err&c=token%20400');
+  assert.equal((await handle(cb('zly.stan'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err&c=state');
 });
 
 test('błąd w trakcie logowania wraca z krótkim kodem przyczyny', async () => {
