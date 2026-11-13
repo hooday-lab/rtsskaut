@@ -23,9 +23,11 @@ h3{font-size:16px;font-weight:800;color:var(--mute);margin:18px 0 8px}
 .sw{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
 .sw i{display:block;height:84px}.sw div{padding:10px 12px;font-size:13.5px}.sw b{display:block;font-size:15px}
 .lock{display:flex;align-items:center;gap:14px;padding:22px;border-radius:14px;border:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
-.lock .badge{width:64px;height:64px;border-radius:50%;background:var(--red);padding:4px;box-shadow:0 0 0 3px var(--panel),0 0 0 5px var(--gold)}
-.lock .t{font:800 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase}.lock .t b{color:var(--red)}
-.lock small{display:block;font:600 11px/1 'Barlow',sans-serif;letter-spacing:.18em;color:#B89B35;margin-top:6px;text-transform:uppercase}
+.lock .mark{width:64px;height:64px;flex:none;filter:drop-shadow(0 6px 14px rgba(0,0,0,.4))}
+.lock .sq{width:64px;height:64px;border-radius:15px;flex:none}
+.lock .t{font:800 34px/1 'Barlow Condensed',sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.lock small{display:block;font:800 12px/1 'Barlow Condensed',sans-serif;letter-spacing:.2em;color:#B89B35;margin-top:7px;text-transform:uppercase}
+.lock.dark small{color:var(--gold)}
 .dark{background:var(--graph);color:#fff;border-color:#2b2d32}
 .type{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
 .type .a{font:800 54px/1 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.03em}
@@ -47,10 +49,17 @@ ul{padding-left:20px;margin:6px 0}li{margin:4px 0}
 
 <h2>Zapis nazwy i znaczek</h2>
 <div class="g" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
- <div class="lock"><img class="badge" src="logo-white.png" alt=""><div><div class="t">RTS <b>Skaut</b></div><small>Rozmowy Tylko Sportowe</small></div></div>
- <div class="lock dark"><img class="badge" src="logo-white.png" alt=""><div><div class="t" style="color:#fff">RTS <b>Skaut</b></div><small>Rozmowy Tylko Sportowe</small></div></div>
+ <div class="lock"><img class="sq" src="icon-192.png" alt=""><div><div class="t">RTS Skaut</div><small>Rozmowy Tylko Sportowe</small></div></div>
+ <div class="lock dark" style="background:radial-gradient(120% 140% at 0% 0%,#d71f26 0%,#8e1017 50%,#2a0a0d 100%);border-color:#4a1418"><img class="mark" src="logo-white.png" alt=""><div><div class="t" style="color:#fff">RTS Skaut</div><small>Rozmowy Tylko Sportowe</small></div></div>
  <div class="lock"><img src="icon-192.png" width="64" height="64" style="border-radius:14px" alt=""><div><b>Ikona aplikacji</b><br><span style="color:var(--mute);font-size:14px">Czerwony kwadrat, białe logo. Pliki: icon-192, icon-512, apple-touch-icon, favicon.</span></div></div>
 </div>
+<h3>Reguła jednego zapisu (obowiązuje w aplikacji, na kartach i w materiałach)</h3>
+<ul>
+ <li><b>Znak:</b> na ciemnym i czerwonym tle biały znak <b>bez koła i bez złotej obwódki</b> (logo-white.png). Na jasnym tle znak na czerwonym zaokrąglonym kwadracie, jak ikona aplikacji (icon-192.png).</li>
+ <li><b>Napis „RTS SKAUT”:</b> Barlow Condensed 800, wersaliki, odstęp liter .03em, <b>jeden kolor</b>: biały na ciemnym i czerwonym, grafit (#17181B) na jasnym. Bez dwukolorowego „SKAUT” na czerwono.</li>
+ <li><b>Podpis „Rozmowy Tylko Sportowe”:</b> Barlow Condensed 800, wersaliki, odstęp .2em, złoty: #D4B950 na ciemnym, #B89B35 na jasnym.</li>
+ <li><b>Wzór:</b> baner na ekranie Start. Menu boczne, nagłówek i ekran logowania mają wyglądać jak on.</li>
+</ul>
 <p style="color:var(--mute)">Nazwa: <b>RTS Skaut</b> (RTS to skrót podcastu Rozmowy Tylko Sportowe). Nagłówek karty: <b>RTS Skaut · [temat]</b>. Hasztag: <b>#RTSkaut</b> razem z #Widzew. Nigdy „RTS Stats”, „RTSstat”, „Skaut RTS”.</p>
 
 <h2>Idea i miejsce w rodzinie marki</h2>
