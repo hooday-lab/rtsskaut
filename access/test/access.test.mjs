@@ -67,8 +67,8 @@ const env = {
   DISCORD_ROLES: JSON.stringify({ r1: 1, r2: 2, r3: 3 }),
   FIREBASE_SERVICE_ACCOUNT: JSON.stringify({ client_email: 'sa@x', private_key: privateKey.export({ type: 'pkcs8', format: 'pem' }) }),
 };
-function world({ roles = {}, token = 'good', email = 'Kibic@Example.com', userId = '111', rateLimit = false } = {}) {
-  const db = new Map();
+function world({ roles = {}, token = 'good', email = 'Kibic@Example.com', userId = '111', rateLimit = false, discordUser = {}, seed = {} } = {}) {
+  const db = new Map(Object.entries(seed));
   const calls = [];
   const toFields = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v === null ? { nullValue: null } : ['until', 'lapsedAt', 'linkedAt'].includes(k) ? { timestampValue: new Date(v).toISOString() } : typeof v === 'number' ? { integerValue: String(v) } : { stringValue: v }]));
   const fromF = (f) => Object.fromEntries(Object.entries(f).map(([k, v]) => [k, 'timestampValue' in v ? Date.parse(v.timestampValue) : 'integerValue' in v ? +v.integerValue : 'stringValue' in v ? v.stringValue : null]));
@@ -78,7 +78,7 @@ function world({ roles = {}, token = 'good', email = 'Kibic@Example.com', userId
     if (u.startsWith('https://identitytoolkit')) return init.body.includes(token) ? J({ users: [{ email, emailVerified: true }] }) : J({}, 400);
     if (u === 'https://oauth2.googleapis.com/token') return J({ access_token: 'sa-tok', expires_in: 3600 });
     if (u === 'https://discord.com/api/v10/oauth2/token') return init.body.toString().includes('code=ok') ? J({ access_token: 'user-tok' }) : J({}, 400);
-    if (u === 'https://discord.com/api/v10/users/@me') return J({ id: userId });
+    if (u === 'https://discord.com/api/v10/users/@me') return J({ id: userId, ...discordUser });
     if (u.endsWith('/users/@me/guilds/G/member')) return roles[userId] ? J({ roles: roles[userId] }) : J({}, 404);
     if (u.startsWith('https://discord.com/api/v10/guilds/G/members/')) {
       if (rateLimit) return J({}, 429);
@@ -201,4 +201,49 @@ test('powrót z Discorda wraca na adres, z którego zaczęto, a nieznany adres w
   assert.equal((await handle(cb(await start('https://zly.example')), e, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=ok');
   world({ roles: { 111: ['r1'] } });
   assert.equal((await handle(cb(await start(null)), e, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=ok');
+});
+
+/* ---------- logowanie przez Discord ---------- */
+const loginStart = (o) => new Request('https://w.example/login/start' + (o ? '?o=' + encodeURIComponent(o) : ''));
+const tokenClaims = (loc) => JSON.parse(Buffer.from(loc.split('#dlogin=')[1].split('.')[1], 'base64url').toString());
+async function loginState(e, origin, now) { const r = await handle(loginStart(origin), e, now); return new URL(r.headers.get('location')).searchParams.get('state'); }
+const eL = { ...env, SKAUT_URL: 'https://rtsskaut.pl/', SKAUT_ORIGINS: 'https://stary.example/app/' };
+
+test('/login/start: przekierowuje do Discorda z zakresem email i rolami serwera', async () => {
+  const r = await handle(loginStart('https://stary.example'), eL, now0);
+  assert.equal(r.status, 302);
+  const u = new URL(r.headers.get('location'));
+  assert.equal(u.hostname, 'discord.com');
+  assert.equal(u.searchParams.get('scope'), 'identify email guilds.members.read');
+  assert.equal(u.searchParams.get('redirect_uri'), 'https://w.example/link/callback');
+});
+test('logowanie przez Discord: wspierający dostaje poziom w bazie i token z adresem e-mail', async () => {
+  const w = world({ roles: { 111: ['r2'] }, discordUser: { email: 'Kibic@Example.com', verified: true, global_name: 'Kibic' } });
+  const res = await handle(cb(await loginState(eL, 'https://stary.example', now0)), eL, now0 + 1000);
+  const loc = res.headers.get('location');
+  assert.ok(loc.startsWith('https://stary.example/app/#dlogin='));
+  const c = tokenClaims(loc);
+  assert.equal(c.uid, 'discord:111'); assert.equal(c.claims.email, 'kibic@example.com'); assert.equal(c.claims.email_verified, true); assert.equal(c.claims.provider, 'discord');
+  assert.equal(c.aud, 'https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit'); assert.equal(c.exp - c.iat, 600);
+  const d = w.db.get('kibic@example.com');
+  assert.equal(d.level, 1); assert.equal(d.ytTier, 2); assert.equal(d.source, 'discord'); assert.equal(d.discordId, '111');
+});
+test('logowanie przez Discord: bez zweryfikowanego e-maila adres techniczny, bez roli brak wpisu w bazie', async () => {
+  const w = world({ roles: {}, discordUser: { email: 'ktos@example.com', verified: false } });
+  const res = await handle(cb(await loginState(eL, '', now0)), eL, now0 + 1000);
+  const loc = res.headers.get('location');
+  assert.ok(loc.startsWith('https://rtsskaut.pl/#dlogin='));
+  assert.equal(tokenClaims(loc).claims.email, '111@discord.invalid');
+  assert.equal(w.db.size, 0);
+});
+test('logowanie przez Discord: admin i ekipa muszą używać Google', async () => {
+  world({ roles: { 111: ['r3'] }, discordUser: { email: 'hooday@gmail.com', verified: true } });
+  assert.equal((await handle(cb(await loginState(eL, '', now0)), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=crew');
+  world({ roles: { 111: ['r3'] }, discordUser: { email: 'ekipa@example.com', verified: true }, seed: { 'ekipa@example.com': { role: 'member' } } });
+  assert.equal((await handle(cb(await loginState(eL, '', now0)), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=crew');
+});
+test('logowanie przez Discord: zły kod i zły stan wracają z błędem', async () => {
+  world({ roles: {} });
+  assert.equal((await handle(cb(await loginState(eL, '', now0), 'zly'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err');
+  assert.equal((await handle(cb('zly.stan'), eL, now0 + 1000)).headers.get('location'), 'https://rtsskaut.pl/#discord=err');
 });
