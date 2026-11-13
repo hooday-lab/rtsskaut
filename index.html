@@ -306,7 +306,7 @@ body.inapp #topbar0{display:none}
   <p class="msg" style="text-align:center">Za darmo: podstawowe karty dla każdego zalogowanego.</p>
   <div class="msg" id="g-msg"></div>
   <div class="card-box gsteps"><h3>Chcesz więcej?</h3>
-    <div class="gst"><i>1</i><div><b>Wesprzyj kanał na YouTube</b><span>Stały Bywalec 29,99 zł lub Elita Rozmów 59,99 zł miesięcznie.</span><a class="btn" href="https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join" target="_blank" rel="noopener">Zostań wspierającym</a></div></div>
+    <div class="gst"><i>1</i><div><b>Wesprzyj kanał na YouTube</b><span>Stały Bywalec 29,99 zł lub Elita Rozmów 59,99 zł miesięcznie. Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</span><a class="btn" href="https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join" target="_blank" rel="noopener">Zostań wspierającym</a></div></div>
     <div class="gst"><i>2</i><div><b>Połącz YouTube z Discordem</b><span>W Discordzie: Ustawienia użytkownika, Połączenia, YouTube. Dołącz też do serwera RTS.</span><a class="btn dc out" id="g-dc" target="_blank" rel="noopener" hidden></a></div></div>
     <div class="gst"><i>3</i><div><b>Wróć i kliknij „Połącz z Discordem”</b><span>Przycisk jest w aplikacji po zalogowaniu. Poziom nadaje się sam.</span></div></div>
   </div>
@@ -314,7 +314,7 @@ body.inapp #topbar0{display:none}
 <section id="deny" class="gate" hidden>
   <div class="hero sm"><img src="brand/logo-white.png" alt=""></div>
   <h2 id="d-h">Dostęp dla wspierających</h2>
-  <p class="msg">Zalogowano jako <b id="d-email"></b>. RTS Skaut jest dla kibiców Rozmów Tylko Sportowych. Podstawowe karty są za darmo, a więcej odblokowuje wsparcie kanału w planie Stały Bywalec lub Elita Rozmów na YouTube.</p>
+  <p class="msg">Zalogowano jako <b id="d-email"></b>. RTS Skaut jest dla kibiców Rozmów Tylko Sportowych. Podstawowe karty są za darmo, a więcej odblokowuje wsparcie kanału w planie Stały Bywalec lub Elita Rozmów na YouTube. Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</p>
   <p class="msg" id="d-state"></p>
   <div id="d-form" class="actions" style="flex-direction:column;align-items:stretch;max-width:420px;margin:0 auto">
     <input type="text" id="rq-nick" maxlength="80" placeholder="Twoja nazwa na YouTube (np. @Kibic1910)" aria-label="Nazwa na YouTube">
@@ -1536,7 +1536,7 @@ function levelNotice(){
     const f=d=>d.toLocaleDateString('pl-PL',{day:'numeric',month:'long'});
     h+=`<div class="card-box" style="margin:12px 0"><b>Twoje wsparcie wygasło ${esc(f(ctx.lapsedAt))}.</b><span class="msg">Dostęp Poziomu ${ROM[LV]||'I'} zostaje do ${esc(f(ctx.until))} (3 dni karencji). Odnów wsparcie na YouTube, a nic się nie zmieni.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Odnów wsparcie</a></div></div>`;
   }else if(LV<2){
-    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?SUBN[1]+' ('+PRICE[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}${SUBN[2]} (${PRICE[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziom wybierasz, wspierając kanał na YouTube.</span><span class="msg">1. Wesprzyj kanał na YouTube. 2. W Discordzie połącz konto YouTube (Ustawienia użytkownika, Połączenia) i dołącz do serwera RTS. 3. Wróć tutaj i kliknij „Połącz z Discordem”: poziom nadaje się sam.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_DISCORD_INVITE?'<a class="btn dc out" href="'+esc(window.RTS_DISCORD_INVITE)+'" target="_blank" rel="noopener">'+ICDISCORD+'Dołącz do serwera Discord</a>':''}${window.RTS_ACCESS_URL?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
+    h+=`<div class="card-box" style="margin:12px 0"><b>Odblokuj więcej w RTS Skaut</b><span class="msg">${LV<1?SUBN[1]+' ('+PRICE[1]+') dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. ':''}${SUBN[2]} (${PRICE[2]}) dodaje Radary, Rozwój i pakiet dla komunikacji. Poziom wybierasz, wspierając kanał na YouTube. Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</span><span class="msg">1. Wesprzyj kanał na YouTube. 2. W Discordzie połącz konto YouTube (Ustawienia użytkownika, Połączenia) i dołącz do serwera RTS. 3. Wróć tutaj i kliknij „Połącz z Discordem”: poziom nadaje się sam.</span><div class="actions"><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a>${window.RTS_DISCORD_INVITE?'<a class="btn dc out" href="'+esc(window.RTS_DISCORD_INVITE)+'" target="_blank" rel="noopener">'+ICDISCORD+'Dołącz do serwera Discord</a>':''}${window.RTS_ACCESS_URL?'<button class="btn dc" id="dc-link">'+ICDISCORD+'Połącz z Discordem</button>':''}</div><span class="msg" id="dc-msg"></span></div>`;
   }
   return h;
 }
