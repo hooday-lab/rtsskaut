@@ -125,6 +125,9 @@ async function applyResult(env, email, existing, found, now) {
   return plan.action;
 }
 
+// Krótki opis nieudanej odpowiedzi Discorda: status i nazwa błędu (np. invalid_client), bez sekretów.
+const whyFailed = async (r) => 'token ' + r.status + (await r.json().then((j) => ' ' + (j.error || ''), () => '')).trimEnd();
+
 // Adresy, które muszą logować się przez Google (admin, ekipa): nigdy przez Discord.
 const crewEmails = (env) => String(env.CREW_EMAILS || 'hooday@gmail.com').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
 
@@ -133,7 +136,7 @@ const crewEmails = (env) => String(env.CREW_EMAILS || 'hooday@gmail.com').split(
 async function loginFlow(env, url, st, code, now) {
   const tr = await fetch(D + '/oauth2/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: url.origin + '/link/callback' }) });
-  if (!tr.ok) return back(env, 'err', st.o);
+  if (!tr.ok) return back(env, 'err', st.o, await whyFailed(tr));
   const { id, roles, email, verified, name } = await userRoles(env, (await tr.json()).access_token);
   const key = verified && email ? email.toLowerCase() : id + '@discord.invalid';
   if (crewEmails(env).includes(key)) return back(env, 'crew', st.o);
@@ -177,11 +180,11 @@ async function handle(req, env, now) {
       const st = await readState(env, url.searchParams.get('state'), now);
       stOrigin = st && st.o;
       const code = url.searchParams.get('code');
-      if (!st || !code) return back(env, 'err', st && st.o);
+      if (!st || !code) return back(env, 'err', st && st.o, !st ? 'state' : 'no-code');
       if (st.k === 'login') return await loginFlow(env, url, st, code, now);
       const tr = await fetch(D + '/oauth2/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: url.origin + '/link/callback' }) });
-      if (!tr.ok) return back(env, 'err', st.o);
+      if (!tr.ok) return back(env, 'err', st.o, await whyFailed(tr));
       const { id, roles } = await userRoles(env, (await tr.json()).access_token);
       const tier = tierFromRoles(roles, rolesMap(env));
       const existing = await getMember(env, st.e, now);
