@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'dist');
-const files = ['index.html', 'sw.js', 'config.js'];
+const files = ['index.html', 'jak-polaczyc-discord.html', 'sw.js', 'config.js'];
 const dirs = ['brand'];
 
 rmSync(out, { recursive: true, force: true });

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jak połączyć YouTube z Discordem · RTS Skaut</title>
+<link rel="icon" href="brand/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap">
+<style>
+:root{--bg:#f5f3f0;--panel:#fff;--ink:#17181B;--mute:#5f6269;--line:#dad6d0;--red:#d91e25;--red-ink:#fff;--soft:#edeae5;--ok:#1e7a46;--dc:#5865f2;--dc-t:#4752c4;--gold:#8a6a0c;--dk:#2b2d31;--dk2:#1e1f22;--dk-ink:#f2f3f5;--dk-mute:#a8abb3;
+  --font-body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;--font-head:'Barlow Condensed','Arial Narrow',sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1012;--panel:#18191c;--ink:#f4f4f2;--mute:#a4a7af;--line:#2b2d32;--red:#e5242b;--soft:#222428;--ok:#4cc27f;--dc-t:#9ea7ff;--gold:#e0c25a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1012;--panel:#18191c;--ink:#f4f4f2;--mute:#a4a7af;--line:#2b2d32;--red:#e5242b;--soft:#222428;--ok:#4cc27f;--dc-t:#9ea7ff;--gold:#e0c25a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.55 var(--font-body);margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.top{display:flex;align-items:center;gap:12px;max-width:760px;margin:0 auto;padding-block:16px;border-bottom:3px solid var(--red)}
+.top img{width:44px;height:44px;border-radius:11px}
+.top b{font:800 24px/1 var(--font-head);letter-spacing:.03em;text-transform:uppercase;display:block}
+.top small{font:800 11px/1 var(--font-head);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.top a.back{margin-left:auto;color:var(--ink);font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:var(--panel);min-height:44px;display:inline-flex;align-items:center}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px;padding-top:28px}
+h1{font:800 clamp(34px,7vw,50px)/1 var(--font-head);letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
+h2{font:800 22px/1.1 var(--font-head);letter-spacing:.05em;text-transform:uppercase;margin:0 0 12px}
+p{margin:0}.lead{font-size:19px;color:var(--mute)}
+.need{display:flex;flex-direction:column;gap:10px}
+.nd{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:30px 1fr;gap:4px 12px;align-items:start}
+.nd i{grid-row:1/4;width:30px;height:30px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:800}
+.nd b{font-weight:700}.nd span{color:var(--mute);font-size:15.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 20px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:700 16px/1 var(--font-body);text-decoration:none;cursor:pointer}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--red-ink)}
+.btn.dc{background:var(--dc);border-color:var(--dc);color:#fff}
+.btn[aria-disabled="true"]{opacity:.55;pointer-events:none}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.sh{display:flex;gap:14px;align-items:center}
+.sn{flex:none;width:46px;height:46px;border-radius:50%;background:var(--red);color:var(--red-ink);display:grid;place-items:center;font:800 28px/1 var(--font-head)}
+.sh h2{margin:0;font-size:25px}
+.see{background:var(--soft);border-radius:10px;padding:10px 14px;font-size:15.5px}.see b{color:var(--ok)}
+.pl{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:620px){.pl{grid-template-columns:1fr 1fr}}
+.pl>div{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.pl h3{margin:0;font:800 17px/1 var(--font-head);letter-spacing:.08em;text-transform:uppercase}
+ol.s{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.sch{background:var(--dk2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;color:var(--dk-ink);font-size:13.5px}
+.sch small{color:var(--dk-mute);font-size:12px}
+.usr{display:flex;align-items:center;gap:10px;background:var(--dk);border-radius:10px;padding:10px}
+.av{width:36px;height:36px;border-radius:50%;background:#f5b64a;flex:none}
+.nm{flex:1;font-weight:600}.nm span{display:block;font-weight:400;color:var(--dk-mute);font-size:12px}
+.hl{outline:3px solid #ffd54a;outline-offset:3px;border-radius:8px}
+.gear{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:#3a3c42}
+.tab{display:flex;justify-content:space-around;background:var(--dk);border-radius:10px;padding:10px 6px;text-align:center}
+.tab div{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--dk-mute)}
+.tab .ic{width:26px;height:26px;border-radius:50%;background:#4a4c52}
+.tab .on{color:#fff}.tab .on .av{width:28px;height:28px}
+.cons{display:flex;gap:10px;flex-wrap:wrap;background:var(--dk);border-radius:10px;padding:10px}
+.cn{width:40px;height:40px;border-radius:10px;background:#3a3c42;display:grid;place-items:center;font-weight:800;font-size:12px}
+.cn.yt{background:#e62117;color:#fff}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:0}
+summary{cursor:pointer;padding:14px 16px;font-weight:700;min-height:48px;display:flex;align-items:center}
+details[open] summary{border-bottom:1px solid var(--line)}
+details .in{padding:14px 16px;display:flex;flex-direction:column;gap:8px;color:var(--ink)}
+.note{font-size:14.5px;color:var(--mute)}
+.fin{background:linear-gradient(135deg,#d71f26,#8e1017 55%,#2a0a0d);color:#fff;border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.fin h2{margin:0;font-size:28px}.fin p{color:#f6dcdd}
+.fin .btn{background:#fff;color:#b3171e;border-color:#fff}
+</style></head><body>
+<header class="top"><img src="brand/icon-192.png" alt=""><div><b>RTS Skaut</b><small>Rozmowy Tylko Sportowe</small></div><a class="back" href="./">Wróć do aplikacji</a></header>
+<main>
+<div><h1>Jak połączyć YouTube z Discordem</h1><p class="lead" style="margin-top:12px">Zajmie 3 minuty i robisz to tylko raz. Dzięki temu RTS Skaut wie, że wspierasz kanał, i sam ustawia Ci poziom.</p></div>
+
+<section><h2>Zanim zaczniesz</h2><div class="need">
+ <div class="nd"><i>✓</i><b>Wspierasz kanał na YouTube</b><span>Stały Bywalec (29,99 zł) albo Elita Rozmów (59,99 zł). Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.</span><div class="acts"><a class="btn red" href="https://www.youtube.com/channel/UCD--b5ttUFyZz0kT90EImdg/join" target="_blank" rel="noopener">Zostań wspierającym</a></div></div>
+ <div class="nd"><i>✓</i><b>Masz konto na Discordzie</b><span>Jeśli nie, założysz je za darmo.</span><div class="acts"><a class="btn" href="https://discord.com/register" target="_blank" rel="noopener">Załóż konto na Discordzie</a></div></div>
+ <div class="nd"><i>✓</i><b>Wiesz, którym kontem Google wspierasz kanał</b><span>Dokładnie to samo konto wybierzesz w kroku 3. Inne konto = brak roli.</span></div>
+</div></section>
+
+<section class="step"><div class="sh"><div class="sn">1</div><h2>Dołącz do serwera RTS</h2></div>
+ <p>Rola wspierającego pojawia się tylko na naszym serwerze, więc musisz na nim być.</p>
+ <div class="acts"><a class="btn dc" id="inv" href="#" target="_blank" rel="noopener" aria-disabled="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>Dołącz do serwera Discord</a></div>
+ <p class="note" id="invnote">Link zaproszenia pojawi się tutaj, gdy zostanie dodany.</p>
+ <div class="see"><b>Co zobaczysz:</b> serwer „Rozmowy Tylko Sportowe” z pokojami, m.in. czat-z-ekipą i forum-kibiców.</div></section>
+
+<section class="step"><div class="sh"><div class="sn">2</div><h2>Otwórz „Połączenia” w Discordzie</h2></div>
+ <div class="pl">
+  <div><h3>Na telefonie</h3><ol class="s"><li>Dotknij swojego <b>awatara</b> w prawym dolnym rogu (zakładka „Ty”).</li><li>Wybierz <b>Połączenia</b>.</li></ol>
+   <div class="sch"><small>Schemat poglądowy: pasek na dole aplikacji</small><div class="tab"><div><span class="ic"></span>Serwery</div><div><span class="ic"></span>Wiadomości</div><div><span class="ic"></span>Powiadomienia</div><div class="on"><span class="av hl"></span>Ty</div></div></div></div>
+  <div><h3>Na komputerze</h3><ol class="s"><li>W lewym dolnym rogu kliknij <b>koło zębate</b> obok swojej nazwy.</li><li>W menu po lewej wybierz <b>Połączenia</b>.</li></ol>
+   <div class="sch"><small>Schemat poglądowy: lewy dolny róg Discorda</small><div class="usr"><span class="av"></span><div class="nm">Twoja nazwa<span>Dostępny</span></div><span class="gear hl">⚙</span></div></div></div>
+ </div>
+ <p class="note">Nazwy w menu mogą się trochę różnić w zależności od wersji Discorda. Szukaj słowa „Połączenia” (po angielsku „Connections”).</p></section>
+
+<section class="step"><div class="sh"><div class="sn">3</div><h2>Dodaj YouTube</h2></div>
+ <ol class="s"><li>Wśród ikon usług kliknij <b>YouTube</b> (czerwony znaczek).</li><li>Zaloguj się kontem Google, <b>którym wspierasz kanał</b>.</li><li>Jeśli masz kilka kanałów YouTube, wybierz ten, którym wspierasz Rozmowy Tylko Sportowe.</li><li>Kliknij <b>Zezwól</b> (albo „Autoryzuj”).</li></ol>
+ <div class="sch"><small>Schemat poglądowy: lista usług do połączenia</small><div class="cons"><span class="cn">Tw</span><span class="cn">Sp</span><span class="cn yt hl">▶</span><span class="cn">Tt</span></div></div>
+ <div class="see"><b>Co zobaczysz:</b> YouTube na liście Twoich połączeń, z nazwą Twojego kanału.</div></section>
+
+<section class="step"><div class="sh"><div class="sn">4</div><h2>Poczekaj na rolę</h2></div>
+ <p>Discord sprawdza członkostwo sam. Nic nie klikasz. Zwykle trwa to kilka minut, czasem do kilkudziesięciu.</p>
+ <div class="see"><b>Jak sprawdzić, że działa:</b> na serwerze widzisz kategorię <b>SŁUCHACZE ROZMÓW</b> z pokojem „ogłoszenia-dla-wspierających”. To znaczy, że rola już jest.</div></section>
+
+<section class="step"><div class="sh"><div class="sn">5</div><h2>Wróć do RTS Skaut</h2></div>
+ <p>Masz dwie drogi, wybierz jedną:</p>
+ <ol class="s"><li>Na ekranie logowania kliknij <b>„Zaloguj przez Discord”</b> i zaakceptuj zgodę. Poziom ustawi się przy logowaniu.</li><li>Albo zaloguj się przez Google i na ekranie Start kliknij <b>„Połącz z Discordem”</b>.</li></ol>
+ <p class="note">Poziom odświeża się co godzinę.</p>
+ <div class="acts"><a class="btn red" href="./">Otwórz RTS Skaut</a></div>
+ <div class="see"><b>Co zobaczysz:</b> komunikat „Połączono z Discordem”, a po odświeżeniu strony swój poziom pod nazwą konta.</div></section>
+
+<section><h2>Coś nie działa?</h2><div style="display:flex;flex-direction:column;gap:10px">
+ <details><summary>Po pół godziny nie widzę kategorii SŁUCHACZE ROZMÓW</summary><div class="in"><ol class="s"><li>Sprawdź na YouTube, czy Twoje członkostwo jest aktywne.</li><li>W Discordzie w „Połączeniach” zobacz, czy YouTube pokazuje właściwy kanał. Jeśli nie, rozłącz i połącz ponownie.</li><li>Upewnij się, że jesteś na serwerze RTS (krok 1).</li><li>Napisz na czacie ekipy, pomożemy.</li></ol></div></details>
+ <details><summary>RTS Skaut pisze, że nie widzi roli wspierającego</summary><div class="in"><p>Bez roli na Discordzie Skaut nie ustawi poziomu. Dokończ krok 4, a potem kliknij „Połącz z Discordem” jeszcze raz.</p></div></details>
+ <details><summary>Mam kilka kont Google</summary><div class="in"><p>Wybierz to, którym płacisz za wsparcie, czyli którym klikałeś „Dołącz” na kanale YouTube. Inne konto nie ma członkostwa, więc nie dostaniesz roli.</p></div></details>
+ <details><summary>Czy ktoś zobaczy moje hasło?</summary><div class="in"><p>Nie. Logujesz się na stronie Google. RTS Skaut zapisuje tylko Twój adres e-mail z Google, identyfikator Discorda i poziom wsparcia.</p></div></details>
+ <details><summary>Nie wspieram kanału, czy muszę to robić?</summary><div class="in"><p>Nie. Podstawowe karty masz za darmo po zalogowaniu kontem Google. Ten krok jest tylko dla osób, które chcą odblokować więcej.</p></div></details>
+</div></section>
+
+<section class="fin"><h2>Gotowe? Zobacz, co odblokowałeś</h2><p>Wsparcie idzie na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut. Dzięki!</p><div><a class="btn" href="./">Otwórz RTS Skaut</a></div></section>
+</main>
+<script src="config.js"></script><script>
+(function(){try{var t=localStorage.getItem('rts-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+var u=window.RTS_DISCORD_INVITE,a=document.getElementById('inv'),n=document.getElementById('invnote');
+if(u&&a){a.href=u;a.removeAttribute('aria-disabled');if(n)n.hidden=true}})();
+</script></body></html>
