@@ -1,6 +1,8 @@
 name = "rts-skaut-access"
 main = "worker.js"
 compatibility_date = "2026-11-01"
+workers_dev = true
+preview_urls = false
 
 [triggers]
 crons = ["0 * * * *"]   # co godzinę: odświeżenie poziomów osób połączonych z Discordem
