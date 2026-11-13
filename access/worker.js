@@ -10,7 +10,11 @@ const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(
 const unb64u = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
 
 // Dozwolone adresy aplikacji: główny z SKAUT_URL oraz opcjonalne z SKAUT_ORIGINS (lista po przecinku, np. zapasowy adres pages.dev).
-const origins = (env) => [new URL(env.SKAUT_URL).origin, ...String(env.SKAUT_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean)];
+const entries = (env) => [env.SKAUT_URL, ...String(env.SKAUT_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean)];
+const originOf = (u) => new URL(u).origin;
+const origins = (env) => entries(env).map(originOf);
+// Adres powrotu: ten, z którego kibic zaczął łączenie (jeśli jest na liście), inaczej główny SKAUT_URL.
+const returnUrl = (env, origin) => entries(env).find((u) => originOf(u) === origin) || env.SKAUT_URL;
 const cors = (env, req) => {
   const list = origins(env);
   const asked = req && req.headers && req.headers.get('Origin');
@@ -18,12 +22,12 @@ const cors = (env, req) => {
   return { 'Access-Control-Allow-Origin': o, 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', Vary: 'Origin' };
 };
 const json = (obj, status, env, req) => new Response(JSON.stringify(obj), { status: status || 200, headers: { 'Content-Type': 'application/json', ...cors(env, req) } });
-const back = (env, r) => Response.redirect(env.SKAUT_URL.split('#')[0] + '#discord=' + r, 302);
+const back = (env, r, origin) => Response.redirect(returnUrl(env, origin).split('#')[0] + '#discord=' + r, 302);
 
 /* ---------- podpis stanu (powiązuje powrót z Discorda z zalogowanym kontem Google) ---------- */
 async function hmacKey(secret) { return crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']); }
-async function signState(env, email, now) {
-  const body = b64u(enc.encode(JSON.stringify({ e: email, t: now })));
+async function signState(env, email, now, origin) {
+  const body = b64u(enc.encode(JSON.stringify({ e: email, t: now, o: origin || '' })));
   const sig = await crypto.subtle.sign('HMAC', await hmacKey(env.STATE_SECRET), enc.encode(body));
   return body + '.' + b64u(sig);
 }
@@ -118,7 +122,8 @@ async function handle(req, env, now) {
     const auth = req.headers.get('Authorization') || '';
     const email = auth.startsWith('Bearer ') ? await verifyIdToken(env, auth.slice(7)) : null;
     if (!email) return json({ error: 'unauthorized' }, 401, env, req);
-    const state = await signState(env, email, now);
+    const asked = req.headers.get('Origin');
+    const state = await signState(env, email, now, origins(env).includes(asked) ? asked : '');
     const redirect = url.origin + '/link/callback';
     const q = new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, response_type: 'code', redirect_uri: redirect, scope: 'identify guilds.members.read', state, prompt: 'none' });
     return json({ url: 'https://discord.com/oauth2/authorize?' + q }, 200, env, req);
@@ -128,25 +133,25 @@ async function handle(req, env, now) {
     try {
       const st = await readState(env, url.searchParams.get('state'), now);
       const code = url.searchParams.get('code');
-      if (!st || !code) return back(env, 'err');
+      if (!st || !code) return back(env, 'err', st && st.o);
       const tr = await fetch(D + '/oauth2/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ client_id: env.DISCORD_CLIENT_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: url.origin + '/link/callback' }) });
-      if (!tr.ok) return back(env, 'err');
+      if (!tr.ok) return back(env, 'err', st.o);
       const { id, roles } = await userRoles(env, (await tr.json()).access_token);
       const tier = tierFromRoles(roles, rolesMap(env));
       const existing = await getMember(env, st.e, now);
-      if (existing && (existing.role === 'admin' || existing.role === 'member')) return back(env, 'ok');
+      if (existing && (existing.role === 'admin' || existing.role === 'member')) return back(env, 'ok', st.o);
       if (!tier && !existing) {
         await patchMember(env, st.e, { role: 'supporter', level: 0, ytTier: 0, until: now, lapsedAt: null, source: 'discord', discordId: id, linkedAt: now }, now);
-        return back(env, 'none');
+        return back(env, 'none', st.o);
       }
       if (!tier && existing && existing.source !== 'discord') {
         await patchMember(env, st.e, { discordId: id, linkedAt: now }, now); // zachowaj ręczne wsparcie, zapamiętaj Discorda
-        return back(env, 'none');
+        return back(env, 'none', st.o);
       }
       await applyResult(env, st.e, existing, tier ? { ytTier: tier, discordId: id } : null, now);
       if (tier && !(existing && existing.discordId === id)) await patchMember(env, st.e, { discordId: id, linkedAt: now }, now);
-      return back(env, tier ? 'ok' : 'none');
+      return back(env, tier ? 'ok' : 'none', st.o);
     } catch (e) {
       console.log('callback error', e.message);
       return back(env, 'err');
