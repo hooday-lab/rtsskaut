@@ -1,8 +1,0 @@
-{
-  // Strona RTS Skaut jako Worker ze statycznymi plikami (adres: rtsskaut.pl).
-  // Worker poziomów dostępu (Discord) jest osobny: access/wrangler.toml.
-  "name": "rtsskaut",
-  "compatibility_date": "2026-11-01",
-  "build": { "command": "node scripts/build-site.mjs" },
-  "assets": { "directory": "./dist" }
-}
