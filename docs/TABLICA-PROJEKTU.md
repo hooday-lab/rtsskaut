@@ -29,7 +29,7 @@ Stan na 2026-11-13. Ten plik to jedyne źródło prawdy dla kolejnych czatów. N
 | 1 | Stały Bywalec | 29,99 zł/mies. | `1570741549569150988` |
 | 2 | Elita Rozmów | 59,99 zł/mies. | `1570741549569150989` |
 | (I) | Kibic Rozmów | 15,99 zł/mies. | `1570741549569150987` (poziom 1 w aplikacji) |
-Odmiana: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wsparcia. Ogólna rola „YouTube Member” jest pomijana.
+Mapowanie: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wsparcia. Ogólna rola „YouTube Member” jest pomijana.
 
 ## 4. Jak to działa (skrót)
 - Logowanie: Google (popup) albo Discord (OAuth2, `/login/start`, potem Firebase custom token). Ekipa i admin (`CREW_EMAILS`) loguje się tylko przez Google.
@@ -43,7 +43,7 @@ Odmiana: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wspar
 - „Odblokuj więcej” stoi tylko nad kartami Stały Bywalec i Elita Rozmów. Karta „Za darmo” stoi osobno po lewej.
 - Pokoje Discorda: jasna karta (kolory motywu), wiersz = znak, emotka, pionowa kreska, nazwa. W jasnym motywie znak to fioletowa tabliczka, w ciemnym sam fioletowy znak bez tła.
 - Pokoje pokazywane: 💬 czat-z-ekipą, 📊 rts-skaut, 😂 memy-dla-rozmów, 🗳️ forum-kibiców, 👏 oklaski-i-skargi, 🧠 pomysły-rozwój-podcastu, plus zajawka z kłódką 📢 ogłoszenia-dla-wspierających (do potwierdzenia).
-- Marka: czerwone gradienty, fonty Barlow i Barlow Condensed, złoty kicker, biała emblemat bez ramki. Zasady w brandbooku (`brand/index.html`).
+- Marka: czerwone gradienty, fonty Barlow i Barlow Condensed, złoty kicker, biały emblemat bez ramki. Zasady w brandbooku (`brand/index.html`).
 
 ## 6. Co jest zrobione
 Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukcja „połącz YouTube z Discordem”, plakietki poziomów z tooltipami, ekran logowania z pokojami i ścieżką wspierania, brandbook, kit premiery (teksty i grafiki w `docs/premiera/`).
