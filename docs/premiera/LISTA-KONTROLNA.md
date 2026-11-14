@@ -3,18 +3,18 @@
 Zasada nadrzędna (`rts-workspace/docs/zasady-paczek.md`, pkt 6): żadna treść nie idzie na webhook Discorda, dopóki Bartek nie przeczyta jej w całości w czacie i nie potwierdzi („tak”, „wysyłaj”). Teksty pochodzą z `docs/premiera/teksty.py` (link do Discorda czytany z `config.js`).
 
 ## Przed startem (wszystko musi być zielone)
-- [ ] Tablica pkt 2: `rts-skaut` na 2. miejscu w KIBICACH, kategoria SŁUCHACZE widoczna tylko dla `YouTube Member…`.
+- [x] Tablica pkt 2: `rts-skaut` na 2. miejscu w KIBICACH, kategoria SŁUCHACZE widoczna tylko dla `YouTube Member…`.
 - [ ] Tablica pkt 4: jasny motyw i telefon sprawdzone.
 - [ ] Tablica pkt 6: test z 3 wspierającymi zaliczony.
-- [ ] Stara wiadomość z 25.10 w #rts-skaut usunięta ręcznie.
-- [ ] `python3 docs/premiera/teksty.py --check` → OK.
-- [ ] Zmienna `DISCORD_WEBHOOK_RTSSKAUT` ustawiona w środowisku.
+- [x] Stara wiadomość z 25.10 w #rts-skaut usunięta ręcznie.
+- [x] `python3 docs/premiera/teksty.py --check` → OK (sprawdza też zapis 🔴⚪🔴).
+- [x] Zmienna `DISCORD_WEBHOOK_RTSSKAUT` ustawiona w środowisku.
 - [ ] Link do YouTube w bio Instagrama i X ustawiony (IG nie klika linków w opisie).
 
 ## Kolejność publikacji
 | # | Gdzie | Kto | Tekst | Plik graficzny |
 |---|---|---|---|---|
-| 1 | Discord #rts-skaut (nowa wiadomość powitalna) | Claude, webhook `DISCORD_WEBHOOK_RTSSKAUT`, po sygnale właściciela | tekst z tablicy/rozmowy: „📊 RTS Skaut” (poziomy, link do instrukcji) | `rts-skaut-discord-1.png` (1600×900) |
+| 1 ✅ | Discord #rts-skaut (nowa wiadomość powitalna), wysłana 14.11, HTTP 200 | Claude, webhook `DISCORD_WEBHOOK_RTSSKAUT`, po sygnale właściciela | tekst z tablicy/rozmowy: „📊 RTS Skaut” (poziomy, link do instrukcji) | `rts-skaut-discord-1.png` (1600×900) |
 | 2 | Discord, ogłoszenie „RTS Skaut jest już na żywo” | do decyzji, gdzie (rekomendacja: #czat-z-ekipą) | `dc_ann` (+ `dc_faq` przypięte w #rts-skaut) | `rts-skaut-discord-1.png` |
 | 3 | YouTube publiczny (post społeczności) | Patryk | `yt_pub` | `rts-skaut-yt-1…4.png` (karuzela 1080×1080) |
 | 4 | X (wątek 4 wpisów) | Patryk | `x1` → `x2` → `x3` → `x4` | `rts-skaut-x-1.png` (1200×675) przy `x1` |
