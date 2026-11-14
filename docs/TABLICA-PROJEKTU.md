@@ -60,7 +60,7 @@ Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukc
 ## 7a. Stan środowiska Claude (14.11, po wymianie zmiennych w środowisku „RTS”)
 - **Firestore: ✅.** `FIREBASE_SERVICE_ACCOUNT` to teraz konto `rts-studio@rtsstat-55616.iam.gserviceaccount.com` (rola Cloud Datastore User). Test: odczyt `data/stats` 200, zapis i usunięcie `_diag/rts-studio-test` 200.
 - **Stary klucz `firebase-adminsdk-…`:** do wyłączenia w Google Cloud (Konta usług → Klucze) wyłączony przez właściciela 14.11; rotacja klucza `rts-studio` co 90 dni (następna ok. 2027-02-12).
-- **Supabase: ⏳** `SUPABASE_ANON_KEY` nadal odrzucany (SELECT `api_player_profile` → 401 „Invalid API key”). Wartość ma 48 znaków i nie wygląda ani na klucz `eyJ…` (anon), ani na `sb_publishable_…`. Po wpisaniu poprawki 14.11 nadal 401 (ta sesja mogła nie odebrać zmiany: wymagany start nowej sesji). Do ponownego testu.
+- **Supabase: ✅ klucz poprawny (14.11, nowa sesja).** `SUPABASE_ANON_KEY` to `sb_publishable_…`, wskazuje projekt ClubFantasy. Wcześniejszy test na `api_player_profile` był błędny: takiej tabeli nie ma (zadanie startowe podało złą nazwę; nie występuje też w rts-workspace). Odpowiedź 404 dla nieistniejącej tabeli i 401 „brak uprawnień” dla `api_fixtures_raw` to oczekiwane wyniki: anon nie ma SELECT na `api_fixtures_raw` (policy tylko dla admina), a zapisy na `matchdays` wymagają `is_admin()`. Dane statystyk Claude czyta konektorem Supabase (`execute_sql`), więc klucz anon nie jest potrzebny do premiery.
 - **Discord: ✅** zmienna `DISCORD_WEBHOOK_RTSSKAUT` istnieje (nic nie wysłano).
 - Repozytorium `rts-workspace` dołączone (odczyt przez narzędzie GitHub; klonowanie blokują uprawnienia sesji).
 
