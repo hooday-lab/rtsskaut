@@ -10,17 +10,19 @@ Uczestnicy: @ToMaShreck, @Rosomagu, @arkady1910 (każdy wspiera kanał na YouTub
 3. Strona i Worker działają (https://rtsskaut.pl/ otwiera się, wdrożenie w Cloudflare ma status Success).
 
 ## Wiadomość do wspierających
+Wysyłana prywatnie, każdej osobie osobno, razem z infografiką `docs/premiera/rts-skaut-test-wspierajacych.png` (cztery kroki). Ról nikomu nie zmieniamy: test ma sprawdzić, że wszystko nadaje się samo.
 ```
-Cześć! Mam prośbę na 5 minut. Zanim pokażemy RTS Skaut (statystyki RTS Widzew Łódź) wszystkim, chcę go sprawdzić na prawdziwych kontach wspierających. Pomożesz?
+Cześć! Mam prośbę na 5 minut. 🔴⚪🔴
 
-1. Wejdź na https://rtsskaut.pl i zaloguj się kontem Google.
-2. W Discordzie: Ustawienia użytkownika → Połączenia → dodaj YouTube (to samo konto, którym wspierasz kanał).
-3. Wróć na rtsskaut.pl i kliknij „Połącz z Discordem”.
-4. Napisz mi trzy rzeczy: jaki poziom widzisz przy swoim koncie, czy na serwerze widzisz kategorię SŁUCHACZE ROZMÓW i co było niejasne.
+Budujemy RTS Skaut: statystyki RTS Widzew Łódź, od kibiców dla kibiców (rtsskaut.pl). Podstawowe karty są dla wszystkich za darmo, a wspierający nasz kanał na YouTube dostają więcej (Stały Bywalec, Elita Rozmów). Poziom ma się nadawać sam, bez niczyjej pomocy.
+
+Zanim pokażemy to wszystkim, chcę sprawdzić, czy to naprawdę działa na kontach wspierających. Dlatego proszę o pomoc właśnie Ciebie.
+
+W załączniku jest infografika z czterema krokami. Na końcu napisz mi trzy rzeczy: jaki poziom widzisz przy swoim koncie, czy na serwerze widzisz kategorię SŁUCHACZE ROZMÓW i co było niejasne.
 
 Instrukcja ze zdjęciami: https://rtsskaut.pl/jak-polaczyc-discord.html
 
-Niczego więcej nie potrzebuję: nie podawaj nikomu haseł ani kodów, nas to nie dotyczy. Dzięki, że jesteście z nami!
+Niczego więcej nie potrzebuję. Nie podawaj nikomu haseł ani kodów, nas to nie dotyczy. Dzięki, że jesteście z nami!
 ```
 
 ## Kroki testowe
