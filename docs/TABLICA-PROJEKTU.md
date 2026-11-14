@@ -6,6 +6,7 @@ Stan na 2026-11-14. Ten plik to jedyne źródło prawdy dla kolejnych czatów. N
 - Marka: **RTS Skaut** (#RTSkaut), projekt podcastu **Rozmowy Tylko Sportowe**.
 - Hasło: „Statystyki RTS Widzew Łódź” + „Od kibiców dla kibiców”.
 - RTS Skaut to miejsce, gdzie kibic sprawdza statystyki klubu, drużyny i zawodników. Nie jest to „narzędzie do robienia karty przed meczem”.
+- Znaczek klubowy w tekstach: **zawsze 🔴⚪🔴, nigdy samo 🔴⚪** (decyzja 14.11). Teksty w `docs/premiera/teksty.py` pilnuje `python3 docs/premiera/teksty.py --check`, który zgłasza błąd przy samym 🔴⚪.
 - Zawsze mówimy: pieniądze za wsparcie idą na **rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut**.
 - Nie jesteśmy oficjalnym źródłem danych i nie działamy w imieniu klubu.
 
@@ -43,6 +44,7 @@ Mapowanie: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wsp
 - „Odblokuj więcej” to wyśrodkowany nagłówek nad trzema kartami w jednym rzędzie: Za darmo, Stały Bywalec, Elita Rozmów (decyzja 14.11, wariant A; zastępuje wcześniejszy zapis o osobnej karcie „Za darmo”).
 - Pokoje Discorda: jasna karta (kolory motywu), wiersz = znak, emotka, pionowa kreska, nazwa. W jasnym motywie znak to fioletowa tabliczka, w ciemnym sam fioletowy znak bez tła.
 - Pokoje pokazywane: 💬 czat-z-ekipą, 📊 rts-skaut, 😂 memy-dla-rozmów, 🗳️ forum-kibiców, 👏 oklaski-i-skargi, 🧠 pomysły-rozwój-podcastu, plus zajawka z kłódką 📢 ogłoszenia-dla-wspierających (do potwierdzenia).
+- Udostępnianie kart (decyzja 14.11): kibic (nie admin i nie dziennikarz) nie widzi sekcji „2 · Tekst posta (do edycji)” ani „3 · Pakiet dla komunikacji”. Zamiast tego ma pasek „Udostępnij”: cztery same ikony w jednym rzędzie (Facebook, Instagram, X, WhatsApp, w kolorach marek, nazwy tylko w opisie dla czytników ekranu). Telefon: systemowe okno udostępniania z kartą PNG i podpisem. Komputer: linki (X, WhatsApp), Facebook (link + podpis w schowku), Instagram (pobranie karty + podpis w schowku, bo nie ma linku do udostępniania). Podpis zawiera link do rtsskaut.pl. Admin i ekipa zachowują sekcje 2 i 3 i też mają pasek. „Pakiet dla komunikacji” nie jest już korzyścią Elity Rozmów (opis poziomów i teksty premiery poprawione). Przyciski są zablokowane razem z kartą z kłódką.
 - Marka: czerwone gradienty, fonty Barlow i Barlow Condensed, złoty kicker, biały emblemat bez ramki. Zasady w brandbooku (`brand/index.html`).
 
 ## 6. Co jest zrobione
