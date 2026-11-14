@@ -50,7 +50,7 @@ Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukc
 
 ## 7. Otwarte sprawy
 1. ✅ **Link zaproszenia na Discord** wpisany do `config.js` jako `RTS_DISCORD_INVITE` (PR #31, #32). To jedyne miejsce: teksty premiery (`docs/premiera/teksty.py`) czytają link stąd, a `python3 docs/premiera/teksty.py --check` potwierdza brak placeholderów.
-2. ⏳ Discord, sprawdzone 14.11 na screenach: `rts-skaut` jest w KIBICACH (✅), ale na dole sekcji; ma stać 2. pod `czat-z-ekipą` jak w panelu strony (do przeciągnięcia). Role: istnieją `YouTube Member`, `YouTube Member: Kibic Rozmów / Stały Bywalec / Elita Rozmów` (nadaje integracja YouTube) i ręczna rola `Słuchacze Rozmów (wspierający)` z 0 członków. Do sprawdzenia: czy kategoria SŁUCHACZE ROZMÓW jest widoczna dla ról `YouTube Member…` (a nie tylko dla ręcznej roli z 0 osób) i niewidoczna dla zwykłego kibica (Ustawienia serwera → Role → „Wyświetl serwer jako rolę”).
+2. ✅ Discord (potwierdzone przez właściciela 14.11): `rts-skaut` stoi 2. pod `czat-z-ekipą` w KIBICACH, uprawnienia kanału zsynchronizowane z kategorią. Kategoria SŁUCHACZE ROZMÓW jest prywatna i dostępna dla ról `YouTube Member: Kibic Rozmów / Stały Bywalec / Elita Rozmów`, `Słuchacze Rozmów (wspierający)` i `Ekipa` (decyzja: Kibic Rozmów zostaje). Zwykły kibic (`@everyone`) jej nie widzi.
 3. ✅ Emotka `forum-kibiców` to 🗳️ (widoczna na serwerze). Zajawka z kłódką 📢 ogłoszenia-dla-wspierających zostaje (decyzja 14.11).
 4. ✅ Produkcja rtsskaut.pl potwierdzona screenami właściciela 14.11 (ciemny motyw, komputer, wylogowany i zalogowany): baner, etykiety Klub/Zawodnicy/Liga, czerwona kulka, krok 1 „Wesprzyj kanał Rozmów na YouTube”, „Dołącz do serwera”. Test telefonu wykonany przez właściciela, punkt zamknięty.
 5. Opcjonalnie: domena `www.rtsskaut.pl` w Workerze i w autoryzowanych domenach Firebase.
@@ -59,10 +59,10 @@ Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukc
 
 ## 7a. Stan środowiska Claude (14.11, po wymianie zmiennych w środowisku „RTS”)
 - **Firestore: ✅.** `FIREBASE_SERVICE_ACCOUNT` to teraz konto `rts-studio@rtsstat-55616.iam.gserviceaccount.com` (rola Cloud Datastore User). Test: odczyt `data/stats` 200, zapis i usunięcie `_diag/rts-studio-test` 200.
-- **Stary klucz `firebase-adminsdk-…`:** do wyłączenia w Google Cloud (Konta usług → Klucze) po potwierdzeniu przez Claude; rotacja klucza `rts-studio` co 90 dni (następna ok. 2027-02-12).
-- **Supabase: ⏳** `SUPABASE_ANON_KEY` nadal odrzucany (SELECT `api_player_profile` → 401 „Invalid API key”). Wartość ma 48 znaków i nie wygląda ani na klucz `eyJ…` (anon), ani na `sb_publishable_…`. Do poprawy w panelu Supabase (Project Settings → API Keys).
+- **Stary klucz `firebase-adminsdk-…`:** do wyłączenia w Google Cloud (Konta usług → Klucze) wyłączony przez właściciela 14.11; rotacja klucza `rts-studio` co 90 dni (następna ok. 2027-02-12).
+- **Supabase: ⏳** `SUPABASE_ANON_KEY` nadal odrzucany (SELECT `api_player_profile` → 401 „Invalid API key”). Wartość ma 48 znaków i nie wygląda ani na klucz `eyJ…` (anon), ani na `sb_publishable_…`. Po wpisaniu poprawki 14.11 nadal 401 (ta sesja mogła nie odebrać zmiany: wymagany start nowej sesji). Do ponownego testu.
 - **Discord: ✅** zmienna `DISCORD_WEBHOOK_RTSSKAUT` istnieje (nic nie wysłano).
-- Repozytorium `rts-workspace` nie zostało dołączone do tej sesji (dołączenie odrzucone przez uprawnienia).
+- Repozytorium `rts-workspace` dołączone (odczyt przez narzędzie GitHub; klonowanie blokują uprawnienia sesji).
 
 ## 8. Zasady współpracy
 - Nowy czat startuje od tego pliku i `README.md`.
