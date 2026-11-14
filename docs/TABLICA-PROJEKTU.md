@@ -40,7 +40,7 @@ Mapowanie: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wsp
 ## 5. Decyzje UI (nie zmieniać bez powodu)
 - Ekran logowania na komputerze: czerwony poziomy baner (wariant A), pod nim dwie kolumny równej wysokości: po lewej logowanie i „Odblokuj więcej”, po prawej pokoje Discorda.
 - Przyciski Google i Discord mają tę samą szerokość (obok siebie na komputerze, jeden pod drugim na telefonie).
-- „Odblokuj więcej” stoi tylko nad kartami Stały Bywalec i Elita Rozmów. Karta „Za darmo” stoi osobno po lewej.
+- „Odblokuj więcej” to wyśrodkowany nagłówek nad trzema kartami w jednym rzędzie: Za darmo, Stały Bywalec, Elita Rozmów (decyzja 14.11, wariant A; zastępuje wcześniejszy zapis o osobnej karcie „Za darmo”).
 - Pokoje Discorda: jasna karta (kolory motywu), wiersz = znak, emotka, pionowa kreska, nazwa. W jasnym motywie znak to fioletowa tabliczka, w ciemnym sam fioletowy znak bez tła.
 - Pokoje pokazywane: 💬 czat-z-ekipą, 📊 rts-skaut, 😂 memy-dla-rozmów, 🗳️ forum-kibiców, 👏 oklaski-i-skargi, 🧠 pomysły-rozwój-podcastu, plus zajawka z kłódką 📢 ogłoszenia-dla-wspierających (do potwierdzenia).
 - Marka: czerwone gradienty, fonty Barlow i Barlow Condensed, złoty kicker, biały emblemat bez ramki. Zasady w brandbooku (`brand/index.html`).
@@ -50,12 +50,15 @@ Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukc
 
 ## 7. Otwarte sprawy
 1. ✅ **Link zaproszenia na Discord** wpisany do `config.js` jako `RTS_DISCORD_INVITE` (PR #31, #32). To jedyne miejsce: teksty premiery (`docs/premiera/teksty.py`) czytają link stąd, a `python3 docs/premiera/teksty.py --check` potwierdza brak placeholderów.
-2. ✅/⏳ `rts-skaut` jest w sekcji KIBICE (potwierdził właściciel 14.11). Decyzja: kategoria SŁUCHACZE ROZMÓW ma być widoczna tylko dla ról YouTube Member (Kibic Rozmów, Stały Bywalec, Elita Rozmów); właściciel przekazuje screen ustawień ról do weryfikacji.
+2. ⏳ Discord, sprawdzone 14.11 na screenach: `rts-skaut` jest w KIBICACH (✅), ale na dole sekcji; ma stać 2. pod `czat-z-ekipą` jak w panelu strony (do przeciągnięcia). Role: istnieją `YouTube Member`, `YouTube Member: Kibic Rozmów / Stały Bywalec / Elita Rozmów` (nadaje integracja YouTube) i ręczna rola `Słuchacze Rozmów (wspierający)` z 0 członków. Do sprawdzenia: czy kategoria SŁUCHACZE ROZMÓW jest widoczna dla ról `YouTube Member…` (a nie tylko dla ręcznej roli z 0 osób) i niewidoczna dla zwykłego kibica (Ustawienia serwera → Role → „Wyświetl serwer jako rolę”).
 3. ✅ Emotka `forum-kibiców` to 🗳️ (widoczna na serwerze). Zajawka z kłódką 📢 ogłoszenia-dla-wspierających zostaje (decyzja 14.11).
-4. Sprawdzić na rtsskaut.pl (incognito, Ctrl+Shift+R, komputer i telefon, jasny i ciemny motyw) ostatnie zmiany ekranu logowania. Jeśli widać starą wersję, sprawdzić w Cloudflare (Workers & Pages → `rts-skaut-access` → Deployments), czy ostatnie wdrożenie ma status Success.
+4. ✅/⏳ Produkcja rtsskaut.pl potwierdzona screenami właściciela 14.11 (ciemny motyw, komputer, wylogowany i zalogowany): baner, etykiety Klub/Zawodnicy/Liga, czerwona kulka, krok 1 „Wesprzyj kanał Rozmów na YouTube”, „Dołącz do serwera”. Do sprawdzenia: jasny motyw i telefon.
 5. Opcjonalnie: domena `www.rtsskaut.pl` w Workerze i w autoryzowanych domenach Firebase.
-6. Test na prawdziwych rolach: poprosić 3 wspierających (@ToMaShreck, @Rosomagu, @arkady1910) o połączenie YouTube z Discordem.
-7. Premiera („big bang”) po zamknięciu punktów 1–4 i 6. Wiadomość na #rts-skaut (nowa, bez „perku” i „kart do pomeczowych odcinków”) wysyła Claude webhookiem dopiero na sygnał właściciela, że RTS Skaut jest gotowy dla kibiców; wymaga webhooka kanału #rts-skaut jako zmiennej `DISCORD_WEBHOOK_RTSSKAUT` (stara wiadomość z 25.10 jest nieaktualna). Kolejność publikacji: Discord → YouTube publiczny → X → Facebook i Instagram → YouTube dla wspierających. Teksty i grafiki: `docs/premiera/`.
+6. Test na prawdziwych rolach: poprosić 3 wspierających (@ToMaShreck, @Rosomagu, @arkady1910) o połączenie YouTube z Discordem. Plan, wiadomość i kryteria: `docs/plan-testu-wspierajacych.md`.
+7. Premiera („big bang”) po zamknięciu punktów 1–4 i 6. Wiadomość na #rts-skaut (nowa, bez „perku” i „kart do pomeczowych odcinków”) wysyła Claude webhookiem dopiero na sygnał właściciela, że RTS Skaut jest gotowy dla kibiców; wymaga webhooka kanału #rts-skaut jako zmiennej `DISCORD_WEBHOOK_RTSSKAUT` (stara wiadomość z 25.10 jest nieaktualna). Kolejność publikacji: Discord → YouTube publiczny → X → Facebook i Instagram → YouTube dla wspierających. Teksty i grafiki: `docs/premiera/`. Lista kontrolna krok po kroku: `docs/premiera/LISTA-KONTROLNA.md`.
+
+## 7a. Stan środowiska Claude (14.11)
+Firestore: działa (odczyt `data/stats`). Supabase: `SUPABASE_ANON_KEY` odrzucany (401), do poprawy. Brak jeszcze `DISCORD_WEBHOOK_RTSSKAUT`. Plan zawężenia uprawnień `FIREBASE_SERVICE_ACCOUNT` (osobne konto z rolą Cloud Datastore User, rotacja co 90 dni) czeka na zgodę.
 
 ## 8. Zasady współpracy
 - Nowy czat startuje od tego pliku i `README.md`.
