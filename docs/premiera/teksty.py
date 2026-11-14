@@ -44,14 +44,14 @@ Jak odblokować swój poziom:
 2. W Discordzie połącz konto YouTube (Ustawienia użytkownika, Połączenia, YouTube) i dołącz do naszego serwera: {DCL}
 3. Wróć do aplikacji i kliknij „Połącz z Discordem”. Poziom nadaje się sam.
 
-Stały Bywalec dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. Elita Rozmów dodaje Radary, Rozwój i pakiet tekstu dla komunikacji.
+Stały Bywalec dodaje Zawodnika, Porównanie, Mapę ligi, Własną liczbę i format 4:5. Elita Rozmów dodaje Radary i Rozwój.
 
 Dziękujemy za wsparcie: idzie ono na rozwój podcastu oraz utrzymanie i dalszy rozwój RTS Skaut.
 
 Grafiki możecie pobierać i wrzucać do swoich wpisów z #RTSkaut. Nie do użytku komercyjnego.
 
 Coś nie działa? Piszcie na Discordzie w kanale #czat-z-ekipą."""
-T['dc_ann']=f"""🔴⚪ **RTS Skaut jest już na żywo**
+T['dc_ann']=f"""🔴⚪🔴 **RTS Skaut jest już na żywo**
 
 **Statystyki RTS Widzew Łódź, od kibiców dla kibiców.** Klub, zawodnicy i cała liga w liczbach: sprawdzasz, porównujesz, oglądasz.
 
@@ -76,7 +76,7 @@ T['dc_faq']=f"""**Jak dostać poziom w RTS Skaut**
 Rolę wspierającego nadaje integracja YouTube z Discordem. Poziom w aplikacji ustawia się po kliknięciu i odświeża co godzinę.
 
 Nie widzisz swojego poziomu? Sprawdź, czy konto YouTube jest połączone z Discordem i czy wspierasz kanał. Jeśli nadal nie działa, napisz w #czat-z-ekipą."""
-T['x1']=f"""Przedstawiamy RTS Skaut: statystyki RTS Widzew Łódź, od kibiców dla kibiców. 🔴⚪
+T['x1']=f"""Przedstawiamy RTS Skaut: statystyki RTS Widzew Łódź, od kibiców dla kibiców. 🔴⚪🔴
 
 Klub, zawodnicy i cała liga w liczbach. Sprawdzasz, porównujesz, oglądasz, a każdą liczbę możesz pobrać jako grafikę.
 
@@ -96,7 +96,7 @@ Więcej odblokowuje wsparcie kanału na YouTube: Stały Bywalec (29,99 zł) i El
 T['x4']=f"""Znalazłeś ciekawą liczbę? Pogadaj o niej z ekipą na Discordzie. Czat jest otwarty dla wszystkich: {DCL}
 
 #RTSkaut #Widzew"""
-T['fb']=f"""Przedstawiamy RTS Skaut: statystyki RTS Widzew Łódź, od kibiców dla kibiców. 🔴⚪
+T['fb']=f"""Przedstawiamy RTS Skaut: statystyki RTS Widzew Łódź, od kibiców dla kibiców. 🔴⚪🔴
 
 Klub, zawodnicy i cała liga w liczbach. Sprawdzasz, porównujesz, oglądasz, a każdą liczbę możesz pobrać jako grafikę i wrzucić do swoich social mediów.
 
@@ -118,6 +118,9 @@ def xlen(s):
     s=re.sub(r'https?://\S+','x'*23,s);return len(s)
 if __name__=='__main__':
     if '--check' in sys.argv:
+        import re
+        emo=[k for k,v in T.items() if re.search('🔴⚪(?!🔴)',v)]
+        if emo: print('ZŁY ZAPIS znaczka klubu (zawsze 🔴⚪🔴, nigdy samo 🔴⚪) w tekstach: '+', '.join(emo));sys.exit(1)
         bad=[k for k,v in T.items() if PLACEHOLDER in v]
         print('BRAK linku w config.js, teksty z placeholderem: '+', '.join(bad) if bad else 'OK: link Discord wstawiony we wszystkich tekstach');sys.exit(1 if bad else 0)
     for k in ['x1','x2','x3','x4']: print(k,xlen(T[k]))

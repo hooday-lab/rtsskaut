@@ -45,6 +45,20 @@ h1,h2,h3{font-family:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;text
 .pvstick{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:8px;z-index:5}
 @media (max-width:860px){.pvstick{position:static}}
 .mob-only{display:none}
+:root{--fb:#1877F2;--wa:#1FA855}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--fb:#4C9BFF;--wa:#3DDC84}}
+:root[data-theme="dark"]{--fb:#4C9BFF;--wa:#3DDC84}
+.sharebar{display:flex;flex-direction:column;gap:8px;order:3}
+.share-t{font:700 15px/1.2 'Barlow Condensed','Barlow',system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.share-row{display:flex;flex-wrap:nowrap;gap:10px}
+.sb{display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border-radius:12px;border:1px solid var(--line);background:var(--panel);cursor:pointer}
+.sb:hover{border-color:var(--mute)}
+.sb:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.sb:disabled{opacity:.45;cursor:not-allowed}
+.sb .si{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:#fff}
+.sb .si svg{width:20px;height:20px;display:block}
+.si.fb{background:var(--fb)}.si.wa{background:var(--wa)}.si.x{background:var(--ink);color:var(--bg)}
+.si.ig{background:linear-gradient(45deg,#F58529,#DD2A7B 55%,#8134AF)}
 .card-box>.sec{display:flex;justify-content:space-between;align-items:center}
 .frame{background:#000;border-radius:8px;overflow:hidden;aspect-ratio:16/9;width:100%;border:1px solid var(--line)}
 .frame img{display:block;width:100%;height:100%;object-fit:contain}
@@ -1675,12 +1689,7 @@ function applyLock(){
     const fr=$('#frame');
     if(fr&&!fr.querySelector('.veil'))fr.insertAdjacentHTML('beforeend',`<div class="veil"><b>Poziom ${ROM[need]}</b><span>${esc(SUBN[need])}</span><span>Dla wspierających kanał na YouTube</span><a class="btn pri" href="${JOIN}" target="_blank" rel="noopener">Zostań wspierającym</a></div>`);
     const dl=$('#dl');if(dl)dl.disabled=true;
-  }
-  if(LV<2){
-    const pk=document.querySelector('.pkgrid .card-box:last-child');
-    if(pk){pk.classList.add('pklock');pk.setAttribute('inert','');
-      const sec=pk.querySelector('.sec');if(sec&&!pk.querySelector('.pknote'))sec.insertAdjacentHTML('afterend','<div class="msg pknote">Pakiet dla komunikacji: dla wspierających w planie '+esc(SUBN[2])+' ('+PRICE[2]+' / mies.).</div>')}
-    const pb=$('#pkbar');if(pb)pb.disabled=true;
+    document.querySelectorAll('.sb').forEach(b=>{b.disabled=true});
   }
 }
 async function renderGrowth(){
@@ -1770,17 +1779,62 @@ function bindChrome(){
   window.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
 }
 function curP(){return S.p[S.type]||(S.p[S.type]=TYPES[S.type].init())}
+const SITE='https://rtsskaut.pl/';
+const SHI={
+fb:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+ig:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>',
+x:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+wa:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'};
+const SHN={fb:['Facebook','Udostępnij na Facebooku'],ig:['Instagram','Udostępnij na Instagramie'],x:['X','Udostępnij na X'],wa:['WhatsApp','Wyślij przez WhatsApp']};
+function shareBar(){return `<div class="sharebar" id="sharebar"><div class="share-t">Udostępnij</div><div class="share-row" role="group" aria-label="Udostępnij">${['fb','ig','x','wa'].map(n=>`<button type="button" class="sb" data-n="${n}" aria-label="${SHN[n][1]}" title="${SHN[n][0]}"><span class="si ${n}">${SHI[n]}</span></button>`).join('')}</div><div class="msg" id="shmsg" role="status" aria-live="polite"></div></div>`}
+function shareText(){const t=$('#post');return (t?t.value:TYPES[S.type].post(curP())).trim()}
+function shareLinks(text){return{
+  x:'https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(SITE),
+  fb:'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(SITE),
+  wa:'https://wa.me/?text='+encodeURIComponent(text+'\n'+SITE),
+  ig:'https://www.instagram.com/'}}
+function cardName(){
+  const slug=(curP().title||S.type).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50)||'karta';
+  return `RTS-Skaut-${slug}${isV()?'-pion':''}.png`}
+async function shareFile(){
+  const s=S.svg;if(S.shFile&&S.shFor===s)return S.shFile;
+  const f=new File([await toPng(s)],cardName(),{type:'image/png'});
+  if(S.svg===s){S.shFile=f;S.shFor=s}return f}
+async function doShare(net){
+  if(locked(S.type))return;
+  const m=$('#shmsg'),say=(t,c)=>{if(m){m.textContent=t;m.className='msg '+(c||'')}};
+  const text=shareText(),L=shareLinks(text),full=text+'\n'+SITE;
+  const copy=async t=>{try{await navigator.clipboard.writeText(t);return true}catch(e){return false}};
+  const open=u=>window.open(u,'_blank','noopener');
+  say('');
+  if(navigator.share&&matchMedia('(pointer:coarse)').matches){
+    try{
+      const data={files:[await shareFile()],text:full};
+      if(navigator.canShare&&navigator.canShare(data)){await navigator.share(data);return}
+      await navigator.share({text,url:SITE});return
+    }catch(e){if(e&&e.name==='AbortError')return}
+  }
+  if(net==='x'){open(L.x);say('Dodaj kartę PNG do wpisu (przycisk „Pobierz PNG”).','ok')}
+  else if(net==='wa'){open(L.wa);say('Dodaj kartę PNG do wiadomości (przycisk „Pobierz PNG”).','ok')}
+  else if(net==='fb'){open(L.fb);const ok=await copy(full);say(ok?'Podpis skopiowany: wklej go w oknie Facebooka i dodaj kartę PNG.':'Nie udało się skopiować podpisu (zezwól na dostęp do schowka).',ok?'ok':'err')}
+  else{
+    open(L.ig);
+    try{saveBlob(cardName(),await toPng(S.svg))}catch(e){}
+    const ok=await copy(full);say(ok?'Karta pobrana, podpis skopiowany. Dodaj post w Instagramie.':'Karta pobrana. Nie udało się skopiować podpisu (zezwól na dostęp do schowka).',ok?'ok':'err')}
+}
 function renderWork(){
   if(S.type==='admin')return renderAdmin();
   const Ty=TYPES[S.type],p=curP();
   const v=$('#view');
   v.innerHTML=pageHead(S.type)+`<div class="work"><div class="ctl" id="ctl"></div><div class="pvcol"><div class="pvstick"><div class="fmt" id="fmt"></div><div class="frame" id="frame"><img id="pv" alt="Podgląd karty"></div>
-  <div class="actions dlbar"><button class="btn pri" id="dl">${ico('dl',18)}<span>Pobierz PNG</span></button><button class="btn mob-only" id="pkbar">Kopiuj pakiet</button><span class="msg" id="dlmsg"></span></div></div></div></div>
-  <div class="pkgrid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start"><div class="card-box"><div class="sec">2 · Tekst posta (do edycji)</div><textarea id="post"></textarea>
+  <div class="actions dlbar"><button class="btn pri" id="dl">${ico('dl',18)}<span>Pobierz PNG</span></button>${isCrew?'<button class="btn mob-only" id="pkbar">Kopiuj pakiet</button>':''}<span class="msg" id="dlmsg"></span></div>${shareBar()}</div></div></div>
+  ${isCrew?`<div class="pkgrid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start"><div class="card-box"><div class="sec">2 · Tekst posta (do edycji)</div><textarea id="post"></textarea>
   <div class="actions"><button class="btn sm" id="cp">Kopiuj tekst</button><button class="btn sm" id="rp">Odśwież z karty</button><span class="msg" id="cpmsg"></span></div></div>
   <div class="card-box"><div class="sec">3 · Pakiet dla komunikacji (prompt do posta)</div><label class="f">Link do live na YouTube (opcjonalnie)<input type="text" id="pk-link" placeholder="https://youtu.be/..."></label><textarea id="pk-txt" readonly style="min-height:260px"></textarea>
-  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div>`;
+  <div class="actions"><button class="btn sm pri" id="pk-cp">Kopiuj pakiet</button><span class="msg" id="pk-msg"></span></div></div></div>`:''}`;
   buildFmt();buildCtl();$('#dl').onclick=doDownload;
+  document.querySelectorAll('.sb').forEach(b=>b.onclick=()=>doShare(b.dataset.n));
+  if(isCrew){
   $('#post').oninput=()=>{S.postEd=true;buildPack()};
   $('#cp').onclick=async()=>{const t=$('#post');try{await navigator.clipboard.writeText(t.value);$('#cpmsg').textContent='Skopiowano';$('#cpmsg').className='msg ok'}catch(e){t.select();$('#cpmsg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#cpmsg').className='msg'}};
   $('#rp').onclick=()=>{S.postEd=false;refresh(true)};
@@ -1789,6 +1843,7 @@ function renderWork(){
   $('#pkbar').onclick=async()=>{buildPack();const t=$('#pk-txt');try{await navigator.clipboard.writeText(t.value);$('#pkbar').textContent='Skopiowano ✓'}catch(e){document.querySelector('.pkgrid .card-box:last-child').classList.remove('col');t.select()}setTimeout(()=>{const b=$('#pkbar');if(b)b.textContent='Kopiuj pakiet'},2000)};
   $('#pk-link').value=S.pkLink||'';$('#pk-link').oninput=()=>{S.pkLink=$('#pk-link').value;buildPack()};
   $('#pk-cp').onclick=async()=>{buildPack();const t=$('#pk-txt');try{await navigator.clipboard.writeText(t.value);$('#pk-msg').textContent='Skopiowano. Wklej w czat komunikacji razem z kartą PNG.';$('#pk-msg').className='msg ok'}catch(e){t.select();$('#pk-msg').textContent='Zaznacz i skopiuj ręcznie (Ctrl/Cmd+C)';$('#pk-msg').className='msg'}};
+  }
   refresh(true);
 }
 const PACKNOTE={
@@ -1893,7 +1948,8 @@ async function draw(){
   try{svg=Ty.svg(p,bgData)}catch(e){console.error(e);return}
   S.svg=svg;const fr=$('#frame');if(fr)fr.classList.toggle('v',isV());
   const u=await svgToUrl(svg);const old=S.url;S.url=u;const im=$('#pv');if(im)im.src=u;if(old)setTimeout(()=>URL.revokeObjectURL(old),2000);
-  if(!S.postEd){const t=$('#post');if(t)t.value=Ty.post(p)};buildPack()
+  if(!S.postEd){const t=$('#post');if(t)t.value=Ty.post(p)};buildPack();
+  if(navigator.share&&matchMedia('(pointer:coarse)').matches&&!locked(S.type)){clearTimeout(S.shT);S.shT=setTimeout(()=>shareFile().catch(()=>{}),700)}
 }
 async function toPng(svg){
   const u=await svgToUrl(svg);
@@ -1909,8 +1965,7 @@ async function doDownload(){
   try{
     $('#dl').disabled=true;m.textContent='Przygotowuję PNG…';
     const blob=await toPng(S.svg);
-    const slug=(curP().title||S.type).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50)||'karta';
-    saveBlob(`RTS-Stats-${slug}${isV()?'-pion':''}.png`,blob);
+    saveBlob(cardName(),blob);
     m.textContent='Zapisano.';m.className='msg ok';
   }catch(e){m.textContent=e&&e.code==='declined'?'Anulowano.':'Nie udało się zapisać pliku ('+(e&&e.code||e&&e.message||'błąd')+').';m.className='msg err'}
   finally{$('#dl').disabled=false}
@@ -2101,7 +2156,7 @@ function roomsHtml(){
 }
 // Ścieżka wspierania: trzy poziomy i trzy kroki. mode: 'gate' (przed logowaniem) albo 'app' (po zalogowaniu).
 function supportHtml(mode,viaDiscord,lv){
-  const tiers=[[0,'Za darmo','','Liczba przed rywalem, Mecz, Dom i wyjazd'],[1,SUBN[1],PRICE[1],'+ Zawodnik, Porównanie, Mapa ligi, Własna liczba, format 4:5'],[2,SUBN[2],PRICE[2],'+ Radary, Rozwój, pakiet dla komunikacji']];
+  const tiers=[[0,'Za darmo','','Liczba przed rywalem, Mecz, Dom i wyjazd'],[1,SUBN[1],PRICE[1],'+ Zawodnik, Porównanie, Mapa ligi, Własna liczba, format 4:5'],[2,SUBN[2],PRICE[2],'+ Radary, Rozwój']];
   const last=mode==='gate'?'Zaloguj się przez Discord':viaDiscord?'Zaloguj się ponownie przez Discord':'Kliknij „Połącz z Discordem” poniżej';
   const cur=mode==='app'?lv:-1;
   const card=t=>'<div class="tier t'+t[0]+(cur===t[0]?' on':'')+'"><div class="tier-h"><b>'+t[1]+'</b>'+(t[2]?'<i>'+t[2]+'/mies.</i>':'')+'</div><span>'+t[3]+'</span>'+(cur===t[0]?'<em>Twój poziom</em>':'')+'</div>';
