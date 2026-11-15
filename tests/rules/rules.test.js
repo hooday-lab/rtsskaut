@@ -1,6 +1,6 @@
 const {initializeTestEnvironment,assertFails,assertSucceeds}=require('@firebase/rules-unit-testing');
 const fs=require('fs');
-const {Timestamp}=require('firebase/firestore');
+const {Timestamp,serverTimestamp,increment}=require('firebase/firestore');
 (async()=>{
  const env=await initializeTestEnvironment({projectId:'rts-test',firestore:{rules:fs.readFileSync(require('path').resolve(__dirname,'../../firestore.rules'),'utf8'),host:'127.0.0.1',port:8080}});
  const D=864e5,now=Date.now(),T=ms=>Timestamp.fromMillis(ms);
@@ -46,6 +46,20 @@ const {Timestamp}=require('firebase/firestore');
   try{await assertFails(as(u).doc('data/stats').set({x:2}));console.log('OK   zapis data zablokowany',u)}catch(e){bad++;console.log('FAIL zapis data',u)}
  }
  try{await assertSucceeds(as('adm@e.com').doc('members/z@e.com').set({role:'supporter',level:1}));console.log('OK   admin zapisuje członków')}catch(e){bad++;console.log('FAIL admin zapis')}
+ // licznik użycia: zapis tylko własnego dokumentu (uid), odczyt tylko admin
+ const ok=Timestamp.fromMillis(now);
+ const own=(e,data)=>env.authenticatedContext('u_'+e,{email:e,email_verified:true}).firestore().doc('usage/u_'+e).set(data,{merge:true});
+ const t=async(label,p,exp)=>{try{exp?await assertSucceeds(p):await assertFails(p);console.log('OK  ',label)}catch(e){bad++;console.log('FAIL',label)}};
+ await t('usage: zapis własny OK',own('free@e.com',{tier:0,crew:false,created:ok,last:ok,visits:1,d:{'2026-11-15':true}}),true);
+ await t('usage: zapis jak z aplikacji (serverTimestamp, increment, mapy)',own('l2@e.com',{tier:3,crew:false,created:ok,last:serverTimestamp(),visits:increment(1),d:{'2026-11-15':true},cards:{player:increment(1)},lock:{growth:increment(1)},dl:increment(1)}),true);
+ await t('usage: kolejny zapis tego samego dokumentu',own('l2@e.com',{last:serverTimestamp(),sh:increment(1),cards:{match:increment(1)}}),true);
+ await t('usage: poziom spoza 0..3 zablokowany',own('free@e.com',{tier:9}),false);
+ await t('usage: obce pole zablokowane (e-mail)',own('free@e.com',{email:'free@e.com'}),false);
+ await t('usage: cudzy dokument zablokowany',as('free@e.com').doc('usage/u_l2@e.com').set({tier:0}),false);
+ await t('usage: darmowy nie czyta',as('free@e.com').doc('usage/u_free@e.com').get(),false);
+ await t('usage: ekipa nie czyta',as('crew@e.com').doc('usage/u_free@e.com').get(),false);
+ await t('usage: admin czyta',as('adm@e.com').doc('usage/u_free@e.com').get(),true);
+ await t('usage: niezalogowany nie zapisuje',env.unauthenticatedContext().firestore().doc('usage/x').set({tier:0}),false);
  console.log(bad?('BŁĘDY: '+bad):'WSZYSTKIE TESTY REGUŁ OK');
  await env.cleanup();
  process.exit(bad?1:0);

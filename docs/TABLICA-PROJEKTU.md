@@ -49,6 +49,7 @@ Mapowanie: ytTier 1/2/3 → poziom 0/1/2 w kodzie, 3 dni karencji po utracie wsp
 
 ## 6. Co jest zrobione
 Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukcja „połącz YouTube z Discordem”, plakietki poziomów z tooltipami, ekran logowania z pokojami i ścieżką wspierania, brandbook, kit premiery (teksty i grafiki w `docs/premiera/`).
+- **Statystyki kibiców (15.11, zakładka „Statystyki” w Zarządzaniu, tylko admin).** Licznik użycia bez e-maili: dokument `usage/{uid}` (poziom, data założenia konta, wejścia, dni aktywności, otwarte karty, kliknięcia w kartę z kłódką, pobrania, udostępnienia). Logika i definicje statusów (Nowy / Aktywny / Wracający / Uśpiony) w `usage.js`, testy w `access/test/usage.test.mjs`. Reguły `usage` w `firestore.rules` trzeba **opublikować w konsoli Firebase** (Firestore → Reguły), inaczej licznik nic nie zapisze. Liczby liczą się od dnia publikacji reguł. Wymaga zdania o statystykach w polityce prywatności. Respektuje Do Not Track.
 
 ## 7. Otwarte sprawy
 1. ✅ **Link zaproszenia na Discord** wpisany do `config.js` jako `RTS_DISCORD_INVITE` (PR #31, #32). To jedyne miejsce: teksty premiery (`docs/premiera/teksty.py`) czytają link stąd, a `python3 docs/premiera/teksty.py --check` potwierdza brak placeholderów.
