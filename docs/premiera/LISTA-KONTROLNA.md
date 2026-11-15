@@ -15,7 +15,7 @@ Zasada nadrzędna (`rts-workspace/docs/zasady-paczek.md`, pkt 6): żadna treść
 | # | Gdzie | Kto | Tekst | Plik graficzny |
 |---|---|---|---|---|
 | 1 ✅ | Discord #rts-skaut (nowa wiadomość powitalna), wysłana 14.11, HTTP 200 | Claude, webhook `DISCORD_WEBHOOK_RTSSKAUT`, po sygnale właściciela | tekst z tablicy/rozmowy: „📊 RTS Skaut” (poziomy, link do instrukcji) | `rts-skaut-discord-1.png` (1600×900) |
-| 2 | Discord, ogłoszenie „RTS Skaut jest już na żywo” | do decyzji, gdzie (rekomendacja: #czat-z-ekipą) | `dc_ann` (+ `dc_faq` przypięte w #rts-skaut) | `rts-skaut-discord-1.png` |
+| 2 ✅ | Discord #czat-z-ekipą, ogłoszenie „RTS Skaut jest już na żywo”, wysłane 15.11, HTTP 200 (wersja w 1. osobie, z infografiką `rts-skaut-poziomy.png`) | Claude, webhook `DISCORD_WEBHOOK_CZAT`, po jawnej zgodzie | `dc_ann` (+ `dc_faq` przypięte w #rts-skaut) | `rts-skaut-discord-1.png` |
 | 3 | YouTube publiczny (post społeczności) | Patryk | `yt_pub` | `rts-skaut-yt-1…4.png` (karuzela 1080×1080) |
 | 4 | X (wątek 4 wpisów) | Patryk | `x1` → `x2` → `x3` → `x4` | `rts-skaut-x-1.png` (1200×675) przy `x1` |
 | 5 | Facebook | Patryk | `fb` | `rts-skaut-ig-1.png` (1080×1350) |
