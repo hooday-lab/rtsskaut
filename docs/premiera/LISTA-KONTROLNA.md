@@ -30,6 +30,10 @@ Patryk dostaje gotowe paczki (bez placeholderów) na Discordzie, Bartek niczego 
 - 8 grafik obejrzanych: brak starej marki, brak placeholderów.
 - Kibic Rozmów (15,99 zł) świadomie pominięty w tekstach: w aplikacji jest poziomem zbliżonym do darmowego (`access/README.md`).
 
+## Dziennik publikacji
+- 15.11, X (konto Rozmów, ręcznie przez Bartka): wpis „RTS Skaut już działa” (wersja B, ok. 263 znaki, z `rts-skaut-x-1.png`). Zastępuje `x1` z wątku premiery, więc wątek `x2`…`x4` zostaje jako odpowiedzi.
+- 15.11, X (konto Rozmów, ręcznie przez Bartka): wpis o Karolu Świderskim (wersja B, „5 goli, 26 strzałów, 987 minut”, CTA do rtsskaut.pl) z kartą „Zawodnik” pobraną z aplikacji. Liczby zgodne z danymi po 14. kolejce (stan 8.11). Karta „Zawodnik” to Poziom II, więc bez wsparcia kibic zobaczy kłódkę.
+
 ## Po publikacji
 - [ ] Wpis w logu `integracje.md` (rts-workspace): które posty, które pliki, kody HTTP.
 - [ ] Sprawdzić, że link zaproszenia na Discord działa z nowego urządzenia (incognito).
