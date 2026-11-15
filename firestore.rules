@@ -44,6 +44,18 @@ service cloud.firestore {
         isCrew());
       allow write: if isAdmin();
     }
+    // Licznik użycia (bez e-maili): każdy zalogowany zapisuje tylko własny dokument (id = uid konta), czyta tylko admin.
+    match /usage/{uid} {
+      allow read: if isAdmin();
+      allow create, update: if signedIn() && uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['tier','crew','created','last','visits','d','cards','lock','dl','sh'])
+        && request.resource.data.get('tier', 0) is int && request.resource.data.get('tier', 0) >= 0 && request.resource.data.get('tier', 0) <= 3
+        && request.resource.data.get('crew', false) is bool
+        && request.resource.data.get('d', {}).size() <= 800
+        && request.resource.data.get('cards', {}).size() <= 20
+        && request.resource.data.get('lock', {}).size() <= 20;
+      allow delete: if isAdmin();
+    }
     match /settings/{id} {
       allow read: if signedIn();
       allow write: if isAdmin();
