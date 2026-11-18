@@ -48,8 +48,8 @@ for y in range(2021, 2031):
     if bad: err.append(f"historia {y}: {len(bad)} wierszy niemożliwych (>34 mecze lub >3200 min), np. pid {bad[0][0]}")
     s = defaultdict(int)
     for r in h['rows']: s[r[1]] += r[3]
-    for c, m in s.items():
-        if m > 34 * 90 * 11 * 1.04: err.append(f"historia {y}: {c}: suma minut {m} ponad limit {int(34*90*11*1.04)}")
+    for c, m in s.items():  # próg: 10% ponad 34x90x11 (minuty w API zawierają doliczony czas gry)
+        if m > 34 * 90 * 11 * 1.10: err.append(f"historia {y}: {c}: suma minut {m} ponad limit {int(34*90*11*1.10)}")
 if n_rows: print(f'historia: {n_rows} wierszy, niemożliwych {n_bad}')
 
 for w in warn: print('OSTRZEŻENIE', w)

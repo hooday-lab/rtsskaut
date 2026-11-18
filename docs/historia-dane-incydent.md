@@ -30,3 +30,12 @@ Wykryte przy karcie „Top 10 kadry Widzewa”: Bergier miał 21 występów w Wi
 
 ## Powtarzalna kontrola
 `python3 -I scripts/kontrola-danych.py <katalog>`: katalog z `stats.json` (zawartość `data/stats`) i opcjonalnie `h2021.json` … `h2025.json`. Sprawdza duplikaty meczów, zgodność bramek, niemożliwe wartości i sumy minut klubów. Uruchamiać po każdym wgraniu danych. Nie sprawdza rozgrywek (to wymaga bazy): ten punkt zostaje w zapytaniu `api_league_id = 106`.
+
+## Wdrożenie (18.11.2026)
+- Repo `rts-workspace`, PR #9: poprawiony `studio/history/history.sql` (bez sumowania niemożliwych grup, lista wyjątków, element `mc`), kontrola w `build_history.py`, `napraw_historie.py`, ostrzeżenie w `delta.py`.
+- Dane produkcyjne (Firestore `data/history_2021…2025` i `data/history_index`): usunięto 45 wierszy (44 niemożliwe plus Bergier 2022), przeliczono 14 wpisów indeksu. Wierszy 2664 → 2619. Kontrola po wdrożeniu: 0 niemożliwych wierszy.
+- Kopie zapasowe sprzed zmiany: `data/backup_history_20261118_<2021…2025|index>` (nazwa spoza reguły `history_.*`, czyta tylko ekipa). Przywrócenie: skopiować pole `json` z kopii do właściwego dokumentu.
+- Percentyli pozostałych wierszy nie przeliczono (zrobi to kolejny eksport z poprawionego `history.sql`).
+- Konsekwencja: sezony z grup niemożliwych (np. Ravas 2022, Widzew) zniknęły z „Rozwoju”, bo nie wiadomo, który klub dostawcy jest właściwy.
+- Filtr w aplikacji (`rowPlausible`) zostaje jako zabezpieczenie.
+- Otwarte: zawodnicy po zmianie klubu w bieżącym sezonie (Sánchez, Ameyaw, Akere) mają statystyki z obu klubów w jednym wierszu; `delta.py` tylko ostrzega.
