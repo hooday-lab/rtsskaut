@@ -33,6 +33,11 @@
     return 'Aktywny';
   }
 
+  // Wiersz historii [pid, klub, poz, min, mecze, ...] niemożliwy w Ekstraklasie (34 kolejki): więcej niż 34 mecze albo ponad 3200 minut.
+  // Takie wiersze powstają, gdy dostawca zwraca dwa kluby w jednym sezonie i eksport je sumuje (zob. docs/TABLICA-PROJEKTU.md).
+  const MAX_APPS = 34, MAX_MIN = 3200;
+  const rowPlausible = (r) => !(r[4] > MAX_APPS || r[3] > MAX_MIN);
+
   const sum = (a) => a.reduce((x, y) => x + y, 0);
   const objSum = (o) => sum(Object.values(o || {}).map(Number));
 
@@ -81,6 +86,6 @@
     return { rows, total, prev, supporters, active, cardsTotal, weeks, use, lock, users: list.length };
   }
 
-  const api = { tierOf, dayKey, statusOf, aggregate, TIER_NAMES, STATUSES, DAY };
+  const api = { tierOf, dayKey, statusOf, aggregate, rowPlausible, MAX_APPS, MAX_MIN, TIER_NAMES, STATUSES, DAY };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else g.RTSUsage = api;
 })(typeof window !== 'undefined' ? window : globalThis);

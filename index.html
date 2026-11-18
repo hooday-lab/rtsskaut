@@ -1701,9 +1701,9 @@ async function gLoad(){
   const s0=Math.min(...idx.players.map(p=>p[5])),s1=Math.max(...idx.players.map(p=>p[4]));
   const seasons=[];for(let s=s0;s<=s1;s++)seasons.push(s);
   const docs=await Promise.all(seasons.map(s=>get('history_'+s)));
-  const by={};docs.forEach((d,i)=>{if(d)d.rows.forEach(r=>{(by[r[0]]||(by[r[0]]={}))[seasons[i]]=r})});
+  const by={};let skipped=0;docs.forEach((d,i)=>{if(d)d.rows.forEach(r=>{if(!RTSUsage.rowPlausible(r)){skipped++;return}(by[r[0]]||(by[r[0]]={}))[seasons[i]]=r})});
   const names=idx.players.map(p=>({pid:p[0],n:p[1],k:gfold(p[1]+' '+p[3]),pos:p[2],club:p[3],ls:p[4]}));
-  return G.H={seasons,by,names,byPid:Object.fromEntries(names.map(x=>[x.pid,x]))};
+  return G.H={seasons,by,names,skipped,byPid:Object.fromEntries(names.map(x=>[x.pid,x]))};
 }
 function gNice(span){for(const s of [.05,.1,.2,.25,.5,1,2,5,10])if(span/s<=4)return s;return 10}
 function renderLockedPage(k){
@@ -1737,7 +1737,7 @@ async function renderGrowth(){
   ${wid.length?'<section><div class="gr-l">Widzew w obecnym sezonie</div><div class="gr-row" id="gr-w"></div></section>':''}
   <section><div class="gr-l">Wskaźnik</div><div class="gr-row" id="gr-m"></div></section>
   <section class="gr-panel"><h2 id="gr-name"></h2><p class="msg" id="gr-sub"></p><p class="gr-lead" id="gr-lead"></p><p class="msg" id="gr-hint"></p><div id="gr-chart"></div><div class="gr-seasons" id="gr-seasons"></div></section>
-  <p class="msg">Wartości na 90 minut; ocena to średnia sezonowa z API-Football. Percentyl to miejsce wśród zawodników tej samej pozycji w tym samym sezonie Ekstraklasy (min. 450 minut), 50 = środek stawki. Puste kółko i brak percentyla: poniżej 450 minut.</p></div>`;
+  <p class="msg">Wartości na 90 minut; ocena to średnia sezonowa z API-Football. Percentyl to miejsce wśród zawodników tej samej pozycji w tym samym sezonie Ekstraklasy (min. 450 minut), 50 = środek stawki. Puste kółko i brak percentyla: poniżej 450 minut.</p>${H.skipped?`<p class="msg">Pominięto ${H.skipped} ${H.skipped===1?'sezon':'sezonów'} z niespójnymi danymi dostawcy (np. ponad 34 mecze w jednym sezonie). Poprawiamy źródło.</p>`:''}</div>`;
   const chipRow=(box,items,cur,fn)=>{box.innerHTML='';items.forEach((it,i)=>{const b=el(`<button class="gr-b" type="button" aria-pressed="${it.on}">${esc(it.l)}</button>`);b.onclick=()=>fn(i);box.appendChild(b)})};
   const paint=()=>{
     if($('#gr-w'))chipRow($('#gr-w'),wid.map(x=>({l:x.n,on:x.pid===G.sel})),0,i=>{G.sel=wid[i].pid;paint()});
