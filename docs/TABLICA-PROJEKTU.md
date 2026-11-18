@@ -67,6 +67,9 @@ Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukc
 - **Discord: ✅** `DISCORD_WEBHOOK_RTSSKAUT` działa (14.11 wysłana wiadomość powitalna, HTTP 200). Uwaga: wartość zmiennej była wpisana w nawiasach `<...>`; Claude usuwa je w kodzie przy wysyłce, ale warto wpisać sam adres bez nawiasów i cudzysłowów.
 - Repozytorium `rts-workspace` dołączone (odczyt przez narzędzie GitHub; klonowanie blokują uprawnienia sesji).
 
+## 7b. Znany problem danych historii (18.11)
+Eksport historii (`studio/history/history.sql` w `rts-workspace`) sumuje kluby w jednym sezonie, więc 44 wiersze historii są niemożliwe (ponad 34 mecze), a część innych cicho błędna (np. Bergier 2022). Widok „Rozwój” pomija niemożliwe wiersze. Poprawka źródła czeka na zgodę właściciela na ponowny eksport do Firestore. Szczegóły: `docs/historia-dane-incydent.md`.
+
 ## 8. Zasady współpracy
 - Nowy czat startuje od tego pliku i `README.md`.
 - Zmiany robi się na gałęzi, przez PR, a właściciel projektu udzielił trwałej zgody: **własne PR-y scalam sam po zielonych testach, bez pytania**.

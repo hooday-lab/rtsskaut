@@ -57,3 +57,11 @@ test('aggregate: pusta baza nie wywala liczenia', () => {
   assert.equal(a.total, 0);
   assert.ok(a.rows.every((r) => r.n === 0 && r.visits === 0));
 });
+
+test('rowPlausible: odrzuca wiersze niemożliwe w Ekstraklasie', () => {
+  assert.equal(U.rowPlausible([1, 'Widzew', 'D', 2229, 25]), true);
+  assert.equal(U.rowPlausible([1, 'Widzew', 'D', 3060, 34]), true);
+  assert.equal(U.rowPlausible([2, 'Widzew', 'G', 5675, 63]), false, 'Ravas 2022: dwa kluby zsumowane');
+  assert.equal(U.rowPlausible([3, 'Widzew', 'F', 1000, 35]), false, 'więcej niż 34 mecze');
+  assert.equal(U.rowPlausible([4, 'Widzew', 'F', 3300, 30]), false, 'ponad 3200 minut');
+});
