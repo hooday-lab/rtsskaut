@@ -70,6 +70,18 @@ Logowanie Google i Discord, poziomy z ról, strona na własnej domenie, instrukc
 ## 7b. Znany problem danych historii (18.11)
 Eksport historii (`studio/history/history.sql` w `rts-workspace`) sumuje kluby w jednym sezonie, więc 44 wiersze historii są niemożliwe (ponad 34 mecze), a część innych cicho błędna (np. Bergier 2022). Widok „Rozwój” pomija niemożliwe wiersze. WDROŻONE 18.11: poprawka źródła (rts-workspace PR #9), usunięto 45 wierszy z `data/history_*` (2664 → 2619), kopie w `data/backup_history_20261118_*`. Audyt 18.11: Puchar Polski i inne rozgrywki NIE są w danych (historia: tylko liga 106; bieżący sezon: 121 meczów ligi 106); bieżące statystyki zgadzają się z danymi meczowymi. Otwarty problem: zawodnik po zmianie klubu w sezonie trafia w całości do ostatniego klubu (Sánchez, Ameyaw, Akere). Kontrola: `python3 -I scripts/kontrola-danych.py <katalog>`. Szczegóły: `docs/historia-dane-incydent.md`.
 
+## 7c. Stan na 26.11 (zamknięcie wątku)
+**Zrobione od 14.11:** ogłoszenie na #czat-z-ekipą (PR #46); zakładka „Statystyki” z licznikiem użycia i reguły Firestore (PR #45); poprawka historii zawodników (wiersze niemożliwe, `rts-workspace` PR #9, kopie `data/backup_history_20261118_*`); audyt danych i skrypt `scripts/kontrola-danych.py` (PR #49, #50); wpisy na X opublikowane przez Bartka (premiera, wersja B; Świderski z kartą „Zawodnik”). Karty i plansze z tych dni leżą w `docs/premiera/karty-2026-11/` (żeby nie zginęły z sesją): staż Żyry, Top 10 kadry (wersja v2 po poprawce), wykres „Obrońcy: kto gra do przodu?”, plansza „Jeden mecz nie jest wyrokiem” (nieużyta).
+**Otwarte:**
+1. Karta „Top 10 kadry”: na X poszła wersja v1 (Bergier 64 mecze, błąd danych), pod którą pytanie zadał kibic. Poprawiona wersja v2 (Bergier 43) i propozycje odpowiedzi i wpisu z korektą były przekazane; status publikacji nieznany, sprawdzić u Bartka.
+2. Wykres obrońców: czeka na decyzję o publikacji; dane z 8.11 (stan po 14. kolejce), przed publikacją odświeżyć.
+3. Zawodnicy po zmianie klubu w sezonie (Sánchez, Ameyaw, Akere): statystyki z obu klubów w jednym wierszu; wymaga zmiany układu danych (osobny wiersz na klub) w `rts-workspace` (`studio/delta/delta.py`).
+4. Percentyle w historii nieprzeliczone po usunięciu 45 wierszy; zrobi to kolejny eksport z poprawionego `history.sql`.
+5. Licznik „Statystyki”: 17.11 pokazywał same zera; sprawdzić, czy zbiera dane po publikacji reguł.
+6. Teksty do publikacji: Facebook, Instagram, YouTube publiczny, YouTube dla wspierających, FAQ na #rts-skaut, zdanie o statystykach w polityce prywatności; do tego test z 3 wspierającymi (pkt 6), jasny motyw i telefon (pkt 4), link do YouTube w bio X i Instagrama.
+7. ClubFantasy: Pull request numer 354 (https://github.com/hooday-lab/clubfantasy/pull/354, szkic, uprawnienia odczytu bez pytania w `.claude/settings.json`) czeka na decyzję w sprawie reguły `execute_sql` (A zostawić, B usunąć); wiersz w dzienniku `docs/dziennik-przekazan-cf.md` dopisać po scaleniu. Panel „Gracze i zapisy” w ClubFantasy zrobiła i wydała na produkcję (Baggio 10.9.x) inna sesja.
+**Tekst startowy nowego wątku:** „Kontynuujemy RTS Skaut. Przeczytaj docs/TABLICA-PROJEKTU.md (sekcje 7, 7a, 7b, 7c) i docs/premiera/LISTA-KONTROLNA.md. Dziś: …”
+
 ## 8. Zasady współpracy
 - Nowy czat startuje od tego pliku i `README.md`.
 - Zmiany robi się na gałęzi, przez PR, a właściciel projektu udzielił trwałej zgody: **własne PR-y scalam sam po zielonych testach, bez pytania**.
