@@ -1433,11 +1433,11 @@ function scatSvg(p,bg){
   // punkty i etykiety
   const pts=LGI.filter(t=>xv[t]!=null&&yv[t]!=null).map(t=>({t,x:sx(xv[t]),y:sy(yv[t]),hi:t===p.a?'a':t===p.b?'b':''}));
   const boxes=[];const ov=(a,b)=>!(a.x1<b.x0||a.x0>b.x1||a.y1<b.y0||a.y0>b.y1);
-  pts.forEach(q=>{const r=q.hi?16:11;boxes.push({x0:q.x-r,x1:q.x+r,y0:q.y-r,y1:q.y+r})});
+  pts.forEach(q=>{const r=q.hi?16:8;boxes.push({x0:q.x-r,x1:q.x+r,y0:q.y-r,y1:q.y+r})});
   const order=pts.slice().sort((a,b)=>(b.hi?1:0)-(a.hi?1:0));
   const lab=[];
   order.forEach(q=>{
-    const fs=q.hi?32:22,w=mw(sn(q.t),fs,'BC',q.hi?800:700,.5),h=fs,r=q.hi?20:15;
+    const fs=q.hi?32:19,w=mw(sn(q.t),fs,'BC',q.hi?800:700,.5),h=fs,r=q.hi?20:12;
     const cands=[[r,h*.35,'start'],[-r,h*.35,'end'],[0,-r-4,'middle'],[0,r+h*.8,'middle'],[r*.8,-r*.6,'start'],[-r*.8,-r*.6,'end'],[r*.8,r+h*.5,'start'],[-r*.8,r+h*.5,'end']];
     for(const [dx,dy,an] of cands){
       const x0=an==='start'?q.x+dx:an==='end'?q.x+dx-w:q.x+dx-w/2,bx={x0,x1:x0+w,y0:q.y+dy-h*.85,y1:q.y+dy+h*.2};
@@ -1447,10 +1447,11 @@ function scatSvg(p,bg){
     if(q.hi){const dx=r,dy=h*.35;lab.push({q,x:q.x+dx,y:q.y+dy,an:'start',fs})}
   });
   pts.slice().sort((a,b)=>(a.hi?1:0)-(b.hi?1:0)).forEach(q=>{
-    const r=q.hi?16:11,ring=q.hi==='a'?'#fff':q.hi==='b'?'#FFD100':'#fff';
-    s+=`<circle cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="${r}" fill="${barCol(q.t)}" stroke="${ring}" stroke-width="${q.hi?6:2.5}"/>`;
+    const r=q.hi?16:8,ring=q.hi==='b'?'#FFD100':'#fff';
+    if(q.hi)s+=`<circle cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="${r}" fill="${q.t===WID?C.red:barCol(q.t)}" stroke="${ring}" stroke-width="6"/>`;
+    else s+=`<circle cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="${r}" fill="#9d999b" fill-opacity=".85" stroke="#fff" stroke-opacity=".25" stroke-width="1.5"/>`;
   });
-  s+=`<g filter="url(#sh)">`+lab.map(l=>tx(l.x,l.y,sn(l.q.t),{size:l.fs,fam:'BC',w:l.q.hi?800:700,ls:.5,up:true,anchor:l.an,fill:l.q.hi==='b'?'#FFD100':l.q.hi?'#fff':'#f3dede'})).join('')+`</g>`;
+  s+=`<g filter="url(#sh)">`+lab.map(l=>tx(l.x,l.y,sn(l.q.t),{size:l.fs,fam:'BC',w:l.q.hi?800:700,ls:.5,up:true,anchor:l.an,fill:l.q.hi==='b'?'#FFD100':l.q.hi?'#fff':'#c9c3c5'})).join('')+`</g>`;
   return shell(s+(V?footerV(p):footer(p)),bg);
 }
 function scatSub(p){
@@ -1576,9 +1577,53 @@ const ha={
   post(p){return `${p.title}.\n\n${p.sub}\n${p.date1?p.date1+' · '+p.date2+'\n':''}\n${p.q||'Dom czy wyjazd – gdzie ta drużyna czuje się pewniej? 👇'}\n#RTSkaut #Widzew`}
 };
 
-const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact,growth:{name:'Rozwój'}};
+
+/* ---- karta: przebieg sezonu (wykres liniowy: punkty narastająco po kolejkach) ---- */
+function cumPts(t){let c=0;return TM[t].map(m=>{c+=m.res==='W'?3:m.res==='R'?1:0;return {k:m.k,v:c}})}
+function cumSide(t,home){let c=0;return TM[t].map(m=>{if(m.home===home)c+=m.res==='W'?3:m.res==='R'?1:0;return {k:m.k,v:c}})}
+const trend={
+  name:'Przebieg sezonu',
+  init(){const u=D.upcoming.find(x=>x[2]===T[WID].full||x[3]===T[WID].full);
+    const p={a:WID,b:nextOpp||349,tag:'Przebieg sezonu',side:u?(u[2]===T[WID].full?'dw':'wd'):'0'};this.auto(p,true);return p},
+  auto(p,force){const A=cumPts(p.a),B=cumPts(p.b),la=A[A.length-1],lb=B[B.length-1];
+    const auto={title:'Punkty po kolejkach',sub:p.side==='dw'?`Wyraźne linie: wszystkie mecze. Blade: ${sn(p.a)} tylko u siebie, ${sn(p.b)} tylko na wyjeździe.`:p.side==='wd'?`Wyraźne linie: wszystkie mecze. Blade: ${sn(p.a)} tylko na wyjeździe, ${sn(p.b)} tylko u siebie.`:`${sn(p.a)}: ${la.v} pkt po ${A.length} meczach. ${sn(p.b)}: ${lb.v} pkt po ${B.length} meczach.`,foot:defFoot('linia przerywana: 1 punkt na mecz')};
+    for(const k in auto){if(force||!p.ed||!p.ed[k])p[k]=auto[k]}},
+  fields:p=>[{k:'a',l:'Klub (biały)',t:'sel',num:1,o:teamOpts()},{k:'b',l:'Klub (żółty)',t:'sel',num:1,o:teamOpts()},{k:'side',l:'Blade linie (tylko dom / wyjazd)',t:'sel',o:[['dw','Pierwszy klub u siebie, drugi na wyjeździe'],['wd','Pierwszy klub na wyjeździe, drugi u siebie'],['0','Bez bladych linii']]},{k:'title',l:'Tytuł',t:'text'},{k:'sub',l:'Podtytuł',t:'area'},{k:'foot',l:'Stopka',t:'text'}],
+  sugg(p){return []},
+  svg(p,bg){
+    const V=isV(),H=V?headerV({...p,date1:'',date2:''}):header({...p,date1:'',date2:''});let s=H.svg;
+    const A=cumPts(p.a),B=cumPts(p.b),K=Math.max(A[A.length-1].k,B[B.length-1].k);
+    const px0=V?150:190,px1=V?1000:1800,py0=H.bottom+(V?30:36),py1=V?1130:884;
+    const ymax=Math.max(A[A.length-1].v,B[B.length-1].v,K)+2;
+    const sx=k=>px0+34+(k-1)/(K-1)*(px1-px0-200),sy=v=>py1-34-v/ymax*(py1-py0-68);
+    s+=`<rect x="${px0}" y="${py0}" width="${px1-px0}" height="${py1-py0}" rx="12" fill="rgba(10,6,8,.50)" stroke="#fff" stroke-opacity=".6" stroke-width="2"/>`;
+    niceTicks(0,ymax,5).forEach(v=>{const y=sy(v);s+=`<line x1="${px0}" y1="${y}" x2="${px1}" y2="${y}" stroke="#fff" stroke-opacity=".14"/>`+tx(px0-12,y+7,String(v),{size:22,fam:'BA',w:400,anchor:'end',fill:'#e9cfd0'})});
+    for(let k=1;k<=K;k++){if(k===1||k%2===1||k===K){const x=sx(k);s+=`<line x1="${x}" y1="${py0}" x2="${x}" y2="${py1}" stroke="#fff" stroke-opacity=".10"/>`+tx(x,py1+30,String(k),{size:22,fam:'BA',w:400,anchor:'middle',fill:'#e9cfd0'})}}
+    s+=`<line x1="${sx(1)}" y1="${sy(1)}" x2="${sx(K)}" y2="${sy(K)}" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-dasharray="10 8"/>`;
+    const line=(arr,col,w)=>`<polyline points="${arr.map(q=>sx(q.k).toFixed(1)+','+sy(q.v).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if(p.side==='dw'||p.side==='wd'){
+      const aHome=p.side==='dw',AH=cumSide(p.a,aHome),BA=cumSide(p.b,!aHome);
+      const fade=(arr,col)=>`<polyline points="${arr.map(q=>sx(q.k).toFixed(1)+','+sy(q.v).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-opacity=".42" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>`;
+      s+=fade(BA,'#FFD100')+fade(AH,'#FFFFFF');
+      const lab=(h)=>h?'U SIEBIE':'NA WYJEŹDZIE';
+      [[AH,'#FFFFFF',[sn(p.a).toUpperCase(),lab(aHome)],-26],[BA,'#FFD100',[sn(p.b).toUpperCase(),lab(!aHome)],16]].forEach(([arr,col,nm,dy])=>{const e=arr[arr.length-1],x=sx(e.k),y=sy(e.v);
+        s+=`<circle cx="${x}" cy="${y}" r="8" fill="${col}" fill-opacity=".6"/>`;
+        s+=`<g filter="url(#sh)" opacity=".85">`+tx(x+20,y+dy+8,String(e.v),{size:34,fam:'BC',w:800,fill:col})+tx(x+54,y+dy-2,nm[0],{size:18,fam:'BC',w:700,ls:1,fill:col})+tx(x+54,y+dy+17,nm[1],{size:18,fam:'BC',w:700,ls:1,fill:col})+`</g>`});
+    }
+    s+=line(B,'#FFD100',8)+line(A,'#FFFFFF',8);
+    [[A,'#FFFFFF',p.a],[B,'#FFD100',p.b]].forEach(([arr,col,t])=>{const e=arr[arr.length-1],x=sx(e.k),y=sy(e.v);
+      s+=`<circle cx="${x}" cy="${y}" r="13" fill="${col}" stroke="#0F1012" stroke-width="3"/>`;
+      s+=`<g filter="url(#sh)">`+tx(x+24,y+2,String(e.v),{size:52,fam:'BC',w:800,fill:col})+tx(x+24,y+30,sn(t),{size:24,fam:'BC',w:700,ls:1,up:true,fill:col})+`</g>`});
+    s+=`<g filter="url(#sh)">`+tx((px0+px1)/2,py1+66,'Kolejka',{size:28,fam:'BC',w:700,ls:1,up:true,anchor:'middle'})+
+       `<text transform="translate(${px0-70},${(py0+py1)/2}) rotate(-90)" font-family="BC" font-weight="700" font-size="28" fill="#fff" text-anchor="middle" letter-spacing="1">PUNKTY (NARASTAJĄCO)</text></g>`;
+    return shell(s+(V?footerV(p):footer(p)),bg);
+  },
+  svgV(p,bg){return this.svg(p,bg)},
+  post(p){return `${p.title}.\n\n${p.sub}\n#RTSkaut #Widzew`}
+};
+const TYPES={rival,match:matchT,player,cmp,homeaway:ha,pcmp,tcmp,scat,fact,trend,growth:{name:'Rozwój'}};
 const EXT=PL.length>0&&PL[0].length>=28;
-const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','scat']:[]),'fact','growth'];
+const TKEYS=['rival','match','player','cmp','homeaway',...(EXT?['pcmp','tcmp','scat']:[]),'trend','fact','growth'];
 
 /* ---------- stan ---------- */
 let isAdmin=!!ctx.isAdmin,downloads=true;
@@ -1588,7 +1633,7 @@ const isSupporter=!isAdmin&&ctx.role==='supporter';
    Wsparcie ma ważność "until" (karencja 3 dni liczona przez synchronizację); brak ważności = poziom 0. */
 const LV=(()=>{if(isCrew)return 2;if(ctx.role==='supporter'&&ctx.until&&ctx.until>new Date())return Math.max(0,Math.min(2,ctx.level==null?2:+ctx.level));return 0})();
 if(LV<1)FMT='h';
-const NEED={rival:0,match:0,homeaway:0,player:1,cmp:1,scat:1,fact:1,pcmp:2,tcmp:2,growth:2};
+const NEED={rival:0,match:0,homeaway:0,player:1,cmp:1,scat:1,trend:1,fact:1,pcmp:2,tcmp:2,growth:2};
 const ROM=['','II','III'];
 const lockCls=k=>NEED[k]>=2?'e':'b';
 const locked=k=>LV<(NEED[k]||0);
@@ -1612,6 +1657,7 @@ const TMETA={
  cmp:{g:'Ludzie i kluby',d:'Dwie drużyny w wybranych miarach.'},
  tcmp:{g:'Ludzie i kluby',d:'Dwa kluby na jednym radarze.'},
  scat:{g:'Mapy i fakty',d:'Cała liga na jednej mapie punktów.'},
+ trend:{g:'Mapy i fakty',d:'Punkty narastająco po kolejkach: dwa kluby na jednym wykresie.'},
  fact:{g:'Mapy i fakty',d:'Dowolna liczba z własnym podpisem.'},
  growth:{g:'Historia',d:'Zawodnik sezon po sezonie: wskaźniki na 90 minut i percentyle na pozycji.'},
  admin:{g:'',d:'Ekipa, tło kart, dostępne typy kart i dane.'},
@@ -1884,6 +1930,7 @@ cmp:'Karta porównuje dwie drużyny w wybranych miarach (każdy wiersz = jedna m
 homeaway:'Karta pokazuje bilans drużyny u siebie i na wyjeździe (W-R-P, bramki) i kolejne mecze z wynikiem z perspektywy drużyny. Wytłumacz kontrast dom/wyjazd.',
 pcmp:'Karta porównuje dwóch zawodników w wybranych miarach (wartości sezonowe lub na 90 minut). Wytłumacz, kto w czym wygrywa i jak to czytać.',
 tcmp:'Karta porównuje dwie drużyny na radarze (wiele miar, im dalej od środka tym lepiej względem ligi). Wytłumacz, w czym drużyny różnią się najbardziej.',
+trend:'Karta to wykres liniowy: punkty narastająco po kolejkach dla dwóch klubów (grube linie = wszystkie mecze, blade = tylko mecze u siebie jednego i na wyjeździe drugiego klubu, linia przerywana = 1 punkt na mecz). Wytłumacz, gdzie linie się rozchodzą i co mówi bilans dom/wyjazd.',
 scat:'Karta to mapa ligi: każda kropka to klub, oś pozioma i pionowa to dwie wybrane miary. Wytłumacz, gdzie jest Widzew, kto jest po przeciwnych stronach i co to oznacza.',
 fact:'Karta to jedna liczba (fakt) z podpisem i dwoma zdaniami kontekstu. Wytłumacz, skąd ta liczba, jak ją policzono i dlaczego jest istotna.'};
 function packCtx(){
@@ -2202,6 +2249,7 @@ homeaway:'<path d="M3 12l8-8 8 8"/><path d="M5 11v8h6"/><path d="M18 21c-2-2-3-3
 fact:'<path d="M5 9h14M5 15h14M10 3L8 21M16 3l-2 18"/>',
 pcmp:'<polygon points="12,3 20,8 20,16 12,21 4,16 4,8"/><polygon points="12,8 16,10.5 16,14 12,16.5 8,14 8,10.5"/>',
 tcmp:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M12 8v8M8.5 12h7"/>',
+trend:'<path d="M3 3v18h18"/><path d="M6 16l4-5 3 3 6-8"/>',
 scat:'<path d="M3 3v18h18"/><circle cx="8" cy="16" r="1.6"/><circle cx="12" cy="9" r="1.6"/><circle cx="17" cy="14" r="1.6"/><circle cx="18" cy="6" r="1.6"/>',
 admin:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
 stats:'<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/>',
@@ -2249,7 +2297,7 @@ function roomsHtml(){
 }
 // Ścieżka wspierania: trzy poziomy i trzy kroki. mode: 'gate' (przed logowaniem) albo 'app' (po zalogowaniu).
 function supportHtml(mode,viaDiscord,lv){
-  const tiers=[[0,'Za darmo','','Liczba przed rywalem, Mecz, Dom i wyjazd'],[1,SUBN[1],PRICE[1],'+ Zawodnik, Porównanie, Mapa ligi, Własna liczba, format 4:5'],[2,SUBN[2],PRICE[2],'+ Radary, Rozwój']];
+  const tiers=[[0,'Za darmo','','Liczba przed rywalem, Mecz, Dom i wyjazd'],[1,SUBN[1],PRICE[1],'+ Zawodnik, Porównanie, Mapa ligi, Przebieg sezonu, Własna liczba, format 4:5'],[2,SUBN[2],PRICE[2],'+ Radary, Rozwój']];
   const last=mode==='gate'?'Zaloguj się przez Discord':viaDiscord?'Zaloguj się ponownie przez Discord':'Kliknij „Połącz z Discordem” poniżej';
   const cur=mode==='app'?lv:-1;
   const card=t=>'<div class="tier t'+t[0]+(cur===t[0]?' on':'')+'"><div class="tier-h"><b>'+t[1]+'</b>'+(t[2]?'<i>'+t[2]+'/mies.</i>':'')+'</div><span>'+t[3]+'</span>'+(cur===t[0]?'<em>Twój poziom</em>':'')+'</div>';
